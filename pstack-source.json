@@ -491,7 +491,7 @@
     },
     {
       "file": ".cursor/rules/pstack-models.mdc",
-      "sha256": "4f49141b163cce3bd29dcafc1598a40cf5cd403a451b88fd50f46e2fc569985f",
+      "sha256": "2632b2f66195ea1b58ece8bd04084c2f8538f83e6f3d2cc77eeb0b9a74f85181",
       "source": "local",
       "upstreamPath": null
     },
@@ -785,7 +785,7 @@
     },
     {
       "file": ".cursor/skills/poteto-mode/SKILL.md",
-      "sha256": "ff308b527c20af0ce57cc87ec8c6cd8b960a849122930e0d30529d40f3566b51",
+      "sha256": "cd3aaafe8198abb18fdf1e6c63eaaf421947cfd59980b3f27ad6cb72947e1772",
       "source": "pstack",
       "upstreamPath": "skills/poteto-mode/SKILL.md"
     },
@@ -1295,7 +1295,7 @@
     },
     {
       "file": ".cursor/skills/setup-pstack/SKILL.md",
-      "sha256": "66c12509c1ea091633523ed48b848b790c85328d99f48e146ffe150ec66c473d",
+      "sha256": "239dd701fca5bd87559ce2fb76496b15c6ce1101205d6cf98fe102349f9c9157",
       "source": "pstack",
       "upstreamPath": "skills/setup-pstack/SKILL.md"
     },
