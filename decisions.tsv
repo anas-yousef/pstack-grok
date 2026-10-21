@@ -1,0 +1,5 @@
+ts	phase	decision	why	evidence	result
+2026-10-21T06:18:02Z	frame	defined done as five checks a later run can fail	the request already names the predicate, so the long run does not wait for another checkpoint	docs/design.md	open
+2026-10-21T06:18:02Z	frame	kept this run on one writer	every later edit lands in the same files, so parallel agents would share the branch	principle-separate-before-serializing-shared-state	one writer
+2026-10-21T06:18:02Z	study	pinned pstack 0.15.29, team kit 1.2.0, mattpocock skills, and superpowers	those commits are the trees the design vendors	190d28736eff128ec94f502a22c7fe0c4b56cd37 5beb35b040e3de97e54fa9e386d7e42d15c295c2 b739a8af570e10a95898f2bdf6cec97467fa6c12	pinned
+2026-10-21T06:19:22Z	design	wrote the design before changing any skill	the route stays inside poteto-mode, and the kept skills are the ones that add a procedure the mode does not already own	docs/design.md	written
