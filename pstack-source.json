@@ -1612,6 +1612,12 @@
       "upstreamPath": null
     },
     {
+      "file": "scripts/check-paths",
+      "sha256": "1344780e6dd12b3973f27311c048cd41a9ff0ec4598ddf240c63d8c01c5a0f6f",
+      "source": "local",
+      "upstreamPath": null
+    },
+    {
       "file": "scripts/check-upstream",
       "sha256": "09a9dfd8c14bf28d66d07101c0a9c9845588fbf198f567ca54b32f2dad5fcbbc",
       "source": "local",

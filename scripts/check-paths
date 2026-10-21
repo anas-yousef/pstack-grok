@@ -1,0 +1,181 @@
+#!/usr/bin/env python3
+"""Fail when a structural rule of this fork is broken.
+
+The interrogate trigger list has one home. Plugin paths resolve. TypeScript
+rules are globbed. Each check is a function of a root so a self-test can
+point it at a temp tree.
+"""
+
+from __future__ import annotations
+
+import json
+import sys
+import tempfile
+from pathlib import Path
+
+SKIP_DIRS = {".git", "uploads", ".cache", "node_modules", "__pycache__"}
+TRIGGER_SENTENCE = "This file is the only copy of the trigger " + "list."
+TRIGGER_FILE = Path(".cursor/skills/poteto-mode/references/interrogate-triggers.md")
+TRIGGER_REFS = (
+    Path(".cursor/skills/poteto-mode/SKILL.md"),
+    Path(".cursor/skills/poteto-mode/playbooks/greenfield.md"),
+)
+TRIGGER_PHRASES = (
+    "row-level security",
+    "costly to undo",
+    "judge whose confidence is low",
+)
+TS_RULES = (
+    Path(".cursor/rules/no-inline-imports.mdc"),
+    Path(".cursor/rules/typescript-exhaustive-switch.mdc"),
+)
+
+
+def repo_root() -> Path:
+    return Path(__file__).resolve().parent.parent
+
+
+def files(root: Path):
+    for path in root.rglob("*"):
+        if not path.is_file():
+            continue
+        rel = path.relative_to(root)
+        if any(part in SKIP_DIRS for part in rel.parts):
+            continue
+        yield rel, path
+
+
+def read(path: Path) -> str | None:
+    try:
+        return path.read_text(encoding="utf-8")
+    except (UnicodeDecodeError, OSError):
+        return None
+
+
+def trigger_problems(root: Path) -> list[str]:
+    problems = []
+    holders = []
+    for rel, path in files(root):
+        text = read(path)
+        if text and TRIGGER_SENTENCE in text:
+            holders.append(rel.as_posix())
+    if sorted(holders) != [TRIGGER_FILE.as_posix()]:
+        problems.append(f"trigger list copied or missing: {sorted(holders)}")
+    for rel in TRIGGER_REFS:
+        text = read(root / rel)
+        if text is None or "references/interrogate-triggers.md" not in text:
+            problems.append(f"missing trigger reference: {rel.as_posix()}")
+    for rel, path in files(root):
+        if rel == TRIGGER_FILE or path.suffix.lower() not in {".md", ".mdc"}:
+            continue
+        text = read(path) or ""
+        for phrase in TRIGGER_PHRASES:
+            if phrase in text:
+                problems.append(f"duplicated trigger phrase in {rel.as_posix()}: {phrase}")
+    return problems
+
+
+def plugin_root(plugin_json: Path) -> Path:
+    if plugin_json.parent.name == ".cursor-plugin":
+        return plugin_json.parent.parent
+    return plugin_json.parent
+
+
+def relative_strings(value):
+    if isinstance(value, dict):
+        for item in value.values():
+            yield from relative_strings(item)
+    elif isinstance(value, list):
+        for item in value:
+            yield from relative_strings(item)
+    elif isinstance(value, str):
+        if value.startswith(("http://", "https://", "git@")):
+            return
+        if value.startswith(("./", "../")) or ("/" in value and " " not in value):
+            yield value
+
+
+def plugin_problems(root: Path) -> list[str]:
+    problems = []
+    found = False
+    for rel, path in files(root):
+        if path.name != "plugin.json":
+            continue
+        found = True
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as error:
+            problems.append(f"{rel.as_posix()}: invalid json: {error}")
+            continue
+        base = plugin_root(path)
+        for raw in relative_strings(data):
+            target = (base / raw).resolve()
+            if not target.exists():
+                problems.append(f"dangling plugin path: {rel.as_posix()} -> {raw}")
+    if not found:
+        problems.append("no plugin.json found")
+    return problems
+
+
+def rule_problems(root: Path) -> list[str]:
+    problems = []
+    for rel in TS_RULES:
+        text = read(root / rel)
+        if text is None:
+            problems.append(f"missing rule: {rel.as_posix()}")
+            continue
+        if "alwaysApply: true" in text:
+            problems.append(f"{rel.as_posix()} is alwaysApply")
+        if "alwaysApply: false" not in text:
+            problems.append(f"{rel.as_posix()} missing alwaysApply: false")
+        front = text.split("---", 2)[1]
+        if "globs:" not in front or "ts" not in front:
+            problems.append(f"{rel.as_posix()} missing a TypeScript glob")
+    return problems
+
+
+def problems(root: Path) -> list[str]:
+    found = []
+    found.extend(trigger_problems(root))
+    found.extend(plugin_problems(root))
+    found.extend(rule_problems(root))
+    return found
+
+
+def self_test() -> int:
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        plugin = root / ".cursor-plugin"
+        plugin.mkdir()
+        (plugin / "plugin.json").write_text('{"skills": "./skills/"}')
+        dangling = plugin_problems(root)
+        if not any("dangling" in item for item in dangling):
+            print("self-test: dangling path was accepted", dangling)
+            return 1
+        skills = root / "skills"
+        skills.mkdir()
+        (skills / "SKILL.md").write_text("ok\n")
+        (plugin / "plugin.json").write_text('{"skills": "./skills/"}')
+        # plugin.json is at root/.cursor-plugin, so plugin root is root, ./skills exists.
+        if plugin_problems(root):
+            print("self-test: resolved path failed", plugin_problems(root))
+            return 1
+    print("self-test: ok")
+    return 0
+
+
+def main() -> int:
+    if len(sys.argv) > 1 and sys.argv[1] == "--self-test":
+        return self_test()
+    found = problems(repo_root())
+    if found:
+        print(f"problems: {len(found)}")
+        for item in found:
+            print(item)
+        return 1
+    print("problems: 0")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
