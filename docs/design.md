@@ -117,7 +117,7 @@ obra/superpowers at `b739a8af570e10a95898f2bdf6cec97467fa6c12`. MIT, copyright J
 | verification-before-completion | superpowers | The prove-it-works principle says to check the real artifact. This skill is the gate. Name the command, run it, read the output, then claim the result. |
 | systematic-debugging | superpowers | Bug-fix already demands runtime evidence. This skill is the four-phase root-cause procedure that bug-fix step 2 was missing on a thin run. The whole skill directory is vendored, including its scripts and the pressure notes. |
 | receiving-code-review | superpowers | interrogate produces a review. This skill tells the parent how to take review feedback. Verify the claim, then implement one item at a time. It covers Bugbot comments and human review, which bugbot-triage only starts. |
-| domain-modeling | mattpocock | principle-model-the-domain says to encode the domain in code. This skill writes the glossary and ADRs while the words are still moving. Greenfield runs it when terms are fuzzy. One local patch. The skill tells the agent to call `codebase-design`. That call is repointed at `principle-model-the-domain`. |
+| domain-modeling | mattpocock | principle-model-the-domain says to encode the domain in code. This skill writes the glossary and ADRs while the words are still moving. Greenfield runs it when terms are fuzzy. It ships unchanged. The call into `codebase-design` is in mattpocock's `tdd` skill, which this fork does not vendor. |
 | writing-for-agents | mattpocock | technical-writing is for human docs. unslop deletes tells. This skill is about documents an agent consumes. Context pointers, steps versus reference, completion criteria. The authoring-a-skill playbook reads it beside create-skill. Its mention of `CLAUDE.md` is a filename, not a model slug. |
 | wizard | mattpocock | For a click only a human can do in a third-party dashboard. Greenfield names it there and nowhere else, so an auth provider's setup screen does not become a reason to stall the rest of the build. |
 
@@ -214,10 +214,11 @@ If a reviewer or judge spawn errors, retry once on that role's Grok slug. If the
 - `gpt-`
 - the word gemini
 - `composer-`
-- `different family`
-- `different model family`
-- `against a different model`
-- `on different models`
+- `different family`, including the plural
+- `different model family`, including the plural
+- `a different model`
+- `different models`
+- `model diversity`
 
 `docs/design.md` is the only allowlist entry, in `scripts/grok-allowlist.txt`, because this file quotes the upstream sentences the check exists to ban. A GitHub Actions workflow runs the same script.
 
@@ -262,5 +263,4 @@ Each unit ends in a check before the next one starts.
 - The platform may ignore the `computerUse` model argument and keep a Claude default for that subagent type. The role line is the part we control.
 - `check-upstream` needs network and git history back to the pin. A shallow clone of only HEAD cannot diff an older pin once upstream moves. The script fetches the pin commit explicitly.
 - Team-kit's two always-apply TypeScript rules land in every project that copies `.cursor/rules`.
-- domain-modeling's repointed paragraph is a local patch, so the next upstream edit of that skill needs a 3-way merge.
 - This file is allowlisted, so a non-Grok slug pasted here does not fail the check. The allowlist is one path, and the check prints it.
