@@ -5,3 +5,4 @@ ts	phase	decision	why	evidence	result
 2026-10-21T06:19:22Z	design	wrote the design before changing any skill	the route stays inside poteto-mode, and the kept skills are the ones that add a procedure the mode does not already own	docs/design.md	written
 2026-10-21T06:22:35Z	vendor	vendored pstack 0.15.29 with scripts and patched every role to Grok	the attached export had dropped log.sh and the decision-log template, and its trail rule forced a non-Grok reviewer	docs/design.md	check clean outside the design doc
 2026-10-21T06:22:35Z	design	left domain-modeling unpatched	the codebase-design call is in the tdd skill this fork does not vendor	docs/design.md	corrected
+2026-10-21T06:23:50Z	route	added the Greenfield playbook inside poteto-mode	an empty product was taking Feature and skipping the money review, the verification skill, and the trail review	.cursor/skills/poteto-mode/playbooks/greenfield.md	routed
