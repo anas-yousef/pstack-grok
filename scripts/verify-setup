@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-"""Run the local gates and prove an install into a temp project."""
 
 from __future__ import annotations
 

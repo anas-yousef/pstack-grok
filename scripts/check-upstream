@@ -2,9 +2,6 @@
 """Diff each vendored upstream against its pin, classify the drift, and run the Grok check.
 
 Prints a report. Does not merge into the work tree and does not push.
-
-Exit 0 means the report is clean. Exit 1 means drift or an upstream content hit.
-Exit 2 means the fetch or the pin failed. Exit 3 means the local Grok check failed.
 """
 
 from __future__ import annotations

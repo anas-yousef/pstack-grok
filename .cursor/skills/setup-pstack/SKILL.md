@@ -45,7 +45,6 @@ alwaysApply: true
 ---
 # pstack model configuration. One line per role. Delete a line to fall back to the skill default.
 # `inherit-parent` or `auto` as a value: the role runs on the parent chat model (omit Task `model`). Alias entries in a panel list still count toward its fan-out.
-# Every pinnable role is Grok. Reviewers and judges use grok-4.7-xhigh, the highest Grok effort, without fast mode.
 # computerUse is unpinned. The platform does not honor a model argument for that subagent type. The record is scripts/grok-exceptions.json. Browser verification uses control-ui.
 # budget: large (xhigh)
 feature, refactoring: grok-4.7-xhigh-fast

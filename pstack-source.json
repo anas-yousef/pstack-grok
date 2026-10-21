@@ -491,7 +491,7 @@
     },
     {
       "file": ".cursor/rules/pstack-models.mdc",
-      "sha256": "e8f87a2172e5bd2c3bae9f307b55969bc6e760a38b02ca258df8cc8991f27ade",
+      "sha256": "4f49141b163cce3bd29dcafc1598a40cf5cd403a451b88fd50f46e2fc569985f",
       "source": "local",
       "upstreamPath": null
     },
@@ -1295,7 +1295,7 @@
     },
     {
       "file": ".cursor/skills/setup-pstack/SKILL.md",
-      "sha256": "102f24afb57c9a6204c01c52082d86747708035d4e9cfecf03c7268869c4fe52",
+      "sha256": "07e9f45fa90b4bd221c22dac69d69ca48bf4c877c5171136bfd2775de942bcaa",
       "source": "pstack",
       "upstreamPath": "skills/setup-pstack/SKILL.md"
     },
@@ -1607,25 +1607,25 @@
     },
     {
       "file": "scripts/check-grok",
-      "sha256": "089f92cdd00e709a49d40a77d6e4516a25b6196b2038e24b5985eb6bc9d7ccbf",
+      "sha256": "7f567a90ae6fc91fbfd70231d77975d7f998884a1f66e7b7d3efa902034a145e",
       "source": "local",
       "upstreamPath": null
     },
     {
       "file": "scripts/check-paths",
-      "sha256": "1344780e6dd12b3973f27311c048cd41a9ff0ec4598ddf240c63d8c01c5a0f6f",
+      "sha256": "73762c0c463f4764da5a277928ff08c4c34e3cc15cf7333ccd70ea3c33007ddc",
       "source": "local",
       "upstreamPath": null
     },
     {
       "file": "scripts/check-upstream",
-      "sha256": "3da84d1110635e20680ac252ffb761ee890a83e68cb98e25f3f9dc4e8337a3e4",
+      "sha256": "84a317c11214c0a747a51cf1acce520590d5e419715d236b4235fc5822f95200",
       "source": "local",
       "upstreamPath": null
     },
     {
       "file": "scripts/grok-allowlist.txt",
-      "sha256": "690278f5cedf49a0ec65df879e83daf6dc32efabae1d2f1c23bbd4215351bc03",
+      "sha256": "62eebb316fbeacb8115dda7e26f487111983275d31dea0dac1cd5f1cc31673c6",
       "source": "local",
       "upstreamPath": null
     },
@@ -1643,7 +1643,7 @@
     },
     {
       "file": "scripts/verify-setup",
-      "sha256": "e5b765ade5496f2aab619967aebcacf5daf46e8d4e4406bafd7864766f317eee",
+      "sha256": "a0dd8585619dcb26025b6c92b52bb94fce6bed9c06ff84bc00f8a80f4d617e10",
       "source": "local",
       "upstreamPath": null
     }
