@@ -29,9 +29,12 @@ A later `git submodule update` moves the project to a newer commit of this fork.
 
 ```bash
 python3 scripts/check-upstream
+python3 scripts/check-upstream --json
 ```
 
-The report names the pinned commit and the upstream head for each source. A file this fork did not edit is `unpatched, safe to take`. Replace that file with the upstream blob, then put the new sha256 on its row in `pstack-source.json`. A file in `localPatches` needs a 3-way merge. The script runs that merge in a temp directory and reports `clean` or `conflict`. It does not write the result back, and it does not push.
+The report names the pinned commit, the upstream head, and each commit since the pin with its title and date. A file this fork did not edit is `unpatched` with recommendation `take`. Replace that file with the upstream blob, then put the new sha256 on its row in `pstack-source.json`. A patched file is `review`, because it needs a 3-way merge. The script runs that merge in a temp directory and the reason says `clean` or `conflict`. A new upstream skill this fork does not vendor is `skip`. The script does not write the result back, and it does not push.
+
+Exit 0 is a clean report. Exit 1 is drift. Exit 2 is a fetch or pin failure, and the first line is `fetch-failed` or `pin-missing`. Exit 3 is a local Grok failure.
 
 `python3 scripts/check-grok` fails if a file names a non-Grok model or a cross-family review rule. `scripts/grok-allowlist.txt` lists a path and the sha256 that may be skipped. A copied or edited file with a different hash is scanned, and a stale row fails the check. `.github/workflows/grok.yml` runs the same checks.
 
@@ -53,6 +56,8 @@ Skills, agents, and rules are loaded from `.cursor/skills`, `.cursor/agents`, an
 
 ```bash
 python3 scripts/check-grok
+python3 scripts/check-paths
 python3 scripts/check-upstream --self-test
 python3 scripts/check-upstream
+python3 scripts/check-upstream --json
 ```

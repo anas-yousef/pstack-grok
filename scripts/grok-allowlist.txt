@@ -1,4 +1,4 @@
 # path sha256
 # A row skips a file only when the bytes hash to this value.
-docs/design.md d11bfe108b6b661c4ed249a5e8cc3b7997d06c5b8cd137af3a97cccbf9129a57
+docs/design.md 74fe2b2af8f6822e3417f1c390cdc17ad8f0782f9fd969dbc01d3f9a7caca88a
 scripts/grok-exceptions.json 41cf370ac4cf7ad29326cbb780e848cf55c8b7154995a49888b04e61ff9f09b8

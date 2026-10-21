@@ -282,6 +282,6 @@ Rigor stays high because every later project copies these rules. One writer. The
 ## Open risks
 
 - computerUse cannot be pinned. `scripts/grok-exceptions.json` is the record, and `scripts/check-grok` prints it on every run. Browser verification uses control-ui.
-- `check-upstream` needs network and git history back to the pin. A shallow clone of only HEAD cannot diff an older pin once upstream moves. The script fetches the pin commit explicitly.
+- `check-upstream` exits 2 when the fetch or the pin is missing, and that exit is not the drift exit. A clean report is 0, drift is 1, and a local Grok failure is 3. The script still needs network to read upstream head. It fetches the pin explicitly. It does not push.
 - Team-kit's two always-apply TypeScript rules land in every project that copies `.cursor/rules`.
 - This file is skipped only while its sha256 in `scripts/grok-allowlist.txt` matches these bytes. An edit that does not update the hash fails the check.

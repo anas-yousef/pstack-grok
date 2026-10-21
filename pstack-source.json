@@ -1619,13 +1619,13 @@
     },
     {
       "file": "scripts/check-upstream",
-      "sha256": "09a9dfd8c14bf28d66d07101c0a9c9845588fbf198f567ca54b32f2dad5fcbbc",
+      "sha256": "3da84d1110635e20680ac252ffb761ee890a83e68cb98e25f3f9dc4e8337a3e4",
       "source": "local",
       "upstreamPath": null
     },
     {
       "file": "scripts/grok-allowlist.txt",
-      "sha256": "37dd6bd5cc3b10df263af0f6a7623085e7c352f131955573331f7499061c1321",
+      "sha256": "a3a27f0ff5f51aec02bf6fd9ec31121967c0f48311fcac9889d3224fa7bbde0e",
       "source": "local",
       "upstreamPath": null
     },
