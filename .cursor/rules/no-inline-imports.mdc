@@ -1,6 +1,7 @@
 ---
 description: Keep imports at top of file and avoid inline imports
-alwaysApply: true
+globs: "**/*.{ts,tsx,mts,cts}"
+alwaysApply: false
 ---
 
 # No inline imports

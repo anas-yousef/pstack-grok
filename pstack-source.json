@@ -68,6 +68,18 @@
       "reason": "The model translation table is removed. A non-Cursor session stops. plugin.json paths are documented as unresolved after the hoist."
     },
     {
+      "file": ".cursor/rules/no-inline-imports.mdc",
+      "source": "cursor-team-kit",
+      "upstreamPath": "rules/no-inline-imports.mdc",
+      "reason": "The rule applies by glob to TypeScript files, so a non-TypeScript project does not inherit it."
+    },
+    {
+      "file": ".cursor/rules/typescript-exhaustive-switch.mdc",
+      "source": "cursor-team-kit",
+      "upstreamPath": "rules/typescript-exhaustive-switch.mdc",
+      "reason": "The rule applies by glob to TypeScript files, so a non-TypeScript project does not inherit it."
+    },
+    {
       "file": ".cursor/skills/architect/SKILL.md",
       "source": "pstack",
       "upstreamPath": "skills/architect/SKILL.md",
@@ -461,7 +473,7 @@
     },
     {
       "file": ".cursor/rules/no-inline-imports.mdc",
-      "sha256": "91bb4412f2775b386ddf6af0d235fbe8160907f6104c76928470fdf51be69edd",
+      "sha256": "a36e831aaef23e76b7d513a10ecbed65975de0c8cff5b5f4db52277ac2939025",
       "source": "cursor-team-kit",
       "upstreamPath": "rules/no-inline-imports.mdc"
     },
@@ -473,7 +485,7 @@
     },
     {
       "file": ".cursor/rules/typescript-exhaustive-switch.mdc",
-      "sha256": "58214625757c38b73fc3e66a715ea4b2ae609f6b3e285edc4393c5144430a8f4",
+      "sha256": "de3d77e473ff4bd195d31bb7640af2d84061eb6cdc2d9f9554535d8a615cc6e5",
       "source": "cursor-team-kit",
       "upstreamPath": "rules/typescript-exhaustive-switch.mdc"
     },
