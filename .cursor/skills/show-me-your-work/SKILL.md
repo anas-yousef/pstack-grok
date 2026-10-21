@@ -71,7 +71,7 @@ Before handing back, and before any push, spawn the reviewer on the `show-me-you
 - Choices that look risky in hindsight (premature, scope-creeping, papering over a symptom).
 - Gaps the user would otherwise miss on a casual skim.
 
-Every reply for a run that produced a trail ends with an "Attention" section. When the reviewer returned, lead with `reviewed by <model>` on its own line. When the spawn failed and the inline fallback ran, lead with `self-review` and the verbatim error. Never lead with a model that did not run. Then list each flag pointing to specific rows or moments. "No flags" is a valid value.
+Every reply for a run that produced a trail ends with an "Attention" section. When the reviewer returned, lead with `reviewed by <model>` on its own line. When the spawn failed and the inline fallback ran, lead with `self-review` and the verbatim error. Never lead with a model that did not run. If this run spawned computerUse, paste the `known non-Grok exception` lines from `scripts/check-grok` before the flags. That subagent is unpinned, so do not lead it with `reviewed by` plus a Grok slug. Then list each flag pointing to specific rows or moments. "No flags" is a valid value.
 
 ## Reviewing the trail
 

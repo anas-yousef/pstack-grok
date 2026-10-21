@@ -191,13 +191,13 @@
       "file": ".cursor/skills/setup-pstack/SKILL.md",
       "source": "pstack",
       "upstreamPath": "skills/setup-pstack/SKILL.md",
-      "reason": "The default role table is the Grok table, including the trail, verification, eval, and orchestrate lines."
+      "reason": "The default role table is the Grok table, including the trail, verification, eval, and orchestrate lines. computerUse is unpinned."
     },
     {
       "file": ".cursor/skills/show-me-your-work/SKILL.md",
       "source": "pstack",
       "upstreamPath": "skills/show-me-your-work/SKILL.md",
-      "reason": "The trail reviewer line runs before the push, and a failed review is labeled self-review."
+      "reason": "The trail reviewer line runs before the push, a failed review is labeled self-review, and a computerUse spawn is reported as the known exception."
     },
     {
       "file": ".cursor/skills/swarm/SKILL.md",
@@ -491,7 +491,7 @@
     },
     {
       "file": ".cursor/rules/pstack-models.mdc",
-      "sha256": "c4d4ec50040249e24e735470b0ecc12c0b93b69cd05b0fe37cf2c982d5e3b478",
+      "sha256": "e8f87a2172e5bd2c3bae9f307b55969bc6e760a38b02ca258df8cc8991f27ade",
       "source": "local",
       "upstreamPath": null
     },
@@ -785,7 +785,7 @@
     },
     {
       "file": ".cursor/skills/poteto-mode/SKILL.md",
-      "sha256": "a8720b302946f2f6a40c2c82ec99c0c1b0244e9d4250518d1713878f02a770f5",
+      "sha256": "ff308b527c20af0ce57cc87ec8c6cd8b960a849122930e0d30529d40f3566b51",
       "source": "pstack",
       "upstreamPath": "skills/poteto-mode/SKILL.md"
     },
@@ -1295,7 +1295,7 @@
     },
     {
       "file": ".cursor/skills/setup-pstack/SKILL.md",
-      "sha256": "0c6e80a6656c5fe2eac36770a811d33725800f9862a93eb4ac12c757ca8ccd1d",
+      "sha256": "102f24afb57c9a6204c01c52082d86747708035d4e9cfecf03c7268869c4fe52",
       "source": "pstack",
       "upstreamPath": "skills/setup-pstack/SKILL.md"
     },
@@ -1307,7 +1307,7 @@
     },
     {
       "file": ".cursor/skills/show-me-your-work/SKILL.md",
-      "sha256": "91a8702970e7be66f7ca4606c24c9af0de36fd1f3a731ec3fac0ab238602f056",
+      "sha256": "9ca9feba99c22795ef903e1c6ee9e9a837992a17f98ecead8e99ec89f1c54809",
       "source": "pstack",
       "upstreamPath": "skills/show-me-your-work/SKILL.md"
     },
@@ -1607,7 +1607,7 @@
     },
     {
       "file": "scripts/check-grok",
-      "sha256": "96ab23d03c6a073bbf82fe88983d59bbb8b5baab2a9f275f03ee0e008bb2e8a5",
+      "sha256": "089f92cdd00e709a49d40a77d6e4516a25b6196b2038e24b5985eb6bc9d7ccbf",
       "source": "local",
       "upstreamPath": null
     },
@@ -1625,13 +1625,19 @@
     },
     {
       "file": "scripts/grok-allowlist.txt",
-      "sha256": "0abc3f2540c61a520da2897005a97dc99fde3aaa703b43e5c585e87a0b9513f5",
+      "sha256": "37dd6bd5cc3b10df263af0f6a7623085e7c352f131955573331f7499061c1321",
+      "source": "local",
+      "upstreamPath": null
+    },
+    {
+      "file": "scripts/grok-exceptions.json",
+      "sha256": "41cf370ac4cf7ad29326cbb780e848cf55c8b7154995a49888b04e61ff9f09b8",
       "source": "local",
       "upstreamPath": null
     },
     {
       "file": "scripts/install",
-      "sha256": "41f218ce809328556d678b9ae862989e49d33246f175b95f8de3892bef52f3d9",
+      "sha256": "8101a7301883c8bae9fa7d274b00c64fc6d9363e8f385ad38f4488910d78b741",
       "source": "local",
       "upstreamPath": null
     }

@@ -198,10 +198,10 @@ show-me-your-work trail reviewer: grok-4.7-xhigh
 verification: grok-4.7-xhigh-fast
 eval judge: grok-4.7-xhigh
 orchestrate verifier: grok-4.7-xhigh
-computerUse: grok-4.7-xhigh
+computerUse: unpinned
 ```
 
-`verification` keeps `-fast` because poteto-mode already pins verification speed to the swarm worker, and the audit names that slug. `computerUse` is new. The Rind browser subagent ran on `claude-4.5-sonnet` with no role line. The line tells the parent which slug to pass. Whether the platform honors a model on that subagent type is an open risk, recorded below.
+`verification` keeps `-fast` because poteto-mode already pins verification speed to the swarm worker, and the audit names that slug. `computerUse` is unpinned. A spawn requested `grok-4.7-xhigh` and the platform field `originalModelName` was null. The subagent quoted a non-Grok identity sentence. That sentence lives only in `scripts/grok-exceptions.json`. Browser verification uses control-ui.
 
 Skill defaults that today name `claude-opus-5-5-xhigh` are rewritten to the Grok slug of that role, so a missing rule file cannot fall back to Claude. The cross-family sentences in show-me-your-work, arena, poteto-mode, eval, and orchestrate are deleted. show-me-your-work instead spawns the trail reviewer line, before the push when the run will push.
 
@@ -281,7 +281,7 @@ Rigor stays high because every later project copies these rules. One writer. The
 
 ## Open risks
 
-- The platform may ignore the `computerUse` model argument and keep a Claude default for that subagent type. The role line is the part we control. The follow-up probe already measured a miss. The fix commit records it.
+- computerUse cannot be pinned. `scripts/grok-exceptions.json` is the record, and `scripts/check-grok` prints it on every run. Browser verification uses control-ui.
 - `check-upstream` needs network and git history back to the pin. A shallow clone of only HEAD cannot diff an older pin once upstream moves. The script fetches the pin commit explicitly.
 - Team-kit's two always-apply TypeScript rules land in every project that copies `.cursor/rules`.
 - This file is skipped only while its sha256 in `scripts/grok-allowlist.txt` matches these bytes. An edit that does not update the hash fails the check.

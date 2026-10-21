@@ -8,6 +8,7 @@ sha256 of its bytes. A listed path with any other hash is stale and fails.
 from __future__ import annotations
 
 import hashlib
+import json
 import re
 import sys
 import tempfile
@@ -110,6 +111,30 @@ def scan_tree(root: Path) -> tuple[list[str], list[str], list[str]]:
     return hits, stale, absent
 
 
+def report_exceptions(root: Path) -> int:
+    path = root / "scripts" / "grok-exceptions.json"
+    print("known non-Grok exception:")
+    if not path.exists():
+        print("  missing scripts/grok-exceptions.json")
+        return 1
+    try:
+        item = json.loads(path.read_text(encoding="utf-8"))["computerUse"]
+        honored = item["honored"]
+        requested = item["requested"]
+        observed = item["observedIdentity"]
+        evidence = item["evidence"]
+        route = item["route"]
+    except (json.JSONDecodeError, KeyError, TypeError) as error:
+        print(f"  unreadable: {error}")
+        return 1
+    print(f"  computerUse honored: {honored}")
+    print(f"  requested: {requested}")
+    print(f"  observed: {observed}")
+    print(f"  evidence: {evidence}")
+    print(f"  route: {route}")
+    return 0
+
+
 def self_test() -> int:
     product = "Cl" + "aude Code"
     banned = "son" + "net"
@@ -150,6 +175,23 @@ def self_test() -> int:
         if hits or stale:
             print("self-test: product-only tree failed", hits, stale)
             return 1
+        if report_exceptions(only) == 0:
+            print("self-test: missing exception record passed")
+            return 1
+        record = {
+            "computerUse": {
+                "honored": False,
+                "requested": "grok-4.7-xhigh",
+                "observedIdentity": "unpinned",
+                "evidence": "probe",
+                "route": "control-ui",
+            }
+        }
+        (only / "scripts").mkdir()
+        (only / "scripts" / "grok-exceptions.json").write_text(json.dumps(record))
+        if report_exceptions(only) != 0:
+            print("self-test: exception record failed")
+            return 1
     print("self-test: ok")
     return 0
 
@@ -166,6 +208,7 @@ def main() -> int:
     print("allowlist:")
     for path, digest in sorted(permits.items()):
         print(f"  {path} {digest}")
+    exception_code = report_exceptions(root)
     hits, stale, absent = scan_tree(root)
     for rel in absent:
         print(f"allowlist absent: {rel}")
@@ -177,7 +220,7 @@ def main() -> int:
             print(hit)
     else:
         print("hits: 0")
-    if hits or stale:
+    if hits or stale or exception_code:
         return 1
     return 0
 

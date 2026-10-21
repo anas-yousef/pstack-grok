@@ -8,7 +8,14 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SCRIPT_NAMES = ("check-grok", "check-upstream", "grok-allowlist.txt", "install")
+SCRIPT_NAMES = (
+    "check-grok",
+    "check-upstream",
+    "check-paths",
+    "grok-allowlist.txt",
+    "grok-exceptions.json",
+    "install",
+)
 
 
 def install(target: Path) -> None:
