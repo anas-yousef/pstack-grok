@@ -1,2 +1,3 @@
-# Skipped only when the file contains the marker grok-allowlist-quote.
-docs/design.md
+# path sha256
+# A row skips a file only when the bytes hash to this value.
+docs/design.md 1f72010fbf9d0c56cc3a832a965e190dd5e92b16f01da0d33555e81d91b46e3b

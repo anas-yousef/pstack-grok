@@ -20,3 +20,4 @@ ts	phase	decision	why	evidence	result
 2026-10-21T07:27:14Z	rules	scoped the TypeScript rules to TypeScript files	both rules were alwaysApply, so a Python or Go project inherited them	.cursor/rules/no-inline-imports.mdc .cursor/rules/typescript-exhaustive-switch.mdc	globbed
 2026-10-21T07:27:30Z	paths	pointed plugin.json at the hoisted directories	the upstream ./skills paths did not exist after skills moved to .cursor/skills	.cursor/pstack/.cursor-plugin/plugin.json .cursor/cursor-team-kit/.cursor-plugin/plugin.json	resolved
 2026-10-21T07:27:36Z	checks	added a check for the trigger list, plugin paths, and rule globs	a dangling path or a copied trigger list should fail in one command	scripts/check-paths	problems 0
+2026-10-21T07:28:19Z	checks	replaced the allowlist marker with a path and a sha256	a copied or edited file was skipped whenever the marker string was present	scripts/check-grok scripts/grok-allowlist.txt	self-test ok, hits 0

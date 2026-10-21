@@ -1,7 +1,5 @@
 # Grok-only pstack
 
-grok-allowlist-quote
-
 This repo is the copy of pstack a Cursor project can install and trust. Fork id `pstack-grok-v0.15.29-1`. Every reviewer role is Grok. poteto-mode stays the only entry.
 
 The study below was written before any skill text changed. The tree at that point is the attached export, pstack 0.15.28, commit `ddf824aff1e55ba14bd666b30bce3fc69962abe6`, laid out under `.cursor/` the way the tarball lays it out.
@@ -224,7 +222,7 @@ If a reviewer or judge spawn errors, retry once on that role's Grok slug. If the
 - `different models`
 - `model diversity`
 
-`docs/design.md` is the only allowlist entry, in `scripts/grok-allowlist.txt`, and only while the file contains the marker `grok-allowlist-quote`. This file quotes the upstream sentences the check exists to ban. A later `docs/design.md` without that marker is scanned. A GitHub Actions workflow runs the same script.
+`docs/design.md` is skipped only when `scripts/grok-allowlist.txt` lists its path and the sha256 of these bytes. This file quotes the upstream sentences the check exists to ban. A different hash is scanned, and a stale row fails the check even when the new bytes are clean. A GitHub Actions workflow runs the same script.
 
 The `gpt-4` example in `reflect/references/synthesizer.md` is rewritten to a non-model rename. The `verifier: "opus"` fixture in `poteto-mode/scripts/orch/orch.test.ts` becomes `grok-4.7-xhigh`. Both are local patches.
 
@@ -286,4 +284,4 @@ Rigor stays high because every later project copies these rules. One writer. The
 - The platform may ignore the `computerUse` model argument and keep a Claude default for that subagent type. The role line is the part we control. The follow-up probe already measured a miss. The fix commit records it.
 - `check-upstream` needs network and git history back to the pin. A shallow clone of only HEAD cannot diff an older pin once upstream moves. The script fetches the pin commit explicitly.
 - Team-kit's two always-apply TypeScript rules land in every project that copies `.cursor/rules`.
-- This file is allowlisted while it contains `grok-allowlist-quote`, so a non-Grok slug pasted here does not fail the check. The check prints that path. A copy of the path without the marker is scanned.
+- This file is skipped only while its sha256 in `scripts/grok-allowlist.txt` matches these bytes. An edit that does not update the hash fails the check.

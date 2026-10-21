@@ -1,11 +1,18 @@
 #!/usr/bin/env python3
-"""Fail if a file outside the allowlist names a non-Grok model or a cross-family review rule."""
+"""Fail if a file names a non-Grok model or a cross-family review rule.
+
+A path is skipped only when scripts/grok-allowlist.txt lists that path and the
+sha256 of its bytes. A listed path with any other hash is stale and fails.
+"""
 
 from __future__ import annotations
 
+import hashlib
 import re
 import sys
+import tempfile
 from pathlib import Path
+
 
 def _word(text: str) -> str:
     return r"\b" + text + r"\b"
@@ -32,8 +39,10 @@ def pattern_list() -> list[re.Pattern[str]]:
 
 
 PATTERNS = pattern_list()
+# The product name is allowed. Model ids on either side of it still match.
+PRODUCT = re.compile(re.escape("Cl" + "aude Code"), re.I)
 
-SKIP_DIRS = {".git", "uploads", ".cache", "node_modules"}
+SKIP_DIRS = {".git", "uploads", ".cache", "node_modules", "__pycache__"}
 SKIP_SUFFIXES = {".png", ".jpg", ".jpeg", ".gif", ".webp"}
 
 
@@ -41,66 +50,135 @@ def repo_root() -> Path:
     return Path(__file__).resolve().parent.parent
 
 
-def allowlist(root: Path) -> set[Path]:
+def allowlist(root: Path) -> dict[Path, str]:
     path = root / "scripts" / "grok-allowlist.txt"
-    allowed = set()
+    allowed = {}
     if not path.exists():
         return allowed
-    for line in path.read_text().splitlines():
-        line = line.strip()
+    for number, raw in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        line = raw.strip()
         if not line or line.startswith("#"):
             continue
-        allowed.add(Path(line))
+        parts = line.split()
+        if len(parts) != 2 or len(parts[1]) != 64:
+            raise SystemExit(f"allowlist row {number} needs a path and a sha256")
+        allowed[Path(parts[0])] = parts[1]
     return allowed
 
 
 def scan_text(text: str) -> list[tuple[int, str, str]]:
     hits = []
     for number, line in enumerate(text.splitlines(), 1):
+        visible = PRODUCT.sub(" ", line)
         for pattern in PATTERNS:
-            if pattern.search(line):
+            if pattern.search(visible):
                 hits.append((number, pattern.pattern, line.strip()))
                 break
     return hits
 
 
-def scan_tree(root: Path) -> list[str]:
-    allowed = allowlist(root)
-    found = []
+def scan_tree(root: Path) -> tuple[list[str], list[str], list[str]]:
+    permits = allowlist(root)
+    seen = set()
+    hits = []
+    stale = []
     for path in root.rglob("*"):
         if not path.is_file():
             continue
-        if any(part in SKIP_DIRS for part in path.relative_to(root).parts):
-            continue
         rel = path.relative_to(root)
+        if any(part in SKIP_DIRS for part in rel.parts):
+            continue
         if path.suffix.lower() in SKIP_SUFFIXES:
             continue
+        seen.add(rel)
         try:
-            text = path.read_text(encoding="utf-8")
-        except (UnicodeDecodeError, OSError):
+            blob = path.read_bytes()
+        except OSError:
             continue
-        # An allowlist path is skipped only when the file still carries the marker.
-        # A project that later creates the same path is scanned.
-        if rel in allowed and "grok-allowlist-quote" in text:
+        expected = permits.get(rel)
+        if expected is not None and hashlib.sha256(blob).hexdigest() == expected:
+            continue
+        if expected is not None:
+            stale.append(rel.as_posix())
+        try:
+            text = blob.decode("utf-8")
+        except UnicodeDecodeError:
             continue
         for number, pattern, line in scan_text(text):
-            found.append(f"{rel}:{number}: {pattern}: {line[:180]}")
-    return found
+            hits.append(f"{rel.as_posix()}:{number}: {pattern}: {line[:180]}")
+    absent = [rel.as_posix() for rel in sorted(permits) if rel not in seen]
+    return hits, stale, absent
+
+
+def self_test() -> int:
+    product = "Cl" + "aude Code"
+    banned = "son" + "net"
+    if scan_text(product + " column"):
+        print("self-test: product name was flagged")
+        return 1
+    if not scan_text(product + " " + banned):
+        print("self-test: model id beside the product name was missed")
+        return 1
+    if not scan_text("cl" + "aude-op" + "us-5"):
+        print("self-test: model slug was missed")
+        return 1
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        (root / "scripts").mkdir()
+        quoted = root / "docs"
+        quoted.mkdir()
+        body = banned + " stays quoted\n"
+        target = quoted / "design.md"
+        target.write_text(body)
+        digest = hashlib.sha256(target.read_bytes()).hexdigest()
+        (root / "scripts" / "grok-allowlist.txt").write_text(f"docs/design.md {digest}\n")
+        hits, stale, _absent = scan_tree(root)
+        if hits or stale:
+            print("self-test: matching hash was scanned", hits, stale)
+            return 1
+        target.write_text(body + "edited\n")
+        hits, stale, _absent = scan_tree(root)
+        if not stale or not hits:
+            print("self-test: edited allowlisted file was skipped", hits, stale)
+            return 1
+        (root / "notes.md").write_text(product + " only\n")
+        # The stale design.md is still present. Check the product file on its own.
+        only = Path(tmp) / "clean"
+        only.mkdir()
+        (only / "notes.md").write_text(product + " only\n")
+        hits, stale, _absent = scan_tree(only)
+        if hits or stale:
+            print("self-test: product-only tree failed", hits, stale)
+            return 1
+    print("self-test: ok")
+    return 0
 
 
 def main() -> int:
+    if len(sys.argv) > 1 and sys.argv[1] == "--self-test":
+        return self_test()
     root = repo_root()
-    allowed = allowlist(root)
-    print("allowlist:")
-    for path in sorted(allowed):
-        print(f"  {path}")
-    found = scan_tree(root)
-    if found:
-        print(f"hits: {len(found)}")
-        for hit in found:
-            print(hit)
+    try:
+        permits = allowlist(root)
+    except SystemExit as error:
+        print(error, file=sys.stderr)
         return 1
-    print("hits: 0")
+    print("allowlist:")
+    for path, digest in sorted(permits.items()):
+        print(f"  {path} {digest}")
+    hits, stale, absent = scan_tree(root)
+    for rel in absent:
+        print(f"allowlist absent: {rel}")
+    for rel in stale:
+        print(f"allowlist stale: {rel}")
+    if hits:
+        print(f"hits: {len(hits)}")
+        for hit in hits:
+            print(hit)
+    else:
+        print("hits: 0")
+    if hits or stale:
+        return 1
     return 0
 
 

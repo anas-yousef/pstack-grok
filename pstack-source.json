@@ -1607,7 +1607,7 @@
     },
     {
       "file": "scripts/check-grok",
-      "sha256": "8128cc8e59ecc6097ec13e21309aaf458b56fb2e5be36d108d79c6064e2bd622",
+      "sha256": "96ab23d03c6a073bbf82fe88983d59bbb8b5baab2a9f275f03ee0e008bb2e8a5",
       "source": "local",
       "upstreamPath": null
     },
@@ -1625,7 +1625,7 @@
     },
     {
       "file": "scripts/grok-allowlist.txt",
-      "sha256": "60780c85987454b15f8962a90160e91c1245d6d5b0ae8833950cadcce28507d0",
+      "sha256": "0abc3f2540c61a520da2897005a97dc99fde3aaa703b43e5c585e87a0b9513f5",
       "source": "local",
       "upstreamPath": null
     },
