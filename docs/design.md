@@ -224,7 +224,7 @@ If a reviewer or judge spawn errors, retry once on that role's Grok slug. If the
 - `different models`
 - `model diversity`
 
-`docs/design.md` is the only allowlist entry, in `scripts/grok-allowlist.txt`, because this file quotes the upstream sentences the check exists to ban. A GitHub Actions workflow runs the same script.
+`docs/design.md` is the only allowlist entry, in `scripts/grok-allowlist.txt`, and only while the file contains the marker `grok-allowlist-quote`. This file quotes the upstream sentences the check exists to ban. A later `docs/design.md` without that marker is scanned. A GitHub Actions workflow runs the same script.
 
 The `gpt-4` example in `reflect/references/synthesizer.md` is rewritten to a non-model rename. The `verifier: "opus"` fixture in `poteto-mode/scripts/orch/orch.test.ts` becomes `grok-4.7-xhigh`. Both are local patches.
 
@@ -267,4 +267,4 @@ Each unit ends in a check before the next one starts.
 - The platform may ignore the `computerUse` model argument and keep a Claude default for that subagent type. The role line is the part we control.
 - `check-upstream` needs network and git history back to the pin. A shallow clone of only HEAD cannot diff an older pin once upstream moves. The script fetches the pin commit explicitly.
 - Team-kit's two always-apply TypeScript rules land in every project that copies `.cursor/rules`.
-- This file is allowlisted, so a non-Grok slug pasted here does not fail the check. The allowlist is one path, and the check prints it.
+- This file is allowlisted while it contains `grok-allowlist-quote`, so a non-Grok slug pasted here does not fail the check. The check prints that path. A copy of the path without the marker is scanned.
