@@ -2,7 +2,7 @@
 
 This fork runs in Cursor, and every role is a Grok slug from `.cursor/rules/pstack-models.mdc`. Do not translate a role onto another vendor's model name. If the session is not Cursor, stop and say this fork does not install there.
 
-The tables below are the upstream tool map, kept so a reader can see what was removed. They are not instructions to switch products. Skills and agents live in `.cursor/skills` and `.cursor/agents`. Docs live in `.cursor/pstack/docs`. The `plugin.json` files keep their upstream relative paths, which do not resolve from `.cursor/pstack`.
+The tables below are the upstream tool map, kept so a reader can see what was removed. They are not instructions to switch products. Skills and agents live in `.cursor/skills` and `.cursor/agents`. Docs live in `.cursor/pstack/docs`. The `plugin.json` path fields point at those hoisted directories. `scripts/check-paths` fails when one of them is missing.
 
 ## Tools
 

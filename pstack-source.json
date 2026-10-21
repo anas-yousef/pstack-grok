@@ -65,7 +65,19 @@
       "file": ".cursor/pstack/docs/harness/claude-code.md",
       "source": "pstack",
       "upstreamPath": "docs/harness/claude-code.md",
-      "reason": "The model translation table is removed. A non-Cursor session stops. plugin.json paths are documented as unresolved after the hoist."
+      "reason": "The model translation table is removed. A non-Cursor session stops. plugin.json paths point at the hoisted skill directories."
+    },
+    {
+      "file": ".cursor/cursor-team-kit/.cursor-plugin/plugin.json",
+      "source": "cursor-team-kit",
+      "upstreamPath": ".cursor-plugin/plugin.json",
+      "reason": "skills, agents, and rules point at the hoisted .cursor directories so the paths resolve."
+    },
+    {
+      "file": ".cursor/pstack/.cursor-plugin/plugin.json",
+      "source": "pstack",
+      "upstreamPath": ".cursor-plugin/plugin.json",
+      "reason": "skills and agents point at the hoisted .cursor directories so the paths resolve."
     },
     {
       "file": ".cursor/rules/no-inline-imports.mdc",
@@ -233,7 +245,7 @@
     },
     {
       "file": ".cursor/cursor-team-kit/.cursor-plugin/plugin.json",
-      "sha256": "9c8622d0577205959b6469a5454cbe2787ad3c6412439759328e92dc0115584d",
+      "sha256": "e69caf52dd71490dd9e319aa0ae6482d8e51d21e1ba5220e8c691f9aa6a4a8af",
       "source": "cursor-team-kit",
       "upstreamPath": ".cursor-plugin/plugin.json"
     },
@@ -257,7 +269,7 @@
     },
     {
       "file": ".cursor/pstack/.cursor-plugin/plugin.json",
-      "sha256": "079de0bc2c331df98ecf388b84c938a3a61910f49a1cc37e680d9e2ca9bcd324",
+      "sha256": "2e8d92b213f07dbb9af6164ee975d0075da24e72d4aae0550b2b890390b6758e",
       "source": "pstack",
       "upstreamPath": ".cursor-plugin/plugin.json"
     },
@@ -461,7 +473,7 @@
     },
     {
       "file": ".cursor/pstack/docs/harness/claude-code.md",
-      "sha256": "8ab47b10d047df991c8a3ba071baa4d62ea449df17ff1654f3394369abb93e6b",
+      "sha256": "4d330622c1e2442913968770f337c934e9d5b9bacbbc29b59572ca6e18c0a67a",
       "source": "pstack",
       "upstreamPath": "docs/harness/claude-code.md"
     },

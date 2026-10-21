@@ -27,7 +27,7 @@
     "review",
     "automation"
   ],
-  "skills": "./skills/",
-  "agents": "./agents/",
-  "rules": "./rules/"
+  "skills": "../skills/",
+  "agents": "../agents/",
+  "rules": "../rules/"
 }

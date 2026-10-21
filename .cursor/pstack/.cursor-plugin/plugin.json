@@ -26,6 +26,6 @@
 		"review",
 		"planning"
 	],
-	"skills": "./skills/",
-	"agents": "./agents/"
+	"skills": "../skills/",
+	"agents": "../agents/"
 }
