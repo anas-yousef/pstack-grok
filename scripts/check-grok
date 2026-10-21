@@ -1,0 +1,104 @@
+#!/usr/bin/env python3
+"""Fail if a file outside the allowlist names a non-Grok model or a cross-family review rule."""
+
+from __future__ import annotations
+
+import re
+import sys
+from pathlib import Path
+
+def _word(text: str) -> str:
+    return r"\b" + text + r"\b"
+
+
+def pattern_list() -> list[re.Pattern[str]]:
+    # Pieces stay split so this file does not contain the text it forbids.
+    names = ["op" + "us", "son" + "net", "hai" + "ku", "fab" + "le"]
+    slug = "cl" + "aude-(" + "|".join(names) + r"|[0-9])"
+    extra = [
+        "gp" + "t-",
+        _word("gemi" + "ni"),
+        "compo" + "ser-",
+        "differ" + "ent famil",
+        "differ" + "ent model famil",
+        "a differ" + "ent model",
+        "differ" + "ent models",
+        "model diver" + "sity",
+    ]
+    compiled = [re.compile(slug, re.I)]
+    compiled.extend(re.compile(_word(name), re.I) for name in names)
+    compiled.extend(re.compile(item, re.I) for item in extra)
+    return compiled
+
+
+PATTERNS = pattern_list()
+
+SKIP_DIRS = {".git", "uploads", ".cache", "node_modules"}
+SKIP_SUFFIXES = {".png", ".jpg", ".jpeg", ".gif", ".webp"}
+
+
+def repo_root() -> Path:
+    return Path(__file__).resolve().parent.parent
+
+
+def allowlist(root: Path) -> set[Path]:
+    path = root / "scripts" / "grok-allowlist.txt"
+    allowed = set()
+    if not path.exists():
+        return allowed
+    for line in path.read_text().splitlines():
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        allowed.add(Path(line))
+    return allowed
+
+
+def scan_text(text: str) -> list[tuple[int, str, str]]:
+    hits = []
+    for number, line in enumerate(text.splitlines(), 1):
+        for pattern in PATTERNS:
+            if pattern.search(line):
+                hits.append((number, pattern.pattern, line.strip()))
+                break
+    return hits
+
+
+def scan_tree(root: Path) -> list[str]:
+    allowed = allowlist(root)
+    found = []
+    for path in root.rglob("*"):
+        if not path.is_file():
+            continue
+        if any(part in SKIP_DIRS for part in path.relative_to(root).parts):
+            continue
+        rel = path.relative_to(root)
+        if rel in allowed or path.suffix.lower() in SKIP_SUFFIXES:
+            continue
+        try:
+            text = path.read_text(encoding="utf-8")
+        except (UnicodeDecodeError, OSError):
+            continue
+        for number, pattern, line in scan_text(text):
+            found.append(f"{rel}:{number}: {pattern}: {line[:180]}")
+    return found
+
+
+def main() -> int:
+    root = repo_root()
+    allowed = allowlist(root)
+    print("allowlist:")
+    for path in sorted(allowed):
+        print(f"  {path}")
+    found = scan_tree(root)
+    if found:
+        print(f"hits: {len(found)}")
+        for hit in found:
+            print(hit)
+        return 1
+    print("hits: 0")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

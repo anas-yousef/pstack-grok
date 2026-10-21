@@ -1,0 +1,237 @@
+#!/usr/bin/env python3
+"""Diff each vendored upstream against its pin, classify the drift, and run the Grok check.
+
+Prints a report. Does not merge into the work tree and does not push.
+"""
+
+from __future__ import annotations
+
+import argparse
+import importlib.machinery
+import importlib.util
+import json
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+CACHE = ROOT / ".cache" / "upstream"
+
+
+def load_grok():
+    path = Path(__file__).resolve().parent / "check-grok"
+    loader = importlib.machinery.SourceFileLoader("check_grok", str(path))
+    spec = importlib.util.spec_from_loader("check_grok", loader)
+    module = importlib.util.module_from_spec(spec)
+    loader.exec_module(module)
+    return module
+
+
+def git(repo: Path, *args: str, check: bool = True) -> subprocess.CompletedProcess:
+    return subprocess.run(
+        ["git", "-C", str(repo), *args],
+        check=check,
+        text=True,
+        capture_output=True,
+    )
+
+
+def ensure_repo(url: str, dest: Path, pin: str) -> str:
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    if not (dest / ".git").exists():
+        subprocess.run(
+            ["git", "clone", "--filter=blob:none", "--no-checkout", url, str(dest)],
+            check=True,
+        )
+    git(dest, "fetch", "--filter=blob:none", "origin", pin)
+    git(dest, "fetch", "--filter=blob:none", "origin", "HEAD")
+    head = git(dest, "rev-parse", "FETCH_HEAD").stdout.strip()
+    git(dest, "cat-file", "-e", f"{pin}^{{commit}}")
+    return head
+
+
+def name_status(repo: Path, pin: str, head: str, path: str) -> list[tuple[str, str]]:
+    args = ["diff", "--name-status", pin, head]
+    if path:
+        args.extend(["--", path])
+    out = git(repo, *args).stdout
+    rows = []
+    for line in out.splitlines():
+        if not line.strip():
+            continue
+        status, name = line.split("\t", 1)
+        rows.append((status[0], name))
+    return rows
+
+
+def show_blob(repo: Path, rev: str, path: str) -> bytes | None:
+    result = subprocess.run(
+        ["git", "-C", str(repo), "show", f"{rev}:{path}"],
+        check=False,
+        capture_output=True,
+    )
+    if result.returncode != 0:
+        return None
+    return result.stdout
+
+
+def three_way(base: bytes, ours: bytes, theirs: bytes) -> tuple[str, int]:
+    with tempfile.TemporaryDirectory() as tmp:
+        folder = Path(tmp)
+        (folder / "base").write_bytes(base)
+        (folder / "ours").write_bytes(ours)
+        (folder / "theirs").write_bytes(theirs)
+        result = subprocess.run(
+            [
+                "git",
+                "merge-file",
+                "-p",
+                str(folder / "ours"),
+                str(folder / "base"),
+                str(folder / "theirs"),
+            ],
+            text=True,
+            capture_output=True,
+        )
+        # merge-file -p writes the merge to stdout and leaves the inputs alone.
+        return ("conflict" if result.returncode else "clean"), result.returncode
+
+
+def strip_prefix(path: str, prefix: str) -> str:
+    if not prefix:
+        return path
+    head = prefix.rstrip("/") + "/"
+    if path.startswith(head):
+        return path[len(head) :]
+    return path
+
+
+def classify(manifest: dict, cache_root: Path) -> tuple[list[str], list[str]]:
+    grok = load_grok()
+    lines = [f"fork: {manifest['fork']}", "push: not run"]
+    by_key = {}
+    patches = {(item["source"], item["file"]) for item in manifest["localPatches"]}
+    for item in manifest["files"]:
+        if item.get("upstreamPath"):
+            by_key[(item["source"], item["upstreamPath"])] = item
+
+    drift_hits = []
+    for source in manifest["sources"]:
+        name = source["name"]
+        pin = source["commit"]
+        dest = cache_root / name
+        head = ensure_repo(source["upstream"], dest, pin)
+        lines.append(f"source: {name}")
+        lines.append(f"  pin: {pin}")
+        lines.append(f"  head: {head}")
+        if head == pin:
+            lines.append("  drift: none")
+            continue
+        lines.append("  drift: yes")
+        for status, changed in name_status(dest, pin, head, source.get("path") or ""):
+            upstream_path = strip_prefix(changed, source.get("path") or "")
+            record = by_key.get((name, upstream_path))
+            if status == "A" or record is None:
+                lines.append(f"  new: {changed}")
+                blob = show_blob(dest, head, changed)
+                if blob:
+                    drift_hits.extend(flag_blob(grok, changed, blob))
+                continue
+            if status == "D":
+                lines.append(f"  deleted upstream: {record['file']}")
+                continue
+            local = ROOT / record["file"]
+            ours = local.read_bytes()
+            base = show_blob(dest, pin, changed)
+            theirs = show_blob(dest, head, changed)
+            patched = (name, record["file"]) in patches or (base is not None and ours != base)
+            if not patched:
+                lines.append(f"  unpatched, safe to take: {record['file']}")
+            else:
+                kind, count = three_way(base or b"", ours, theirs or b"")
+                lines.append(f"  patched, 3-way {kind} ({count}): {record['file']}")
+            if theirs:
+                drift_hits.extend(flag_blob(grok, changed, theirs))
+
+    lines.append("local patches:")
+    for item in manifest["localPatches"]:
+        lines.append(f"  {item['file']}: {item['reason']}")
+    if drift_hits:
+        lines.append("upstream grok hits:")
+        lines.extend(f"  {hit}" for hit in drift_hits)
+    return lines, drift_hits
+
+
+def flag_blob(grok, name: str, blob: bytes) -> list[str]:
+    try:
+        text = blob.decode("utf-8")
+    except UnicodeDecodeError:
+        return []
+    return [f"{name}:{number}: {line[:180]}" for number, _pattern, line in grok.scan_text(text)]
+
+
+def self_test() -> int:
+    source = Path(__file__).read_text()
+    needle = "git " + "push"
+    if needle in source:
+        print("self-test: script contains a push invocation")
+        return 1
+    with tempfile.TemporaryDirectory() as tmp:
+        repo = Path(tmp) / "repo"
+        repo.mkdir()
+        subprocess.run(["git", "init", "-q", str(repo)], check=True)
+        subprocess.run(["git", "-C", str(repo), "config", "user.email", "test@example.com"], check=True)
+        subprocess.run(["git", "-C", str(repo), "config", "user.name", "test"], check=True)
+        (repo / "keep.txt").write_text("base\n")
+        (repo / "edit.txt").write_text("base\n")
+        subprocess.run(["git", "-C", str(repo), "add", "."], check=True)
+        subprocess.run(["git", "-C", str(repo), "commit", "-q", "-m", "base"], check=True)
+        pin = subprocess.check_output(["git", "-C", str(repo), "rev-parse", "HEAD"], text=True).strip()
+        (repo / "keep.txt").write_text("theirs\n")
+        (repo / "edit.txt").write_text("theirs\n")
+        (repo / "fresh.txt").write_text("new\n")
+        subprocess.run(["git", "-C", str(repo), "add", "."], check=True)
+        subprocess.run(["git", "-C", str(repo), "commit", "-q", "-m", "theirs"], check=True)
+        head = subprocess.check_output(["git", "-C", str(repo), "rev-parse", "HEAD"], text=True).strip()
+        rows = {name: status for status, name in name_status(repo, pin, head, "")}
+        if rows.get("keep.txt") != "M" or rows.get("fresh.txt") != "A":
+            print("self-test: name-status mismatch", rows)
+            return 1
+        base = show_blob(repo, pin, "edit.txt")
+        theirs = show_blob(repo, head, "edit.txt")
+        kind, count = three_way(base, b"ours\n", theirs)
+        if kind != "conflict" or count < 1:
+            print("self-test: expected a conflict", kind, count)
+            return 1
+        kind, count = three_way(base, base, theirs)
+        if kind != "clean" or count != 0:
+            print("self-test: unpatched file should merge clean", kind, count)
+            return 1
+    print("self-test: ok")
+    return 0
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Report upstream drift. Never pushes.")
+    parser.add_argument("--self-test", action="store_true")
+    args = parser.parse_args()
+    if args.self_test:
+        return self_test()
+    manifest = json.loads((ROOT / "pstack-source.json").read_text())
+    try:
+        lines, drift_hits = classify(manifest, CACHE)
+    except subprocess.CalledProcessError as error:
+        print(error.stderr or error.stdout or str(error), file=sys.stderr)
+        return 1
+    print("\n".join(lines))
+    grok = load_grok()
+    print("--- grok check ---")
+    grok_code = grok.main()
+    if grok_code != 0 or drift_hits:
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

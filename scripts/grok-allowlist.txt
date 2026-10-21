@@ -1,0 +1,2 @@
+# Quoted upstream sentences live in the design doc. Everywhere else fails the check.
+docs/design.md
