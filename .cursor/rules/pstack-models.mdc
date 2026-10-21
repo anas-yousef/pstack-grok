@@ -4,7 +4,7 @@ alwaysApply: true
 ---
 # pstack model configuration. One line per role. Delete a line to fall back to the skill default.
 # `inherit-parent` or `auto` as a value: the role runs on the parent chat model (omit Task `model`). Alias entries in a panel list still count toward its fan-out.
-# computerUse is unpinned. The platform replaces a model argument for that subagent type. The dispatched slug is in scripts/grok-exceptions.json. Browser verification uses control-ui.
+# computerUse is blocked. Do not spawn it, and do not rewrite `blocked` to a slug. Say the attempt is blocked only when the tool result contains the hook deny sentence. If a reply came back, say the call was not denied. Browser verification uses control-ui on Grok.
 # budget: large (xhigh)
 feature, refactoring: grok-4.7-xhigh-fast
 bug-fix: grok-4.7-xhigh-fast
@@ -27,4 +27,4 @@ show-me-your-work trail reviewer: grok-4.7-xhigh
 verification: grok-4.7-xhigh-fast
 eval judge: grok-4.7-xhigh
 orchestrate verifier: grok-4.7-xhigh
-computerUse: unpinned
+computerUse: blocked

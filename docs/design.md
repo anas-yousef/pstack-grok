@@ -9,7 +9,7 @@ The study below was written before any skill text changed. The tree at that poin
 A later run can fail these checks.
 
 1. This file exists, and the commit that adds it does not change skill behavior.
-2. `scripts/install` copies the setup into an empty directory, and that copy contains `show-me-your-work/scripts/log.sh`, `show-me-your-work/references/decision-log-template.tsv`, `deslop`, `control-ui`, `control-cli`, and a `pstack-models.mdc` with the trail reviewer, verification, eval judge, and orchestrate verifier lines. The same file also has a `computerUse` line.
+2. `scripts/install` copies the setup into an empty directory, and that copy contains `show-me-your-work/scripts/log.sh`, `show-me-your-work/references/decision-log-template.tsv`, `deslop`, `control-ui`, `control-cli`, `.cursor/hooks.json`, `.cursor/hooks/block-non-grok.py`, and a `pstack-models.mdc` with the trail reviewer, verification, eval judge, and orchestrate verifier lines. The same file also has a `computerUse` line set to `blocked`.
 3. `scripts/check-grok` exits 0.
 4. `scripts/check-upstream` prints a report, exits 0, and does not push.
 5. The hand-back names what was kept or dropped from each source, the open risks, and which reviews actually ran, on which model.
@@ -198,10 +198,18 @@ show-me-your-work trail reviewer: grok-4.7-xhigh
 verification: grok-4.7-xhigh-fast
 eval judge: grok-4.7-xhigh
 orchestrate verifier: grok-4.7-xhigh
-computerUse: unpinned
+computerUse: blocked
 ```
 
-`verification` keeps `-fast` because poteto-mode already pins verification speed to the swarm worker, and the audit names that slug. `computerUse` is unpinned. The parent passed `grok-4.7-xhigh`. The recorded Task arguments for that spawn used a different slug, and the subagent quoted a non-Grok identity sentence. Both are in `scripts/grok-exceptions.json`. Browser verification uses control-ui.
+`verification` keeps `-fast` because poteto-mode already pins verification speed to the swarm worker, and the audit names that slug. `computerUse` is blocked. The parent passed `grok-4.7-xhigh`. The recorded Task arguments for that spawn used a different slug, and the subagent quoted a non-Grok identity sentence. That probe stays in `scripts/grok-exceptions.json` with status `blocked`. Browser verification uses control-ui on Grok.
+
+## Subagent hook
+
+`.cursor/hooks.json` registers `subagentStart`. The command is `python3 .cursor/hooks/block-non-grok.py`, with `failClosed` true. Cursor's hook input is one JSON object on stdin. The fields this script reads are `subagent_type`, `subagent_model`, and the envelope `model`. The output is one JSON object on stdout and exit 0. `permission` is `allow` or `deny`. A deny carries `user_message`.
+
+The script denies a type that normalizes to computer use or browser, even when the model string is Grok, because that type is pinned server-side. It reads that type from the payload and from `tool_input` when that value is an object or a JSON object string, and it walks nested `tool_input` the same way. It allows every other type only when every present `subagent_model` or `model` value, on the payload or on `tool_input`, starts with `grok`. A present empty string, whitespace, `inherit`, `auto`, or `default` is denied even when another field is a Grok slug. A missing field is ignored. If no model field is present, the script denies. Unreadable input is denied. Unreadable input that names computer use or browser uses the browser message. `scripts/install` copies the hook with `.cursor/`. `scripts/test-subagent-hook` pipes sample payloads, and `scripts/verify-setup` runs that test.
+
+The script does nothing when Cursor never starts the hook. That is what happened in the live cloud-agent check recorded under Open risks. The cookbook sample names `subagentStart` as the hook that blocks subagents by model. It does not document a second event for that job, and `beforeSubmitPrompt` does not run for cloud agents.
 
 Skill defaults that today name `claude-opus-5-5-xhigh` are rewritten to the Grok slug of that role, so a missing rule file cannot fall back to Claude. The cross-family sentences in show-me-your-work, arena, poteto-mode, eval, and orchestrate are deleted. show-me-your-work instead spawns the trail reviewer line, before the push when the run will push.
 
@@ -269,7 +277,7 @@ The trigger list, the computerUse record, and the checks are one domain. A trigg
 Done for the follow-up, each one falsifiable:
 
 1. `.cursor/skills/poteto-mode/references/interrogate-triggers.md` is the only copy of the trigger list. poteto-mode and Greenfield point at that file.
-2. A computerUse spawn was asked for as `grok-4.7-xhigh`. The recorded Task arguments used a different slug. The platform record `originalModelName` was null. The subagent quoted a non-Grok identity sentence. The dispatched slug and that sentence live only in `scripts/grok-exceptions.json`. Browser verification goes through control-ui.
+2. A computerUse spawn was asked for as `grok-4.7-xhigh`. The recorded Task arguments used a different slug. The platform record `originalModelName` was null. The subagent quoted a non-Grok identity sentence. That probe stays in `scripts/grok-exceptions.json` with status `blocked`, which is the repo rule. The offline hook denies the flat payload. Cloud agent `bc-62d2834c-67ee-5b3e-aa79-9edbcc9b2176` was not denied. Browser verification goes through control-ui on Grok.
 3. The two TypeScript rules apply by glob to TypeScript files, with `alwaysApply: false`.
 4. Plugin path fields resolve to the hoisted directories. A check fails when a path does not exist.
 5. The Grok allowlist is path plus sha256. A file whose hash differs is not skipped.
@@ -281,7 +289,7 @@ Rigor stays high because every later project copies these rules. One writer. The
 
 ## Open risks
 
-- computerUse stays unpinned until the platform honors a model argument for that subagent type. `scripts/grok-exceptions.json` is the record of the probe, and `scripts/check-grok` prints it on every run. A later platform change does not update that file by itself.
+- computerUse is `blocked` on the role line, and the hook denies that payload offline. In cloud agent `bc-62d2834c-67ee-5b3e-aa79-9edbcc9b2176` the hook did not fire. Task `computerUse` with `grok-4.7-xhigh` returned a completed reply from `bc-c634e916-7a41-584d-a35d-50514d139b69`. That reply quoted the non-Grok identity sentence in `scripts/grok-exceptions.json`. The deny text was not in the tool result. `scripts/check-grok` still prints status `blocked`, which describes the repo rule, not a platform deny. A later platform change does not update the exception file by itself.
 - `check-upstream` still needs network to read upstream head. Exit 2 is the fetch or pin failure. Exit 1 is drift. The script does not push.
 - This file is skipped only while its sha256 in `scripts/grok-allowlist.txt` matches these bytes. Updating that hash without reading the diff would hide a new banned slug.
 - Both plugin manifests point at the shared hoisted directories. A loader that trusts `plugin.json` sees every skill in `.cursor/skills`, not a per-plugin subset.

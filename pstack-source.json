@@ -137,7 +137,7 @@
       "file": ".cursor/skills/poteto-mode/SKILL.md",
       "source": "pstack",
       "upstreamPath": "skills/poteto-mode/SKILL.md",
-      "reason": "Defaults, the hostile reviewer contract, the failure fallback, the Greenfield route, the TodoWrite stop, and the single interrogate trigger list."
+      "reason": "Defaults, the hostile reviewer contract, the failure fallback, the Greenfield route, the TodoWrite stop, the single interrogate trigger list, and computerUse stays blocked."
     },
     {
       "file": ".cursor/skills/poteto-mode/playbooks/authoring-a-skill.md",
@@ -191,13 +191,13 @@
       "file": ".cursor/skills/setup-pstack/SKILL.md",
       "source": "pstack",
       "upstreamPath": "skills/setup-pstack/SKILL.md",
-      "reason": "The default role table is the Grok table. computerUse stays unpinned, and setup does not rewrite that alias."
+      "reason": "The default role table is the Grok table. computerUse stays blocked, and setup does not rewrite that alias."
     },
     {
       "file": ".cursor/skills/show-me-your-work/SKILL.md",
       "source": "pstack",
       "upstreamPath": "skills/show-me-your-work/SKILL.md",
-      "reason": "The trail reviewer line runs before the push, a failed review is labeled self-review, and a computerUse spawn is reported as the known exception."
+      "reason": "The trail reviewer line runs before the push, a failed review is labeled self-review, and a computerUse attempt is blocked only when the hook deny sentence is in the tool result."
     },
     {
       "file": ".cursor/skills/swarm/SKILL.md",
@@ -266,6 +266,18 @@
       "sha256": "13127219825cd53eff1f09686798f2dd7f5e00d0a7093e74d2619e72d5a44c26",
       "source": "cursor-team-kit",
       "upstreamPath": "assets/avatar.png"
+    },
+    {
+      "file": ".cursor/hooks.json",
+      "sha256": "e5215b2a8227336ba31d9d3f555eb367295a7ccfe1ae0d9dd2125db87f9efa69",
+      "source": "local",
+      "upstreamPath": null
+    },
+    {
+      "file": ".cursor/hooks/block-non-grok.py",
+      "sha256": "9d5eeb9d638b7fa80b833a343e6c29d1fad0320c0f2d50358d882e8797b0cd78",
+      "source": "local",
+      "upstreamPath": null
     },
     {
       "file": ".cursor/pstack/.cursor-plugin/plugin.json",
@@ -491,7 +503,7 @@
     },
     {
       "file": ".cursor/rules/pstack-models.mdc",
-      "sha256": "2632b2f66195ea1b58ece8bd04084c2f8538f83e6f3d2cc77eeb0b9a74f85181",
+      "sha256": "693bc90379fbfc3c5ac7a66df49014cbdf21a5d0aeed3dcb97ac8a49b17571cd",
       "source": "local",
       "upstreamPath": null
     },
@@ -785,7 +797,7 @@
     },
     {
       "file": ".cursor/skills/poteto-mode/SKILL.md",
-      "sha256": "cd3aaafe8198abb18fdf1e6c63eaaf421947cfd59980b3f27ad6cb72947e1772",
+      "sha256": "a67afd9ba415ffb6c543a9bd3db82f16ae4994a7188bb2ba86d6b23fa3246153",
       "source": "pstack",
       "upstreamPath": "skills/poteto-mode/SKILL.md"
     },
@@ -1295,7 +1307,7 @@
     },
     {
       "file": ".cursor/skills/setup-pstack/SKILL.md",
-      "sha256": "239dd701fca5bd87559ce2fb76496b15c6ce1101205d6cf98fe102349f9c9157",
+      "sha256": "2e6491ef68d1acd4a19d61143f7947e5970c3ad830f8d11c1a27c0cd9e5a2896",
       "source": "pstack",
       "upstreamPath": "skills/setup-pstack/SKILL.md"
     },
@@ -1307,7 +1319,7 @@
     },
     {
       "file": ".cursor/skills/show-me-your-work/SKILL.md",
-      "sha256": "9ca9feba99c22795ef903e1c6ee9e9a837992a17f98ecead8e99ec89f1c54809",
+      "sha256": "43d217160d9ffb6e004638ba632fc7b447c1c4cca1272620d1e9dd37bb1b578d",
       "source": "pstack",
       "upstreamPath": "skills/show-me-your-work/SKILL.md"
     },
@@ -1607,7 +1619,7 @@
     },
     {
       "file": "scripts/check-grok",
-      "sha256": "ce2e766e430aeecb459d863d61dd620b70339e96c314d8c90415eb801c99b0ec",
+      "sha256": "b2394a46f0a6506ec13cd691ff509157b9672d575815b5bf7af39cbfe0af2765",
       "source": "local",
       "upstreamPath": null
     },
@@ -1625,25 +1637,31 @@
     },
     {
       "file": "scripts/grok-allowlist.txt",
-      "sha256": "a2069298b63a99facf09a447d7be7cb2353899f1f1af548cdfcba0131495bd14",
+      "sha256": "18782b492c2a5002305655067af736b054424dab1f6e970b8abd1cc3cc2db8f9",
       "source": "local",
       "upstreamPath": null
     },
     {
       "file": "scripts/grok-exceptions.json",
-      "sha256": "e873b843f4ceedf28bb14b7e3741c72e9c2ab866f78e60529130e2439c11ad66",
+      "sha256": "b22a4e052d0f8babbcf0c88914c0289dad6381ba8446a1dc43b79db36ba042be",
       "source": "local",
       "upstreamPath": null
     },
     {
       "file": "scripts/install",
-      "sha256": "a610d54e2bd358cc83f48753b83c795a83eee101447d489303759311467fe15b",
+      "sha256": "b0e098520b7304d050b5b38813abfd251044846f6066748cb532989d7c152ba8",
+      "source": "local",
+      "upstreamPath": null
+    },
+    {
+      "file": "scripts/test-subagent-hook",
+      "sha256": "9f47b8cc48cbe4a832bd948e65008b5a8edd84438fb672cc6a120b7bdf318676",
       "source": "local",
       "upstreamPath": null
     },
     {
       "file": "scripts/verify-setup",
-      "sha256": "a0dd8585619dcb26025b6c92b52bb94fce6bed9c06ff84bc00f8a80f4d617e10",
+      "sha256": "bdd8b2fb4a0cf270586cb190092332b9835acc40714eaa52cd8e815d8e3bcaae",
       "source": "local",
       "upstreamPath": null
     }

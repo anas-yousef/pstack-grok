@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "hooks": {
+    "subagentStart": [
+      {
+        "command": "python3 .cursor/hooks/block-non-grok.py",
+        "failClosed": true
+      }
+    ]
+  }
+}
