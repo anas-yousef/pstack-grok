@@ -10,6 +10,8 @@ import argparse
 import importlib.machinery
 import importlib.util
 import json
+import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -353,7 +355,7 @@ def commit_all(path: Path, message: str) -> str:
 def self_test() -> int:
     source = Path(__file__).read_text(encoding="utf-8")
     needle = "git " + "push"
-    if needle in source:
+    if needle in source or re.search(r"git\([^)]*[\"']push[\"']", source):
         print("self-test: script contains a push invocation")
         return 1
     if decide([], [], 0) != EXIT_CLEAN or decide([{"changes": [{}], "commits": []}], [], 0) != EXIT_DRIFT:
@@ -447,10 +449,10 @@ def self_test() -> int:
         if changes["skills/kept/SKILL.md"]["recommendation"] != "take":
             print("self-test: unpatched file was not a take", changes)
             return 1
-        if changes["skills/edited/SKILL.md"]["classification"] != "patched":
+        if changes["skills/edited/SKILL.md"]["recommendation"] != "review":
             print("self-test: patched file was not a review", changes)
             return 1
-        if changes["skills/fresh/SKILL.md"]["classification"] != "new-skill":
+        if changes["skills/fresh/SKILL.md"]["recommendation"] != "skip":
             print("self-test: new skill was not a skip", changes)
             return 1
         if sources[0]["commits"][0]["title"] != "theirs" or "date" not in sources[0]["commits"][0]:
@@ -486,6 +488,41 @@ def self_test() -> int:
         else:
             print("self-test: bad pin did not fail")
             return 1
+        cli_manifest = folder / "cli.json"
+        cli_manifest.write_text(
+            json.dumps(
+                {
+                    "fork": "test",
+                    "sources": [
+                        {
+                            "name": "demo",
+                            "upstream": (folder / "no-cli-repo").as_uri(),
+                            "commit": old,
+                            "path": "",
+                        }
+                    ],
+                    "localPatches": [],
+                    "files": [],
+                }
+            )
+        )
+        env = os.environ.copy()
+        env["CHECK_UPSTREAM_MANIFEST"] = str(cli_manifest)
+        env["CHECK_UPSTREAM_CACHE"] = str(folder / "cli-cache")
+        env["CHECK_UPSTREAM_ROOT"] = str(local)
+        cli = subprocess.run(
+            [sys.executable, str(Path(__file__).resolve()), "--json"],
+            capture_output=True,
+            text=True,
+            env=env,
+        )
+        if cli.returncode != EXIT_FETCH:
+            print("self-test: main fetch exit", cli.returncode, cli.stderr)
+            return 1
+        payload = json.loads(cli.stdout)
+        if payload.get("exit") != EXIT_FETCH or payload.get("push") != "not run" or payload.get("error") != "fetch-failed":
+            print("self-test: main fetch payload", payload)
+            return 1
     print("self-test: ok")
     return 0
 
@@ -497,9 +534,12 @@ def main() -> int:
     args = parser.parse_args()
     if args.self_test:
         return self_test()
-    manifest = json.loads((ROOT / "pstack-source.json").read_text(encoding="utf-8"))
+    manifest_path = Path(os.environ.get("CHECK_UPSTREAM_MANIFEST", str(ROOT / "pstack-source.json")))
+    cache = Path(os.environ.get("CHECK_UPSTREAM_CACHE", str(CACHE)))
+    local_root = Path(os.environ.get("CHECK_UPSTREAM_ROOT", str(ROOT)))
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     try:
-        sources, drift_hits = collect(manifest, CACHE, ROOT)
+        sources, drift_hits = collect(manifest, cache, local_root)
     except FetchError as error:
         print(f"{error.kind}: {error.source}: {error.detail}", file=sys.stderr)
         if args.json:
@@ -521,13 +561,13 @@ def main() -> int:
             print("push: not run")
         return EXIT_FETCH
     if args.json:
-        grok_code, report = grok_report(ROOT)
+        grok_code, report = grok_report(local_root)
         code = decide(sources, drift_hits, grok_code)
         print(json.dumps(render_json(manifest, sources, drift_hits, code, report), indent=2))
         return code
     print(render_text(manifest, sources, drift_hits))
     print("--- grok check ---")
-    grok_code = load_grok().main()
+    grok_code = load_grok().main() if local_root == ROOT else grok_report(local_root)[0]
     return decide(sources, drift_hits, grok_code)
 
 

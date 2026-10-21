@@ -4,7 +4,7 @@
 
 1. Open the todo list with these steps copied verbatim. If TodoWrite returns `success: false`, stop and report the tool error. Do not continue.
 2. Name the domain before code, per **principle-model-the-domain**. When the nouns are still fuzzy, run **domain-modeling** and write the glossary and ADRs it asks for.
-3. Run **interrogate** before implementation when the slice matches `references/interrogate-triggers.md`. That file is the only copy of the trigger list. Do not restate it here.
+3. Run **interrogate** before implementation when the slice matches `../references/interrogate-triggers.md`. That file is the only copy of the trigger list. Do not restate it here.
 4. Boot the smallest scaffold that runs. Then run **create-verification-skill** once. Later checks use that project skill.
 5. Follow the Feature playbook from architect through verify. Skip `how` when there is no subsystem to read, and record `skip: <reason>` on the todo.
 6. Before each commit, run **deslop** and **no-comments**.

@@ -118,11 +118,14 @@ def report_exceptions(root: Path) -> int:
         observed = item["observedIdentity"]
         evidence = item["evidence"]
         route = item["route"]
+        dispatched = item.get("dispatched")
     except (json.JSONDecodeError, KeyError, TypeError) as error:
         print(f"  unreadable: {error}")
         return 1
     print(f"  computerUse honored: {honored}")
     print(f"  requested: {requested}")
+    if dispatched is not None:
+        print(f"  dispatched: {dispatched}")
     print(f"  observed: {observed}")
     print(f"  evidence: {evidence}")
     print(f"  route: {route}")

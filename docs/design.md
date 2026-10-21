@@ -201,7 +201,7 @@ orchestrate verifier: grok-4.7-xhigh
 computerUse: unpinned
 ```
 
-`verification` keeps `-fast` because poteto-mode already pins verification speed to the swarm worker, and the audit names that slug. `computerUse` is unpinned. A spawn requested `grok-4.7-xhigh` and the platform field `originalModelName` was null. The subagent quoted a non-Grok identity sentence. That sentence lives only in `scripts/grok-exceptions.json`. Browser verification uses control-ui.
+`verification` keeps `-fast` because poteto-mode already pins verification speed to the swarm worker, and the audit names that slug. `computerUse` is unpinned. The parent passed `grok-4.7-xhigh`. The recorded Task arguments for that spawn used a different slug, and the subagent quoted a non-Grok identity sentence. Both are in `scripts/grok-exceptions.json`. Browser verification uses control-ui.
 
 Skill defaults that today name `claude-opus-5-5-xhigh` are rewritten to the Grok slug of that role, so a missing rule file cannot fall back to Claude. The cross-family sentences in show-me-your-work, arena, poteto-mode, eval, and orchestrate are deleted. show-me-your-work instead spawns the trail reviewer line, before the push when the run will push.
 
@@ -269,7 +269,7 @@ The trigger list, the computerUse record, and the checks are one domain. A trigg
 Done for the follow-up, each one falsifiable:
 
 1. `.cursor/skills/poteto-mode/references/interrogate-triggers.md` is the only copy of the trigger list. poteto-mode and Greenfield point at that file.
-2. A computerUse spawn was requested with `grok-4.7-xhigh`. The platform record `originalModelName` was null. The subagent quoted a non-Grok identity sentence. That sentence lives only in `scripts/grok-exceptions.json`. Browser verification goes through control-ui.
+2. A computerUse spawn was asked for as `grok-4.7-xhigh`. The recorded Task arguments used a different slug. The platform record `originalModelName` was null. The subagent quoted a non-Grok identity sentence. The dispatched slug and that sentence live only in `scripts/grok-exceptions.json`. Browser verification goes through control-ui.
 3. The two TypeScript rules apply by glob to TypeScript files, with `alwaysApply: false`.
 4. Plugin path fields resolve to the hoisted directories. A check fails when a path does not exist.
 5. The Grok allowlist is path plus sha256. A file whose hash differs is not skipped.

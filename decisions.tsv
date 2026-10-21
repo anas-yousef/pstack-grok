@@ -26,3 +26,6 @@ ts	phase	decision	why	evidence	result
 2026-10-21T07:32:48Z	checks	added verify-setup and proved a temp install	the Grok check, the path check, the upstream self-test, and a stale allowlist need one command	scripts/verify-setup	verify-setup ok
 2026-10-21T07:38:04Z	review	accepted the comment kills that restated the next line	comment-sicko on grok-4.7-xhigh listed narrative comments and one unused test write	bc-32ca4192-9096-5376-8cb3-f975929aab7f	deleted
 2026-10-21T07:38:04Z	review	kept the computerUse comment in the model rule	the value unpinned does not name the exception file or control-ui, and that rule is loaded every turn	.cursor/rules/pstack-models.mdc	kept
+2026-10-21T07:52:14Z	review	corrected the computerUse record after the trail review	the parent passed grok-4.7-xhigh and the recorded Task arguments used another slug	scripts/grok-exceptions.json bc-c634e916-7a41-584d-a35d-50514d139b69	dispatched recorded
+2026-10-21T07:52:14Z	review	fixed the greenfield trigger link and the unpinned alias	the playbook link did not resolve, and setup could drop unpinned	.cursor/skills/poteto-mode/playbooks/greenfield.md .cursor/skills/setup-pstack/SKILL.md	check-paths problems 0
+2026-10-21T07:52:14Z	review	locked the fetch exit in main	the self-test had checked the helper and not the process exit	scripts/check-upstream	self-test ok, exit 2

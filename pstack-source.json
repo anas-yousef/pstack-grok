@@ -191,7 +191,7 @@
       "file": ".cursor/skills/setup-pstack/SKILL.md",
       "source": "pstack",
       "upstreamPath": "skills/setup-pstack/SKILL.md",
-      "reason": "The default role table is the Grok table, including the trail, verification, eval, and orchestrate lines. computerUse is unpinned."
+      "reason": "The default role table is the Grok table. computerUse stays unpinned, and setup does not rewrite that alias."
     },
     {
       "file": ".cursor/skills/show-me-your-work/SKILL.md",
@@ -839,7 +839,7 @@
     },
     {
       "file": ".cursor/skills/poteto-mode/playbooks/greenfield.md",
-      "sha256": "476b23a45555d44d2dd44203bf3eb1aa769dc9d54437147d4336a4287f45b319",
+      "sha256": "3c7d30d09531b077cb3f7a18ddcb810b150fc8906319b153e370c86dc79286bf",
       "source": "local",
       "upstreamPath": null
     },
@@ -1295,7 +1295,7 @@
     },
     {
       "file": ".cursor/skills/setup-pstack/SKILL.md",
-      "sha256": "07e9f45fa90b4bd221c22dac69d69ca48bf4c877c5171136bfd2775de942bcaa",
+      "sha256": "66c12509c1ea091633523ed48b848b790c85328d99f48e146ffe150ec66c473d",
       "source": "pstack",
       "upstreamPath": "skills/setup-pstack/SKILL.md"
     },
@@ -1607,31 +1607,31 @@
     },
     {
       "file": "scripts/check-grok",
-      "sha256": "7f567a90ae6fc91fbfd70231d77975d7f998884a1f66e7b7d3efa902034a145e",
+      "sha256": "ce2e766e430aeecb459d863d61dd620b70339e96c314d8c90415eb801c99b0ec",
       "source": "local",
       "upstreamPath": null
     },
     {
       "file": "scripts/check-paths",
-      "sha256": "73762c0c463f4764da5a277928ff08c4c34e3cc15cf7333ccd70ea3c33007ddc",
+      "sha256": "caa43b44ce99ea38d34c68cb36845ea6df33545078ecae93bb41216e9f539bd4",
       "source": "local",
       "upstreamPath": null
     },
     {
       "file": "scripts/check-upstream",
-      "sha256": "84a317c11214c0a747a51cf1acce520590d5e419715d236b4235fc5822f95200",
+      "sha256": "7eedc5a6e34c23fb2a7c137f081e7b4e2b151a173a01d0cdf508e4b5bc464755",
       "source": "local",
       "upstreamPath": null
     },
     {
       "file": "scripts/grok-allowlist.txt",
-      "sha256": "62eebb316fbeacb8115dda7e26f487111983275d31dea0dac1cd5f1cc31673c6",
+      "sha256": "a2069298b63a99facf09a447d7be7cb2353899f1f1af548cdfcba0131495bd14",
       "source": "local",
       "upstreamPath": null
     },
     {
       "file": "scripts/grok-exceptions.json",
-      "sha256": "41cf370ac4cf7ad29326cbb780e848cf55c8b7154995a49888b04e61ff9f09b8",
+      "sha256": "e873b843f4ceedf28bb14b7e3741c72e9c2ab866f78e60529130e2439c11ad66",
       "source": "local",
       "upstreamPath": null
     },

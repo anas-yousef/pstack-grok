@@ -1,9 +1,10 @@
 {
   "computerUse": {
     "requested": "grok-4.7-xhigh",
+    "dispatched": "claude-4.5-sonnet",
     "honored": false,
     "observedIdentity": "Claude Sonnet 4.5",
-    "evidence": "Spawn bc-c634e916-7a41-584d-a35d-50514d139b69 was requested with grok-4.7-xhigh. Platform originalModelName was null. The subagent quoted: You are an AI coding assistant, powered by Claude Sonnet 4.5.",
+    "evidence": "Parent passed grok-4.7-xhigh for bc-c634e916-7a41-584d-a35d-50514d139b69. The recorded Task arguments used claude-4.5-sonnet. Platform originalModelName was null. The subagent quoted: You are an AI coding assistant, powered by Claude Sonnet 4.5.",
     "route": "Use control-ui for browser verification. Spawn computerUse only when control-ui cannot drive the surface. Omit model. Copy this record into Attention. Do not claim the computerUse role ran on Grok."
   }
 }
