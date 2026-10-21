@@ -56,7 +56,7 @@ how explorer: grok-4.7-xhigh-fast
 how explainer: grok-4.7-xhigh
 why investigators: grok-4.7-xhigh-fast
 why synthesizer: grok-4.7-xhigh
-reflect tooling: grok-4.7-xhigh-fast
+reflect tooling: grok-4.7-xhigh
 reflect judgment, divergent, synthesizer: grok-4.7-xhigh
 arena runners: grok-4.7-xhigh-fast
 arena cross-judge pool: grok-4.7-xhigh

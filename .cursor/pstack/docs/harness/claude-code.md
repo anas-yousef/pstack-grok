@@ -2,7 +2,7 @@
 
 This fork runs in Cursor, and every role is a Grok slug from `.cursor/rules/pstack-models.mdc`. Do not translate a role onto another vendor's model name. If the session is not Cursor, stop and say this fork does not install there.
 
-The tables below are the upstream tool map, kept so a reader can see what was removed. They are not instructions to switch products. `<pstack>` means the folder that holds `skills/` and `docs/`.
+The tables below are the upstream tool map, kept so a reader can see what was removed. They are not instructions to switch products. Skills and agents live in `.cursor/skills` and `.cursor/agents`. Docs live in `.cursor/pstack/docs`. The `plugin.json` files keep their upstream relative paths, which do not resolve from `.cursor/pstack`.
 
 ## Tools
 
@@ -45,7 +45,7 @@ Every role uses the Grok slug on its line in `.cursor/rules/pstack-models.mdc`. 
 
 ## Cursor-only features
 
-Claude Code has no Cursor Automations, Bugbot, Cursor cloud agents, or built-in PR tool. When a step needs one, put one line in your reply, `Skipped in Claude Code: <step>. <reason>.`, then go on to the next step. Do not stop, ask, or retry. When a later step needs what the skipped step made, such as a URL or a key, leave a placeholder and name it in the line.
+Stop if the session is not Cursor. This fork does not continue in another product, and it does not translate a skipped step into that product's tools.
 
 | Cursor | Claude Code |
 | --- | --- |

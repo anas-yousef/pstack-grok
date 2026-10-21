@@ -33,7 +33,9 @@ python3 scripts/check-upstream
 
 The report names the pinned commit and the upstream head for each source. A file this fork did not edit is `unpatched, safe to take`. Replace that file with the upstream blob, then put the new sha256 on its row in `pstack-source.json`. A file in `localPatches` needs a 3-way merge. The script runs that merge in a temp directory and reports `clean` or `conflict`. It does not write the result back, and it does not push.
 
-`python3 scripts/check-grok` fails if any file outside `docs/design.md` names a non-Grok model or a cross-family review rule. The design doc is the only allowlist entry because it quotes the upstream sentences this fork removes. `.github/workflows/grok.yml` runs the same checks.
+`python3 scripts/check-grok` fails if a file names a non-Grok model or a cross-family review rule. `docs/design.md` is skipped only while it contains the marker `grok-allowlist-quote`, because that file quotes the upstream sentences this fork removes. A project that later creates its own `docs/design.md` without the marker is scanned. `.github/workflows/grok.yml` runs the same checks.
+
+Skills, agents, and rules are loaded from `.cursor/skills`, `.cursor/agents`, and `.cursor/rules`. `.cursor/pstack/plugin.json` still has the upstream relative paths. Those paths do not resolve inside `.cursor/pstack`, because the skills were hoisted to where Cursor reads them.
 
 ## What a product build does
 

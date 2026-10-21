@@ -65,7 +65,7 @@
       "file": ".cursor/pstack/docs/harness/claude-code.md",
       "source": "pstack",
       "upstreamPath": "docs/harness/claude-code.md",
-      "reason": "The model translation table is removed. The file says this fork does not select another vendor's models."
+      "reason": "The model translation table is removed. A non-Cursor session stops. plugin.json paths are documented as unresolved after the hoist."
     },
     {
       "file": ".cursor/skills/architect/SKILL.md",
@@ -143,7 +143,7 @@
       "file": ".cursor/skills/poteto-mode/playbooks/orchestrate.md",
       "source": "pstack",
       "upstreamPath": "skills/poteto-mode/playbooks/orchestrate.md",
-      "reason": "The verifier uses the orchestrate verifier line, and a tool error retries that Grok slug."
+      "reason": "The verifier uses the orchestrate verifier line. A tool error retries that Grok slug, then the reviewer fallback, before the unit is abandoned."
     },
     {
       "file": ".cursor/skills/poteto-mode/scripts/orch/orch.test.ts",
@@ -155,7 +155,7 @@
       "file": ".cursor/skills/reflect/SKILL.md",
       "source": "pstack",
       "upstreamPath": "skills/reflect/SKILL.md",
-      "reason": "Judgment, divergent, and synthesizer default to grok-4.7-xhigh, and a rejected slug retries that slug."
+      "reason": "Judgment, divergent, synthesizer, and tooling default to grok-4.7-xhigh, and a rejected slug retries that slug."
     },
     {
       "file": ".cursor/skills/reflect/references/synthesizer.md",
@@ -449,7 +449,7 @@
     },
     {
       "file": ".cursor/pstack/docs/harness/claude-code.md",
-      "sha256": "bc90b78632c9fe9756e1a1847d2e9c1712d7f2bc108d507dc87d45630b40accb",
+      "sha256": "8ab47b10d047df991c8a3ba071baa4d62ea449df17ff1654f3394369abb93e6b",
       "source": "pstack",
       "upstreamPath": "docs/harness/claude-code.md"
     },
@@ -467,7 +467,7 @@
     },
     {
       "file": ".cursor/rules/pstack-models.mdc",
-      "sha256": "6d3dbb184beb7469ea7ca81d6800739a36b979e8c9e3007f651e405f608c8c1b",
+      "sha256": "c4d4ec50040249e24e735470b0ecc12c0b93b69cd05b0fe37cf2c982d5e3b478",
       "source": "local",
       "upstreamPath": null
     },
@@ -845,7 +845,7 @@
     },
     {
       "file": ".cursor/skills/poteto-mode/playbooks/orchestrate.md",
-      "sha256": "9b83c340ac115af36e4e1636dccf8f3ff64e3e77ad0ff7fc3b40126c48bff3b5",
+      "sha256": "872fdfffa8d7c2deb369fc036f0f5098c2230b822a0a0fafe36d6cc9b6627864",
       "source": "pstack",
       "upstreamPath": "skills/poteto-mode/playbooks/orchestrate.md"
     },
@@ -1223,7 +1223,7 @@
     },
     {
       "file": ".cursor/skills/reflect/SKILL.md",
-      "sha256": "99746eab41e737187af200e24d37d6786838ec394e36b230e2648be6724fe44e",
+      "sha256": "e5a75406b9bb4df43160b036112741c46aa2b271c4f53db536753629fdcd757d",
       "source": "pstack",
       "upstreamPath": "skills/reflect/SKILL.md"
     },
@@ -1265,7 +1265,7 @@
     },
     {
       "file": ".cursor/skills/setup-pstack/SKILL.md",
-      "sha256": "e1243d40738f11cc22d71b532f453bd506fdf76a59c1075be1adfa365ddc7711",
+      "sha256": "0c6e80a6656c5fe2eac36770a811d33725800f9862a93eb4ac12c757ca8ccd1d",
       "source": "pstack",
       "upstreamPath": "skills/setup-pstack/SKILL.md"
     },
@@ -1577,7 +1577,7 @@
     },
     {
       "file": "scripts/check-grok",
-      "sha256": "50ae950ba6e86535e15472139c1b9781836a475d0bee7708012b5f78eb7ac11c",
+      "sha256": "8128cc8e59ecc6097ec13e21309aaf458b56fb2e5be36d108d79c6064e2bd622",
       "source": "local",
       "upstreamPath": null
     },
@@ -1589,7 +1589,7 @@
     },
     {
       "file": "scripts/grok-allowlist.txt",
-      "sha256": "c8fd942b0fa83aee22f37e8cb5133ce5a41ce0b8cbe1aa39dc9798a37f596a1b",
+      "sha256": "60780c85987454b15f8962a90160e91c1245d6d5b0ae8833950cadcce28507d0",
       "source": "local",
       "upstreamPath": null
     },

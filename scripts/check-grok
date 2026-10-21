@@ -73,11 +73,15 @@ def scan_tree(root: Path) -> list[str]:
         if any(part in SKIP_DIRS for part in path.relative_to(root).parts):
             continue
         rel = path.relative_to(root)
-        if rel in allowed or path.suffix.lower() in SKIP_SUFFIXES:
+        if path.suffix.lower() in SKIP_SUFFIXES:
             continue
         try:
             text = path.read_text(encoding="utf-8")
         except (UnicodeDecodeError, OSError):
+            continue
+        # An allowlist path is skipped only when the file still carries the marker.
+        # A project that later creates the same path is scanned.
+        if rel in allowed and "grok-allowlist-quote" in text:
             continue
         for number, pattern, line in scan_text(text):
             found.append(f"{rel}:{number}: {pattern}: {line[:180]}")

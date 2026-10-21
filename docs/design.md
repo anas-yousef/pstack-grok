@@ -1,5 +1,7 @@
 # Grok-only pstack
 
+grok-allowlist-quote
+
 This repo is the copy of pstack a Cursor project can install and trust. Fork id `pstack-grok-v0.15.29-1`. Every reviewer role is Grok. poteto-mode stays the only entry.
 
 The study below was written before any skill text changed. The tree at that point is the attached export, pstack 0.15.28, commit `ddf824aff1e55ba14bd666b30bce3fc69962abe6`, laid out under `.cursor/` the way the tarball lays it out.
@@ -9,7 +11,7 @@ The study below was written before any skill text changed. The tree at that poin
 A later run can fail these checks.
 
 1. This file exists, and the commit that adds it does not change skill behavior.
-2. `scripts/install` copies the setup into an empty directory, and that copy contains `show-me-your-work/scripts/log.sh`, `show-me-your-work/references/decision-log-template.tsv`, `deslop`, `control-ui`, `control-cli`, and a `pstack-models.mdc` with the four new role lines.
+2. `scripts/install` copies the setup into an empty directory, and that copy contains `show-me-your-work/scripts/log.sh`, `show-me-your-work/references/decision-log-template.tsv`, `deslop`, `control-ui`, `control-cli`, and a `pstack-models.mdc` with the trail reviewer, verification, eval judge, and orchestrate verifier lines. The same file also has a `computerUse` line.
 3. `scripts/check-grok` exits 0.
 4. `scripts/check-upstream` prints a report, exits 0, and does not push.
 5. The hand-back names what was kept or dropped from each source, the open risks, and which reviews actually ran, on which model.
@@ -64,6 +66,8 @@ The `.claude/pstack-models.md` file in the attached export is not part of upstre
 The Principles section of poteto-mode is an index. Each entry is a leaf skill, `principle-<title>`, and a citation counts only after that leaf is read. The groups are Core, Architecture, Verification, Delegation, and Meta. The ones this fork's own scripts exist to satisfy are `principle-build-the-lever` (the checks are the tool), `principle-encode-lessons-in-structure` (the Grok rule is a script, not only a sentence), `principle-model-the-domain` (a vendored file is one record), and `principle-prove-it-works` (the done predicate is executed).
 
 ## What 0.15.29 adds to the attached export
+
+The inventory below describes upstream 0.15.29 before the local patches. The files in the tree are already patched. `pstack-source.json` lists each patch.
 
 101 skill and agent files are byte-identical. 12 differ. 23 files are new, and they are the scripts and the decision-log template.
 

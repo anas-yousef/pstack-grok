@@ -1,2 +1,2 @@
-# Quoted upstream sentences live in the design doc. Everywhere else fails the check.
+# Skipped only when the file contains the marker grok-allowlist-quote.
 docs/design.md
