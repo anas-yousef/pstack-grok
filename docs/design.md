@@ -262,7 +262,7 @@ Each unit ends in a check before the next one starts.
 
 ## Follow-up
 
-This section was written before the follow-up edits. The open-risk bullets below stay until the commits that close them.
+This section is the follow-up plan. The checks below are the gates that close it.
 
 The trigger list, the computerUse record, and the checks are one domain. A trigger is a named condition in one file. A permit is a path plus the sha256 of the bytes that may contain a banned slug. A plugin path is a relative string in `plugin.json`, resolved from the plugin root, and it has to exist on disk. An upstream change is a commit since the pin, a classification, and a recommendation.
 
@@ -281,7 +281,7 @@ Rigor stays high because every later project copies these rules. One writer. The
 
 ## Open risks
 
-- computerUse cannot be pinned. `scripts/grok-exceptions.json` is the record, and `scripts/check-grok` prints it on every run. Browser verification uses control-ui.
-- `check-upstream` exits 2 when the fetch or the pin is missing, and that exit is not the drift exit. A clean report is 0, drift is 1, and a local Grok failure is 3. The script still needs network to read upstream head. It fetches the pin explicitly. It does not push.
-- Team-kit's two always-apply TypeScript rules land in every project that copies `.cursor/rules`.
-- This file is skipped only while its sha256 in `scripts/grok-allowlist.txt` matches these bytes. An edit that does not update the hash fails the check.
+- computerUse stays unpinned until the platform honors a model argument for that subagent type. `scripts/grok-exceptions.json` is the record of the probe, and `scripts/check-grok` prints it on every run. A later platform change does not update that file by itself.
+- `check-upstream` still needs network to read upstream head. Exit 2 is the fetch or pin failure. Exit 1 is drift. The script does not push.
+- This file is skipped only while its sha256 in `scripts/grok-allowlist.txt` matches these bytes. Updating that hash without reading the diff would hide a new banned slug.
+- Both plugin manifests point at the shared hoisted directories. A loader that trusts `plugin.json` sees every skill in `.cursor/skills`, not a per-plugin subset.

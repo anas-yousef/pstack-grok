@@ -55,9 +55,9 @@ Skills, agents, and rules are loaded from `.cursor/skills`, `.cursor/agents`, an
 ## Checks on this repo
 
 ```bash
-python3 scripts/check-grok
-python3 scripts/check-paths
-python3 scripts/check-upstream --self-test
+python3 scripts/verify-setup
 python3 scripts/check-upstream
 python3 scripts/check-upstream --json
 ```
+
+`verify-setup` runs the Grok check, the path check, the upstream self-test, and an install into a temp project.

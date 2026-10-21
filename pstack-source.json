@@ -1595,7 +1595,7 @@
     },
     {
       "file": ".github/workflows/grok.yml",
-      "sha256": "2c5370ab317a909e8677b608367bd95f482e171e937e90a537de6cf52e4c5439",
+      "sha256": "035ce34f84e7d71d00b4a9f570dcc54a220fe3435a33078926a0f2ee12420e64",
       "source": "local",
       "upstreamPath": null
     },
@@ -1625,7 +1625,7 @@
     },
     {
       "file": "scripts/grok-allowlist.txt",
-      "sha256": "a3a27f0ff5f51aec02bf6fd9ec31121967c0f48311fcac9889d3224fa7bbde0e",
+      "sha256": "690278f5cedf49a0ec65df879e83daf6dc32efabae1d2f1c23bbd4215351bc03",
       "source": "local",
       "upstreamPath": null
     },
@@ -1637,7 +1637,13 @@
     },
     {
       "file": "scripts/install",
-      "sha256": "8101a7301883c8bae9fa7d274b00c64fc6d9363e8f385ad38f4488910d78b741",
+      "sha256": "a610d54e2bd358cc83f48753b83c795a83eee101447d489303759311467fe15b",
+      "source": "local",
+      "upstreamPath": null
+    },
+    {
+      "file": "scripts/verify-setup",
+      "sha256": "e5b765ade5496f2aab619967aebcacf5daf46e8d4e4406bafd7864766f317eee",
       "source": "local",
       "upstreamPath": null
     }

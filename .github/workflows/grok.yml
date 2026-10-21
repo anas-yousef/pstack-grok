@@ -9,9 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Grok-only text
-        run: python3 scripts/check-grok
-      - name: Upstream classifier self-test
-        run: python3 scripts/check-upstream --self-test
+      - name: Verify setup
+        run: python3 scripts/verify-setup
       - name: Upstream drift report
         run: python3 scripts/check-upstream

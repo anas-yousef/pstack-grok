@@ -1,0 +1,109 @@
+#!/usr/bin/env python3
+"""Run the local gates and prove an install into a temp project."""
+
+from __future__ import annotations
+
+import hashlib
+import json
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+
+
+def run(args: list[str], cwd: Path | None = None) -> subprocess.CompletedProcess:
+    return subprocess.run(args, cwd=cwd or ROOT, capture_output=True, text=True)
+
+
+def expect(args: list[str], code: int, cwd: Path | None = None, contains: str | None = None) -> None:
+    result = run(args, cwd)
+    text = result.stdout + result.stderr
+    if result.returncode != code or (contains and contains not in text):
+        sys.stdout.write(result.stdout)
+        sys.stderr.write(result.stderr)
+        raise SystemExit(f"{' '.join(args)} exited {result.returncode}, expected {code}")
+
+
+def manifest_problems() -> list[str]:
+    data = json.loads((ROOT / "pstack-source.json").read_text(encoding="utf-8"))
+    listed = {item["file"] for item in data["files"]}
+    problems = []
+    for item in data["files"]:
+        path = ROOT / item["file"]
+        if not path.is_file():
+            problems.append(f"missing {item['file']}")
+            continue
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        if digest != item["sha256"]:
+            problems.append(f"hash {item['file']}")
+    for folder in (".cursor", "scripts", ".github"):
+        for path in (ROOT / folder).rglob("*"):
+            if not path.is_file() or "__pycache__" in path.parts:
+                continue
+            rel = path.relative_to(ROOT).as_posix()
+            if rel not in listed:
+                problems.append(f"unlisted {rel}")
+    if "NOTICE" not in listed:
+        problems.append("unlisted NOTICE")
+    return problems
+
+
+def main() -> int:
+    expect(["python3", "scripts/check-grok", "--self-test"], 0)
+    expect(["python3", "scripts/check-grok"], 0, contains="hits: 0")
+    expect(["python3", "scripts/check-paths", "--self-test"], 0)
+    expect(["python3", "scripts/check-paths"], 0, contains="problems: 0")
+    expect(["python3", "scripts/check-upstream", "--self-test"], 0)
+    problems = manifest_problems()
+    if problems:
+        print("manifest:")
+        for item in problems:
+            print(item)
+        return 1
+    with tempfile.TemporaryDirectory() as tmp:
+        target = Path(tmp) / "project"
+        target.mkdir()
+        extra = target / ".cursor" / "skills" / "local-only"
+        extra.mkdir(parents=True)
+        (extra / "SKILL.md").write_text("keep\n")
+        installed = run(["python3", "scripts/install", str(target)])
+        if installed.returncode != 0:
+            sys.stderr.write(installed.stderr)
+            return 1
+        if (extra / "SKILL.md").read_text(encoding="utf-8") != "keep\n":
+            print("install removed a project skill")
+            return 1
+        required = (
+            ".cursor/skills/show-me-your-work/scripts/log.sh",
+            ".cursor/skills/deslop/SKILL.md",
+            ".cursor/skills/control-ui/SKILL.md",
+            ".cursor/skills/control-cli/SKILL.md",
+            ".cursor/skills/poteto-mode/references/interrogate-triggers.md",
+            "scripts/grok-exceptions.json",
+            "scripts/check-paths",
+        )
+        for rel in required:
+            if not (target / rel).is_file():
+                print(f"install missing {rel}")
+                return 1
+        expect(["python3", "scripts/check-grok"], 0, cwd=target, contains="hits: 0")
+        expect(["python3", "scripts/check-paths"], 0, cwd=target, contains="problems: 0")
+        (target / "docs").mkdir()
+        (target / "docs" / "design.md").write_text("op" + "us is a word\n")
+        stale = run(["python3", "scripts/check-grok"], cwd=target)
+        if stale.returncode == 0 or "allowlist stale" not in stale.stdout:
+            sys.stdout.write(stale.stdout)
+            print("edited design.md was skipped")
+            return 1
+    refused = run(["python3", "scripts/install", str(ROOT)])
+    if refused.returncode == 0:
+        print("install accepted this repo")
+        return 1
+    print("verify-setup: ok")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
