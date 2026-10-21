@@ -262,9 +262,28 @@ Each unit ends in a check before the next one starts.
 5. Add `pstack-source.json`, `scripts/check-grok`, `scripts/check-upstream`, and the workflow. Run both scripts.
 6. Add the README, `NOTICE`, and `scripts/install`. Install into a temp directory and confirm the files from the done predicate.
 
+## Follow-up
+
+This section was written before the follow-up edits. The open-risk bullets below stay until the commits that close them.
+
+The trigger list, the computerUse record, and the checks are one domain. A trigger is a named condition in one file. A permit is a path plus the sha256 of the bytes that may contain a banned slug. A plugin path is a relative string in `plugin.json`, resolved from the plugin root, and it has to exist on disk. An upstream change is a commit since the pin, a classification, and a recommendation.
+
+Done for the follow-up, each one falsifiable:
+
+1. `.cursor/skills/poteto-mode/references/interrogate-triggers.md` is the only copy of the trigger list. poteto-mode and Greenfield point at that file.
+2. A computerUse spawn was requested with `grok-4.7-xhigh`. The platform record `originalModelName` was null. The subagent quoted a non-Grok identity sentence. That sentence lives only in `scripts/grok-exceptions.json`. Browser verification goes through control-ui.
+3. The two TypeScript rules apply by glob to TypeScript files, with `alwaysApply: false`.
+4. Plugin path fields resolve to the hoisted directories. A check fails when a path does not exist.
+5. The Grok allowlist is path plus sha256. A file whose hash differs is not skipped.
+6. The product name in the harness comparison table is an explicit allowance. Model ids still fail the check.
+7. `scripts/check-upstream` exits 2 when the fetch or the pin fails. That exit is not the drift exit. `--json` lists commits since the pin, with titles and dates, classifies files, and gives a recommendation. The script does not push.
+8. `scripts/verify-setup` runs the Grok check, the path checks, and an install into a temp project.
+
+Rigor stays high because every later project copies these rules. One writer. The computerUse probe already returned, so this plan does not wait on another experiment. No second command. poteto-mode stays the entry.
+
 ## Open risks
 
-- The platform may ignore the `computerUse` model argument and keep a Claude default for that subagent type. The role line is the part we control.
+- The platform may ignore the `computerUse` model argument and keep a Claude default for that subagent type. The role line is the part we control. The follow-up probe already measured a miss. The fix commit records it.
 - `check-upstream` needs network and git history back to the pin. A shallow clone of only HEAD cannot diff an older pin once upstream moves. The script fetches the pin commit explicitly.
 - Team-kit's two always-apply TypeScript rules land in every project that copies `.cursor/rules`.
 - This file is allowlisted while it contains `grok-allowlist-quote`, so a non-Grok slug pasted here does not fail the check. The check prints that path. A copy of the path without the marker is scanned.
