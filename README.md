@@ -41,7 +41,7 @@ Skills, agents, and rules are loaded from `.cursor/skills`, `.cursor/agents`, an
 
 `/poteto-mode` is the only entry. An empty repo or a new product uses the Greenfield playbook.
 
-- Interrogate runs before implementation on anything that touches money or auth.
+- Interrogate runs before implementation when the slice matches `.cursor/skills/poteto-mode/references/interrogate-triggers.md`. That file is the only copy of the trigger list.
 - `create-verification-skill` runs once the scaffold boots.
 - The trail review runs before the push. The reviewer is a fresh subagent on `grok-4.7-xhigh`, prompted to find faults.
 - If that spawn fails, it is retried once on the same Grok slug. If the retry fails, the parent reviews inline, labels it `self-review`, and includes the verbatim error under Attention.

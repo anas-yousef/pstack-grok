@@ -22,7 +22,7 @@ Remaining triggers:
 - Code crossing a function boundary → the **architect** skill, parallel design exploration before implementing.
 - Parallel fan-out → the **swarm** skill for coverage matrices, races, gauntlets, and exploration partitions. Use **arena** for design or code bakeoffs with base selection and grafting.
 - Contested design → the **interrogate** skill (hostile adversarial review) before shipping.
-- Money or auth, in a new product or an existing one → **interrogate** before implementation. Money means charges, refunds, payouts, credits, and webhooks that move them. Auth means login, sessions, tokens, and permissions.
+- A slice that matches `references/interrogate-triggers.md` → **interrogate** before implementation, in a new product or an existing one. That file is the only copy of the trigger list. Interrogate reviewers stay on the `interrogate reviewers` line and follow the hostile reviewer contract below.
 - Nontrivial multi-step → write the throughput checkpoint (Feature step 3).
 - Any prose surface, your reply to the user included → the **unslop** skill. Write the reply per **Writing the reply**. Agent-facing prose also follows the **create-skill** skill (Cursor's built-in for authoring SKILL.md files).
 - Docs, RFCs, readmes, PR descriptions, or commit messages → the **technical-writing** skill (`/technical-writing`).

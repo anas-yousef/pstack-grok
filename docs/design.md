@@ -164,7 +164,7 @@ Changes inside poteto-mode.
 
 - The playbook list gains Greenfield, file `playbooks/greenfield.md`. An empty repo or a new product routes there, including when Feature would otherwise fit.
 - The todo rule gains a hard stop. If TodoWrite returns `success: false`, the run stops and reports the tool error. It does not continue on a list that never saved.
-- Money or auth routes to interrogate before implementation, in Greenfield and as a non-negotiable so a Feature on an existing payments app hits the same gate. Money means charges, refunds, payouts, credits, and webhooks that move them. Auth means login, sessions, tokens, and permissions.
+- A slice that matches `references/interrogate-triggers.md` routes to interrogate before implementation, in Greenfield and as a non-negotiable so a Feature on an existing payments app hits the same gate. The checklist file is the only copy of the list.
 - The prove-it-works non-negotiable points at `verification-before-completion` and `verify-this`.
 - Bug-fix step 2 points at `systematic-debugging`.
 - The Bugbot non-negotiable points at `receiving-code-review`.
@@ -178,7 +178,7 @@ The playbook file will contain these steps.
 
 1. Open the todo list with these steps copied verbatim. If TodoWrite returns `success: false`, stop and report the tool error. Do not continue.
 2. Name the domain before code, per principle-model-the-domain. When the nouns are still fuzzy, run domain-modeling and write the glossary and ADRs it asks for.
-3. Run interrogate before implementation on any slice that touches money or auth.
+3. Run interrogate before implementation when the slice matches `references/interrogate-triggers.md`.
 4. Boot the smallest scaffold that runs. Then run create-verification-skill once. Later checks use that project skill.
 5. Follow the Feature playbook from architect through verify. Skip `how` when there is no subsystem to read, and record `skip: <reason>` on the todo.
 6. Before each commit, run deslop and no-comments.

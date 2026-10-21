@@ -113,7 +113,7 @@
       "file": ".cursor/skills/poteto-mode/SKILL.md",
       "source": "pstack",
       "upstreamPath": "skills/poteto-mode/SKILL.md",
-      "reason": "Defaults, the hostile reviewer contract, the failure fallback, the Greenfield route, and the TodoWrite stop."
+      "reason": "Defaults, the hostile reviewer contract, the failure fallback, the Greenfield route, the TodoWrite stop, and the single interrogate trigger list."
     },
     {
       "file": ".cursor/skills/poteto-mode/playbooks/authoring-a-skill.md",
@@ -761,7 +761,7 @@
     },
     {
       "file": ".cursor/skills/poteto-mode/SKILL.md",
-      "sha256": "0095f0a90d6a302fd4adf9909e7bf132f5e94a3085306fdd8832c56ab303c706",
+      "sha256": "a8720b302946f2f6a40c2c82ec99c0c1b0244e9d4250518d1713878f02a770f5",
       "source": "pstack",
       "upstreamPath": "skills/poteto-mode/SKILL.md"
     },
@@ -815,7 +815,7 @@
     },
     {
       "file": ".cursor/skills/poteto-mode/playbooks/greenfield.md",
-      "sha256": "f966f5185b4d97a4e8051de5198ca29f22a7dc28454e2cde87a965b215041856",
+      "sha256": "476b23a45555d44d2dd44203bf3eb1aa769dc9d54437147d4336a4287f45b319",
       "source": "local",
       "upstreamPath": null
     },
@@ -914,6 +914,12 @@
       "sha256": "b2d146c770d8d3593e1ef3d77b668039b8e1f78093ea1a86f1d45d7f99614309",
       "source": "pstack",
       "upstreamPath": "skills/poteto-mode/references/bugbot-triage.md"
+    },
+    {
+      "file": ".cursor/skills/poteto-mode/references/interrogate-triggers.md",
+      "sha256": "8f1e80a0cf67ed3060c0f8bc4e73e558832edc19d7c74345fb96d9a35de2d8e0",
+      "source": "local",
+      "upstreamPath": null
     },
     {
       "file": ".cursor/skills/poteto-mode/scripts/bootstrap.ts",

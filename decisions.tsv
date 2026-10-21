@@ -16,3 +16,4 @@ ts	phase	decision	why	evidence	result
 2026-10-21T07:25:03Z	start	started the trigger and risk follow-up	this run appends after the previous run's rows from 2026-10-21T06:18:02Z through 2026-10-21T06:51:21Z	bc-62d2834c-67ee-5b3e-aa79-9edbcc9b2176	open
 2026-10-21T07:25:03Z	frame	defined the follow-up as eight checks	the request names the gates, so the run does not wait for another checkpoint	docs/design.md	open
 2026-10-21T07:25:03Z	probe	computerUse ignored the requested Grok slug	the spawn asked for grok-4.7-xhigh, the platform field originalModelName was null, and the subagent quoted a non-Grok identity sentence	bc-c634e916-7a41-584d-a35d-50514d139b69	unpinned
+2026-10-21T07:26:37Z	route	moved the interrogate triggers into one checklist	playbooks were restating a money and auth gate and missing schema, side effects, and uncertainty	.cursor/skills/poteto-mode/references/interrogate-triggers.md	routed
