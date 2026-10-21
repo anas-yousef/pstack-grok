@@ -1570,6 +1570,12 @@
       "upstreamPath": null
     },
     {
+      "file": "NOTICE",
+      "sha256": "5561665254ccdf526ef799dd80db7eb12e95223384c8c78c1095577cd4ece3e6",
+      "source": "local",
+      "upstreamPath": null
+    },
+    {
       "file": "scripts/check-grok",
       "sha256": "50ae950ba6e86535e15472139c1b9781836a475d0bee7708012b5f78eb7ac11c",
       "source": "local",
@@ -1584,6 +1590,12 @@
     {
       "file": "scripts/grok-allowlist.txt",
       "sha256": "c8fd942b0fa83aee22f37e8cb5133ce5a41ce0b8cbe1aa39dc9798a37f596a1b",
+      "source": "local",
+      "upstreamPath": null
+    },
+    {
+      "file": "scripts/install",
+      "sha256": "41f218ce809328556d678b9ae862989e49d33246f175b95f8de3892bef52f3d9",
       "source": "local",
       "upstreamPath": null
     }

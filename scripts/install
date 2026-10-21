@@ -1,0 +1,45 @@
+#!/usr/bin/env python3
+"""Copy this fork into another project. Extra files already in that project stay."""
+
+from __future__ import annotations
+
+import shutil
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+SCRIPT_NAMES = ("check-grok", "check-upstream", "grok-allowlist.txt", "install")
+
+
+def install(target: Path) -> None:
+    target = target.resolve()
+    if target == ROOT:
+        raise SystemExit("refusing to install into this repo")
+    if not target.is_dir():
+        raise SystemExit(f"target is not a directory: {target}")
+    cursor = ROOT / ".cursor"
+    for src in cursor.rglob("*"):
+        if not src.is_file():
+            continue
+        dest = target / ".cursor" / src.relative_to(cursor)
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(src, dest)
+    for name in ("pstack-source.json", "NOTICE"):
+        shutil.copy2(ROOT / name, target / name)
+    scripts = target / "scripts"
+    scripts.mkdir(parents=True, exist_ok=True)
+    for name in SCRIPT_NAMES:
+        shutil.copy2(ROOT / "scripts" / name, scripts / name)
+
+
+def main() -> int:
+    if len(sys.argv) != 2 or sys.argv[1] in {"-h", "--help"}:
+        print("usage: scripts/install <project-dir>", file=sys.stderr)
+        return 2 if len(sys.argv) != 2 else 0
+    install(Path(sys.argv[1]))
+    print(f"installed into {Path(sys.argv[1]).resolve()}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

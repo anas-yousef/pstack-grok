@@ -7,3 +7,4 @@ ts	phase	decision	why	evidence	result
 2026-10-21T06:22:35Z	design	left domain-modeling unpatched	the codebase-design call is in the tdd skill this fork does not vendor	docs/design.md	corrected
 2026-10-21T06:23:50Z	route	added the Greenfield playbook inside poteto-mode	an empty product was taking Feature and skipping the money review, the verification skill, and the trail review	.cursor/skills/poteto-mode/playbooks/greenfield.md	routed
 2026-10-21T06:26:53Z	checks	the Grok check and the upstream report both exit 0	the pins match upstream head today, so the report shows no drift and lists the 26 local patches	scripts/check-upstream	hits 0, drift none
+2026-10-21T06:27:52Z	install	proved the copy install in a temp project	the temp project kept an extra skill, gained log.sh, deslop, control-ui, control-cli, and the four reviewer role lines, and the script refused to target this repo	/tmp/adopt-proof	files present, grok check hits 0
