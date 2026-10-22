@@ -14,7 +14,7 @@ Every candidate gets the same prompt, so the prompt is the contract.
 
 1. State the artifact each candidate is producing.
 2. Derive the rubric, 3-6 concrete gradeable criteria for what success looks like on *this* task. It is the picker's tool in Phase D. Candidates only see the task.
-3. Pick the runners. Use the `arena runners` line in `~/.cursor/rules/pstack-models.mdc`. If the rule or that line is missing, default to one runner on `grok-4.7-xhigh-fast`. An `auto` or `inherit-parent` entry in this line or the cross-judge line means the parent model, so omit `model` for it. If the Task tool rejects a configured entry, retry that seat once on `grok-4.7-xhigh-fast` and say so. If the retry fails, follow the reviewer fallback in the **poteto-mode** skill. Spawn more runners when the arena covers multiple design directions. Use the same model N times when the work is generation-bound rather than judgment-sensitive. Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section of the **poteto-mode** skill.
+3. Pick the runners. Use the `arena runners` line in the project rule `.cursor/rules/pstack-models.mdc` as the model pool. If the rule or that line is missing, the pool is `grok-4.7-xhigh-fast`. Spawn at least two runners, cycling through the pool's entries, so a one-entry line still gives a real bakeoff. An `auto` or `inherit-parent` entry in this line or the cross-judge line means the parent model, so omit `model` for it. That is Grok only while the parent chat runs on Grok. If the Task tool rejects a configured entry, retry that seat once on `grok-4.7-xhigh-fast` and say so. If the retry fails, follow the reviewer fallback in the **poteto-mode** skill. Spawn more runners when the arena covers multiple design directions. When runners share one slug, give each a different direction in its prompt, or the candidates converge. Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section of the **poteto-mode** skill.
 4. Give each candidate its own output location (a git worktree where possible, otherwise `/tmp/arena-<slug>/candidate-<n>/`), per the **separate-before-serializing-shared-state** principle skill.
 
 ## Phase B: Fan out
@@ -25,7 +25,7 @@ If a candidate produces no output, proceed with N-1 and note the dropout.
 
 ## Phase C: Cross-judge
 
-After all Phase B candidates complete, choose one model from the `arena cross-judge pool` line in `~/.cursor/rules/pstack-models.mdc`. If the rule or that line is missing, use `grok-4.7-xhigh`. Spawn one readonly judge subagent on that model. Prompt it to find faults, per the reviewer contract in the **poteto-mode** skill. It sees the rubric and the candidates by path label, scores each criterion, and recommends a base with rationale. It runs in parallel with your reading in Phase D. Don't spawn it while candidates are still writing.
+After all Phase B candidates complete, choose one model from the `arena cross-judge pool` line in the project rule `.cursor/rules/pstack-models.mdc`. If the rule or that line is missing, use `grok-4.7-xhigh`. Spawn one readonly judge subagent on that model. Prompt it to find faults, per the reviewer contract in the **poteto-mode** skill. It sees the rubric and the candidates by path label, scores each criterion, and recommends a base with rationale. It runs in parallel with your reading in Phase D. Don't spawn it while candidates are still writing.
 
 ## Phase D: Pick a base
 

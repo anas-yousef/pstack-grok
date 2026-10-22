@@ -148,7 +148,7 @@ You rarely need more words. You need the right name, and [the principles page](.
 /bro
 ```
 
-That's the whole prompt. [`/bro`](../../skills/bro/SKILL.md) restates the last message like one human talking to another, no jargon, shorter. Use it when a reply is technically thorough and you still don't know what it said.
+That's the whole prompt. [`/bro`](../../../skills/bro/SKILL.md) restates the last message like one human talking to another, no jargon, shorter. Use it when a reply is technically thorough and you still don't know what it said.
 
 ## Catch up on a chat you left running
 
@@ -156,7 +156,7 @@ That's the whole prompt. [`/bro`](../../skills/bro/SKILL.md) restates the last m
 /ketchup
 ```
 
-[`/ketchup`](../../skills/ketchup/SKILL.md) tells you in plain words what changed since your last message, then lists each call waiting on you with its pick, evidence, and risk. It changes nothing while it reports.
+[`/ketchup`](../../../skills/ketchup/SKILL.md) tells you in plain words what changed since your last message, then lists each call waiting on you with its pick, evidence, and risk. It changes nothing while it reports.
 
 ## The pitfalls
 
@@ -171,9 +171,9 @@ That's the whole prompt. [`/bro`](../../skills/bro/SKILL.md) restates the last m
 - **Correcting the same mistake by hand.** A correction in chat helps one run. `/correct` fixes the repo so no later run repeats it.
 - **Using `/arena` for coverage.** `/arena` repeats one design or code brief, then picks a base and grafts the best parts. `/swarm` partitions slices or declared race arms and aggregates one report.
 - **Accepting every review comment.** Bots and humans both file real catches and noise in one list. `/interrogate` sorts findings into act-on and dismissed buckets with reasons, and you can override either way.
-- **Treating `auto` as a model slug.** `auto` and `inherit-parent` mean "omit the model field so the subagent inherits the parent chat model." [Setup](./01-setup.md) covers the roles.
+- **Treating `auto` as a model slug.** `auto` and `inherit-parent` mean "omit the model field so the subagent inherits the parent chat model." That is Grok only while the chat runs on Grok, so the project rule rejects them. [Setup](./01-setup.md) covers the roles.
 - **Reporting success off a green build.** A build proves it compiles. Ask for the real command, flow, stored value, or profile, and expect the evidence in the reply.
-- **Writing a `SKILL.md` freehand.** Route it through the [Authoring or modifying a skill playbook](../../skills/poteto-mode/playbooks/authoring-a-skill.md) so validation and review happen.
+- **Writing a `SKILL.md` freehand.** Route it through the [Authoring or modifying a skill playbook](../../../skills/poteto-mode/playbooks/authoring-a-skill.md) so validation and review happen.
 
 That's the guide. If you skipped ahead, go back to [setup](./01-setup.md) and run one real task. The habits stick from use, not from reading.
 

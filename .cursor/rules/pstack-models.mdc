@@ -3,8 +3,11 @@ description: pstack per-role model choices (overrides skill defaults)
 alwaysApply: true
 ---
 # pstack model configuration. One line per role. Delete a line to fall back to the skill default.
-# `inherit-parent` or `auto` as a value: the role runs on the parent chat model (omit Task `model`). Alias entries in a panel list still count toward its fan-out.
-# computerUse is blocked. Do not spawn it, and do not rewrite `blocked` to a slug. Say the attempt is blocked only when the tool result contains the hook deny sentence. If a reply came back, say the call was not denied. Browser verification uses control-ui on Grok.
+# Every value is a grok-* slug or `blocked`. scripts/check-grok fails on anything else.
+# This fork assumes the parent chat runs on Grok. `inherit-parent`, `auto`, and `unpinned` run a role on the parent chat model, so they are not allowed in this project rule. Put one in a personal ~/.cursor/rules/pstack-models.mdc only while Cursor runs on Grok.
+# Code roles run on -fast by choice. Reviewer and judge roles run on grok-4.7-xhigh, and are never lowered or switched to -fast.
+# interrogate runs one reviewer per entry. arena and architect treat their list as a model pool and always spawn at least two runners.
+# computerUse is blocked. Do not rewrite `blocked` to a slug. Locally the subagentStart hook denies it. In a Cursor cloud agent the hook does not fire, and Cursor's helper runs the server-pinned model in scripts/grok-exceptions.json. That helper is the one allowed, logged, paid exception. Browser checks use control-ui on Grok.
 # budget: large (xhigh)
 feature, refactoring: grok-4.7-xhigh-fast
 bug-fix: grok-4.7-xhigh-fast

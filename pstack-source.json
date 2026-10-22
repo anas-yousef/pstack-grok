@@ -246,6 +246,60 @@
       "source": "superpowers",
       "upstreamPath": "skills/systematic-debugging/SKILL.md",
       "reason": "Dead superpowers: references point at the vendored tdd and verification-before-completion skills."
+    },
+    {
+      "file": ".cursor/pstack/docs/guide/02-poteto-mode.md",
+      "source": "pstack",
+      "upstreamPath": "docs/guide/02-poteto-mode.md",
+      "reason": "Links point at the hoisted .cursor/skills directory."
+    },
+    {
+      "file": ".cursor/pstack/docs/guide/03-understand.md",
+      "source": "pstack",
+      "upstreamPath": "docs/guide/03-understand.md",
+      "reason": "Links point at the hoisted .cursor/skills directory."
+    },
+    {
+      "file": ".cursor/pstack/docs/guide/05-build-and-clean.md",
+      "source": "pstack",
+      "upstreamPath": "docs/guide/05-build-and-clean.md",
+      "reason": "Links point at the hoisted .cursor/skills and .cursor/agents directories."
+    },
+    {
+      "file": ".cursor/pstack/docs/guide/06-verify-and-ship.md",
+      "source": "pstack",
+      "upstreamPath": "docs/guide/06-verify-and-ship.md",
+      "reason": "Links point at the hoisted .cursor/skills directory."
+    },
+    {
+      "file": ".cursor/pstack/docs/guide/08-principles.md",
+      "source": "pstack",
+      "upstreamPath": "docs/guide/08-principles.md",
+      "reason": "Links point at the hoisted .cursor/skills directory."
+    },
+    {
+      "file": ".cursor/pstack/docs/guide/09-make-it-yours.md",
+      "source": "pstack",
+      "upstreamPath": "docs/guide/09-make-it-yours.md",
+      "reason": "Links point at the hoisted .cursor/skills directory."
+    },
+    {
+      "file": ".cursor/pstack/docs/guide/10-recipes-and-pitfalls.md",
+      "source": "pstack",
+      "upstreamPath": "docs/guide/10-recipes-and-pitfalls.md",
+      "reason": "Links point at the hoisted .cursor/skills directory. The alias pitfall says aliases are Grok only on a Grok parent."
+    },
+    {
+      "file": ".cursor/pstack/docs/guide/README.md",
+      "source": "pstack",
+      "upstreamPath": "docs/guide/README.md",
+      "reason": "Links point at the hoisted .cursor/skills directory."
+    },
+    {
+      "file": ".cursor/skills/recall/SKILL.md",
+      "source": "pstack",
+      "upstreamPath": "skills/recall/SKILL.md",
+      "reason": "Chat-history miners use the swarm workers Grok line instead of an unnamed cheap model."
     }
   ],
   "files": [
@@ -413,67 +467,67 @@
     },
     {
       "file": ".cursor/pstack/docs/guide/01-setup.md",
-      "sha256": "35f1b4eeca4f640e2b13db6741f7202bb9c54ebc10edb433be15961e29db5b72",
+      "sha256": "aa01c328756271731371bdb2af291a6de2955e0ab3bb96713765151e027e2432",
       "source": "pstack",
       "upstreamPath": "docs/guide/01-setup.md"
     },
     {
       "file": ".cursor/pstack/docs/guide/02-poteto-mode.md",
-      "sha256": "d168829def6c410b1afd87d1a6eb297df385f89faa9b31260684074e9e4eb52a",
+      "sha256": "e342a53c9074c6c6584397e2fd7afc3ef3130a57ab8d18c2e08ea404e19fbade",
       "source": "pstack",
       "upstreamPath": "docs/guide/02-poteto-mode.md"
     },
     {
       "file": ".cursor/pstack/docs/guide/03-understand.md",
-      "sha256": "1ac97cbad51c15c18b3aade8634d81c8bbe50d2b3135c75c113ddb2a6dcb7af0",
+      "sha256": "13276b76dfe3730076cbb22501b42af83c974bf86a96e1f8400f9a27eba932af",
       "source": "pstack",
       "upstreamPath": "docs/guide/03-understand.md"
     },
     {
       "file": ".cursor/pstack/docs/guide/04-design.md",
-      "sha256": "78245c966cca3594e032a80804ab5b275dd3a1be70bb33675fb218eb494bff8e",
+      "sha256": "b0cb936eb75767ddf81c25166411028e4c8b3e890b87b2b03ad88c07d9ea0d9e",
       "source": "pstack",
       "upstreamPath": "docs/guide/04-design.md"
     },
     {
       "file": ".cursor/pstack/docs/guide/05-build-and-clean.md",
-      "sha256": "1284e80595ae4f214dfa7c5c5f7758ff90a47b3273aa7b8142e51e574f5c5290",
+      "sha256": "a70916f2df1c6f225dbd6e8bd3402a0300cfd2948e0ae452b4acf04a7aa4179c",
       "source": "pstack",
       "upstreamPath": "docs/guide/05-build-and-clean.md"
     },
     {
       "file": ".cursor/pstack/docs/guide/06-verify-and-ship.md",
-      "sha256": "5c16c88bf377bf5ea5ffd4cd9dc1a83f19a0415090cc4645865d16a5500d1cab",
+      "sha256": "04efdb8c2047ae5cd1f4daa54471648637b879b8ccbef13dcdaa2ce6cf6fcbdc",
       "source": "pstack",
       "upstreamPath": "docs/guide/06-verify-and-ship.md"
     },
     {
       "file": ".cursor/pstack/docs/guide/07-overnight.md",
-      "sha256": "bf3f02c7192881cbd5bb7c75c90c507bb2cfe04690caab9be0d2a0311ff2d704",
+      "sha256": "8d466133d6b4d7030c9ce85eed28839449cf3ecafac3f5d1beb52971aba1782e",
       "source": "pstack",
       "upstreamPath": "docs/guide/07-overnight.md"
     },
     {
       "file": ".cursor/pstack/docs/guide/08-principles.md",
-      "sha256": "0b26b85292f0c09768abe727c9e92987dbf81f5b439a4871034c2fd1c4cb1723",
+      "sha256": "4c6429527b4b47b8834618b44c20a0a3484d607ee98e40ced9e5ecd9878d8f87",
       "source": "pstack",
       "upstreamPath": "docs/guide/08-principles.md"
     },
     {
       "file": ".cursor/pstack/docs/guide/09-make-it-yours.md",
-      "sha256": "50642f7f894988f7c263700f46478e7aed7eb94a257683350d91a9a0d70dc141",
+      "sha256": "0139d01dfcf4ef443e843bc2fcd983fac51d302faa8783632ca3720a9ddf4bdb",
       "source": "pstack",
       "upstreamPath": "docs/guide/09-make-it-yours.md"
     },
     {
       "file": ".cursor/pstack/docs/guide/10-recipes-and-pitfalls.md",
-      "sha256": "006d8282db567aeae57398d5de1f3a802af2e3ac1a1f564198c384183fca3f92",
+      "sha256": "e589378e625a6144462f3398514c67638a5eea2be62dc78aa9fd70fe8914d3a3",
       "source": "pstack",
       "upstreamPath": "docs/guide/10-recipes-and-pitfalls.md"
     },
     {
       "file": ".cursor/pstack/docs/guide/README.md",
-      "sha256": "5c888d034d38f380789fad57c2c6fa7307ace803a0622cdde9e57fa2afe182de",
+      "sha256": "f5366f932c333c1ff850772052f4a31aeb49a61fcdff8e3688633be099bfadec",
       "source": "pstack",
       "upstreamPath": "docs/guide/README.md"
     },
@@ -515,7 +569,7 @@
     },
     {
       "file": ".cursor/pstack/docs/harness/claude-code.md",
-      "sha256": "4d330622c1e2442913968770f337c934e9d5b9bacbbc29b59572ca6e18c0a67a",
+      "sha256": "0971589de7cea0164d086f18f1d7092b03a1456ba7938d466d72ac4c7ba0ed4e",
       "source": "pstack",
       "upstreamPath": "docs/harness/claude-code.md"
     },
@@ -533,7 +587,7 @@
     },
     {
       "file": ".cursor/rules/pstack-models.mdc",
-      "sha256": "693bc90379fbfc3c5ac7a66df49014cbdf21a5d0aeed3dcb97ac8a49b17571cd",
+      "sha256": "7c9af08c66f02790e34f518c219d2540bb1cc0979568e29fcbc766a6231b12e7",
       "source": "local",
       "upstreamPath": null
     },
@@ -569,7 +623,7 @@
     },
     {
       "file": ".cursor/skills/arena/SKILL.md",
-      "sha256": "fe0ec692c1c4caff4f5989a46740e34727d3d1a4f27c382581f9b657413beebd",
+      "sha256": "21a87d4a7277ed502529be4b8bff89cdea4ecbde7f2652c117b8b605d93eef35",
       "source": "pstack",
       "upstreamPath": "skills/arena/SKILL.md"
     },
@@ -707,7 +761,7 @@
     },
     {
       "file": ".cursor/skills/how/SKILL.md",
-      "sha256": "f37ef41fb1692fc15a3400dbd14c1203bb444c8d537c137cfb43a2587aa1cb18",
+      "sha256": "0366226dfa1eb8da99b35f7f8fb503698183ff69af1d5f0568632f1cb40913d2",
       "source": "pstack",
       "upstreamPath": "skills/how/SKILL.md"
     },
@@ -809,7 +863,7 @@
     },
     {
       "file": ".cursor/skills/poteto-help/SKILL.md",
-      "sha256": "0f94f8358dd781f2991b01241461e09943ed30bfb79afd989ee27eb1899c65f9",
+      "sha256": "ed1be2badd0950ead53a7e495ff3f0de3c991c3d031ffabbda777113d4e4cabb",
       "source": "pstack",
       "upstreamPath": "skills/poteto-help/SKILL.md"
     },
@@ -827,7 +881,7 @@
     },
     {
       "file": ".cursor/skills/poteto-mode/SKILL.md",
-      "sha256": "a67afd9ba415ffb6c543a9bd3db82f16ae4994a7188bb2ba86d6b23fa3246153",
+      "sha256": "404907d6a6ffa31562ad55621dd4979fba2833993814b1761293d43a8c70ca58",
       "source": "pstack",
       "upstreamPath": "skills/poteto-mode/SKILL.md"
     },
@@ -1283,7 +1337,7 @@
     },
     {
       "file": ".cursor/skills/recall/SKILL.md",
-      "sha256": "b0ceb996259c3404532f61e4b010df4e3d80d7ddbed85b3c302895723eb62a89",
+      "sha256": "922e9fb160e7c15176f3888d6855f1d3f735b1b9e3ce5e26d0286058afd76aab",
       "source": "pstack",
       "upstreamPath": "skills/recall/SKILL.md"
     },
@@ -1295,7 +1349,7 @@
     },
     {
       "file": ".cursor/skills/reflect/SKILL.md",
-      "sha256": "e5a75406b9bb4df43160b036112741c46aa2b271c4f53db536753629fdcd757d",
+      "sha256": "1ce93a67f1d9b743f5813bb8429e0c32065588eabd8755c5e4e899cf4f6a5c7b",
       "source": "pstack",
       "upstreamPath": "skills/reflect/SKILL.md"
     },
@@ -1337,7 +1391,7 @@
     },
     {
       "file": ".cursor/skills/setup-pstack/SKILL.md",
-      "sha256": "2e6491ef68d1acd4a19d61143f7947e5970c3ad830f8d11c1a27c0cd9e5a2896",
+      "sha256": "46a8ba944e806eca2e9a2277e0925bedd81416c495bc7bf520ce7d6271e1438d",
       "source": "pstack",
       "upstreamPath": "skills/setup-pstack/SKILL.md"
     },
@@ -1349,7 +1403,7 @@
     },
     {
       "file": ".cursor/skills/show-me-your-work/SKILL.md",
-      "sha256": "43d217160d9ffb6e004638ba632fc7b447c1c4cca1272620d1e9dd37bb1b578d",
+      "sha256": "ccd100e2985e3a0762f048c9d92fe170ab056f9b826f902a68c81fd60eee15f0",
       "source": "pstack",
       "upstreamPath": "skills/show-me-your-work/SKILL.md"
     },
@@ -1367,7 +1421,7 @@
     },
     {
       "file": ".cursor/skills/swarm/SKILL.md",
-      "sha256": "0d230e698be72feedbf34ddedd7b27b965074246f102598925dbacd5e6fc57fd",
+      "sha256": "42b9403a454765384d55fce5b8ef4bd0ceaebf958f0fc1bbb8ce844cf91b55b7",
       "source": "pstack",
       "upstreamPath": "skills/swarm/SKILL.md"
     },
@@ -1505,7 +1559,7 @@
     },
     {
       "file": ".cursor/skills/why/SKILL.md",
-      "sha256": "5ab7ad26c933e740ea829854d48616c5cc6ea576c40a94fe829cda51e45e0a87",
+      "sha256": "9f3f40a83fb078f804728c31c87d35f2f554779c6de964d78e32f35a86614f12",
       "source": "pstack",
       "upstreamPath": "skills/why/SKILL.md"
     },
