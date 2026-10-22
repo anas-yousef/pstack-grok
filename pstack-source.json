@@ -395,7 +395,7 @@
     },
     {
       "file": ".cursor/pstack/README.md",
-      "sha256": "7b76a9d74760e7fddcae86d87f031c999ac1ef2a617dc4560658ae2192624a33",
+      "sha256": "ae71644cb6ac496974963dfae23be23c417e0c6eaa061e2523e6fea583744c81",
       "source": "pstack",
       "upstreamPath": "README.md"
     },
@@ -893,9 +893,15 @@
     },
     {
       "file": ".cursor/skills/poteto-mode/SKILL.md",
-      "sha256": "404907d6a6ffa31562ad55621dd4979fba2833993814b1761293d43a8c70ca58",
+      "sha256": "92e970a75176146fbfcffde72d0a7e057851d36ba23f6e3e251febcb18178a11",
       "source": "pstack",
       "upstreamPath": "skills/poteto-mode/SKILL.md"
+    },
+    {
+      "file": ".cursor/skills/poteto-mode/playbooks/auth-payments-security.md",
+      "sha256": "1f3d8fa475cd2fdd82bf003ce45d4b2babf36a7332c00fbfddc23399a1d849ec",
+      "source": "local",
+      "upstreamPath": null
     },
     {
       "file": ".cursor/skills/poteto-mode/playbooks/authoring-a-skill.md",
@@ -934,10 +940,46 @@
       "upstreamPath": "skills/poteto-mode/playbooks/bug-fix.md"
     },
     {
+      "file": ".cursor/skills/poteto-mode/playbooks/data-deletion-privacy.md",
+      "sha256": "0474159e2ba7dc43f81268acef42fec76b5d11d8b057f572851485ccadaae30a",
+      "source": "local",
+      "upstreamPath": null
+    },
+    {
+      "file": ".cursor/skills/poteto-mode/playbooks/db-migration.md",
+      "sha256": "0e438ee2d6d560de03526f20ca67d2808f4f03a856d391795a88c8c432dabd03",
+      "source": "local",
+      "upstreamPath": null
+    },
+    {
+      "file": ".cursor/skills/poteto-mode/playbooks/dependency-upgrade.md",
+      "sha256": "9d6eb226d70b60c7fbf1e6e827d7ab0f43b2f495fd23977c1c159abdde469d24",
+      "source": "local",
+      "upstreamPath": null
+    },
+    {
+      "file": ".cursor/skills/poteto-mode/playbooks/deploy-and-rollback.md",
+      "sha256": "ed7da4376eb327134a16b0a68b66f0027a7f53def6a9691d6793c2cff90607e6",
+      "source": "local",
+      "upstreamPath": null
+    },
+    {
+      "file": ".cursor/skills/poteto-mode/playbooks/docs.md",
+      "sha256": "99c4d12b9fd85a45f4dad2f8002c14123beffc71dcb4dc2e08fdbb943e6c053a",
+      "source": "local",
+      "upstreamPath": null
+    },
+    {
       "file": ".cursor/skills/poteto-mode/playbooks/eval.md",
       "sha256": "1477c497166afd4ee296e2b29a7adab2ee97a28c78768f42166de70332d0223a",
       "source": "pstack",
       "upstreamPath": "skills/poteto-mode/playbooks/eval.md"
+    },
+    {
+      "file": ".cursor/skills/poteto-mode/playbooks/external-side-effects.md",
+      "sha256": "05b84308d3257657067310047be7e19c3ab684a8f6efaf9a20dbc32a62c50128",
+      "source": "local",
+      "upstreamPath": null
     },
     {
       "file": ".cursor/skills/poteto-mode/playbooks/feature.md",
@@ -947,7 +989,7 @@
     },
     {
       "file": ".cursor/skills/poteto-mode/playbooks/greenfield.md",
-      "sha256": "3c7d30d09531b077cb3f7a18ddcb810b150fc8906319b153e370c86dc79286bf",
+      "sha256": "4162e320bc0b7bfc5b7a0a90c36360ddb85d9b0345608d133e22ff8f48a476bc",
       "source": "local",
       "upstreamPath": null
     },
@@ -956,6 +998,12 @@
       "sha256": "942c1565b75ad02a2cb6230dd7c1ebd87e19f59a00319ebac2b6616007bf018f",
       "source": "pstack",
       "upstreamPath": "skills/poteto-mode/playbooks/hillclimb.md"
+    },
+    {
+      "file": ".cursor/skills/poteto-mode/playbooks/incident-hotfix.md",
+      "sha256": "2a5e890049503dcaf58213c411ece3f3ee60940f4d7e99a1ecf3b5fd364aa7c5",
+      "source": "local",
+      "upstreamPath": null
     },
     {
       "file": ".cursor/skills/poteto-mode/playbooks/investigation.md",
@@ -968,6 +1016,12 @@
       "sha256": "5f239457bfdec3345c92caa06c59bf0257c662b89353f25a1c02ea942dcd00b1",
       "source": "pstack",
       "upstreamPath": "skills/poteto-mode/playbooks/multi-phase-plan.md"
+    },
+    {
+      "file": ".cursor/skills/poteto-mode/playbooks/observability.md",
+      "sha256": "b6c179fe9bb2245d1e3ea6b3899e78643646005351ffe027d05124356d02df92",
+      "source": "local",
+      "upstreamPath": null
     },
     {
       "file": ".cursor/skills/poteto-mode/playbooks/opening-a-pr.md",
@@ -1006,10 +1060,22 @@
       "upstreamPath": "skills/poteto-mode/playbooks/refactoring.md"
     },
     {
+      "file": ".cursor/skills/poteto-mode/playbooks/retries-concurrency-idempotency.md",
+      "sha256": "f764e0a9c462720abe0b348f8739008a6fc720864f19462df5e720780384f8f3",
+      "source": "local",
+      "upstreamPath": null
+    },
+    {
       "file": ".cursor/skills/poteto-mode/playbooks/runtime-forensics.md",
       "sha256": "3463372b578c28f27c236f2627f09b5c5b1e85e86db7399fb984f3892fb450f5",
       "source": "pstack",
       "upstreamPath": "skills/poteto-mode/playbooks/runtime-forensics.md"
+    },
+    {
+      "file": ".cursor/skills/poteto-mode/playbooks/secrets-and-env.md",
+      "sha256": "096f56fd65ff4029fc7a67b02a550d1936634353212a2fc65c2a7b0c6195b54a",
+      "source": "local",
+      "upstreamPath": null
     },
     {
       "file": ".cursor/skills/poteto-mode/playbooks/session-pickup.md",
@@ -1024,10 +1090,22 @@
       "upstreamPath": "skills/poteto-mode/playbooks/shipping.md"
     },
     {
+      "file": ".cursor/skills/poteto-mode/playbooks/testing-strategy.md",
+      "sha256": "7e1200c73d553f3b330df10d2c0611b27758e9c368e88ef56234ea26805f1300",
+      "source": "local",
+      "upstreamPath": null
+    },
+    {
       "file": ".cursor/skills/poteto-mode/playbooks/trace-forensics.md",
       "sha256": "ef0bbf79856a4ae1a8993d54c1a1da159cb97623941b652c0069cf75a017e0f5",
       "source": "pstack",
       "upstreamPath": "skills/poteto-mode/playbooks/trace-forensics.md"
+    },
+    {
+      "file": ".cursor/skills/poteto-mode/playbooks/upstream-sync.md",
+      "sha256": "e7a65b825bd5c51c268a8bfdfe68260ad3b0cb55cc67fe852d9b7cc366aaebfa",
+      "source": "local",
+      "upstreamPath": null
     },
     {
       "file": ".cursor/skills/poteto-mode/playbooks/visual-parity.md",

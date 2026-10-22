@@ -1,0 +1,16 @@
+### Auth, payments, and security
+
+**You own the trust boundary. Write down what an attacker wants, then prove they cannot get it.**
+
+1. Write a five-line threat model in the decision trail. Assets (accounts, money, personal data). Actors (anonymous visitor, signed-in user, another tenant, an attacker with a leaked token). Entry points (routes, webhooks, jobs, admin pages). Trust boundaries. The worst outcome. Run **interrogate** with it attached, per `../references/interrogate-triggers.md`.
+2. Authorize on the server for every request. Scope each query by the owner or tenant id. A hidden button is not access control. Write the test that user A cannot read, change, or delete user B's record.
+3. Use the auth provider's library for sessions and passwords. Do not write your own crypto. Sessions are `httpOnly`, `Secure`, `SameSite` cookies, rotate on login, and are invalidated server-side on logout. Tokens never go in URLs or logs. If you hash passwords yourself, use argon2id or bcrypt.
+4. Treat input as hostile at the boundary, per **principle-boundary-discipline**. Parse it with a schema, use parameterized queries, escape output, add CSRF protection to cookie-authenticated writes, and rate-limit login, signup, password reset, and public webhooks.
+5. Payments run on Lemon Squeezy. It is the merchant of record, so it collects VAT and sales tax. Build the whole flow in test mode first, with test-mode API keys and a separate test webhook. Live keys exist only in production. See `secrets-and-env.md`.
+6. Never trust the client for a price or a plan. Create checkouts on the server from a variant id, and read amounts and status from the webhook or the API.
+7. Verify every webhook before parsing it. Compute an HMAC-SHA256 hex digest of the raw request body with the webhook signing secret, and compare it to the `X-Signature` header with a constant-time compare. Reject a mismatch. Confirm the header name and scheme against the current Lemon Squeezy webhook docs once, because this playbook names them from memory.
+8. Make the webhook handler idempotent. Store a key per processed event (event name, object id, and the object's `updated_at`) under a unique constraint, and skip duplicates. Return 2xx fast and do slow work in a job. Events can arrive out of order, so set access from the latest subscription state, fetched from the API when in doubt, not from deltas. See `retries-concurrency-idempotency.md`.
+9. Map subscription status to access in one function, and test it with a table of every status the provider sends. Decide what refunds, cancellations, and failed renewals do, and log each change.
+10. Prove the negative paths. Unauthenticated request, wrong tenant, tampered signature, replayed webhook, and expired session each get a test that fails closed. Run the full checkout, webhook, and access flow in test mode with **control-ui**. Before launch, make one small live purchase and refund it.
+
+**Reply:** the threat model, each negative test and its result, the test-mode run evidence, and what is still open before live.

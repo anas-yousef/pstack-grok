@@ -37,7 +37,7 @@ pick `/poteto-mode` from the `/` menu before you type your task, so cursor attac
 
 ### just use [`/poteto-mode`](../skills/poteto-mode/SKILL.md)
 
-this skill is the main shortcut. i use it whenever i need the agent to do rigorous engineering work. it comes with twenty-three playbooks:
+this skill is the main shortcut. i use it whenever i need the agent to do rigorous engineering work. it comes with thirty-seven playbooks:
 
 ```
 /poteto-mode this pr has a subtle bug where the scroll drifts every 750ms even when idle. repro
@@ -50,7 +50,7 @@ morning.
 ```
 
 <details>
-<summary>the twenty-three playbooks</summary>
+<summary>the thirty-seven playbooks</summary>
 
 | playbook | for |
 |---|---|
@@ -60,6 +60,7 @@ morning.
 | [hillclimb](../skills/poteto-mode/playbooks/hillclimb.md) | sustained, scientific improvement of one metric against a target, looping hypotheses with before/after measurement and one commit per accepted win. |
 | [runtime forensics](../skills/poteto-mode/playbooks/runtime-forensics.md) | diagnose a live symptom (leak, idle-cpu spin, glitch) from instrumentation. |
 | [trace forensics](../skills/poteto-mode/playbooks/trace-forensics.md) | diagnose a captured profiling artifact (cpuprofile, trace, spindump, heap snapshot). |
+| [greenfield](../skills/poteto-mode/playbooks/greenfield.md) | an empty repo or a new product, from domain names through the first deploy. |
 | [feature](../skills/poteto-mode/playbooks/feature.md) | new or changed behavior, built from a named data shape. |
 | [refactoring](../skills/poteto-mode/playbooks/refactoring.md) | a behavior-preserving change to structure or shape. |
 | [prototype](../skills/poteto-mode/playbooks/prototype.md) | a throwaway sketch to make a design or behavioral decision cheaply, or to settle an empirical fork by observing it. |
@@ -77,6 +78,19 @@ morning.
 | [multi-phase plan](../skills/poteto-mode/playbooks/multi-phase-plan.md) | work that spans phases or stacked PRs. |
 | [worktree cleanup](../skills/poteto-mode/playbooks/worktree-cleanup.md) | reclaim disk by pruning merged or abandoned worktrees and stale ios simulators, safety-gated. |
 | [opening a pr](../skills/poteto-mode/playbooks/opening-a-pr.md) | open a ready pr from small ordered commits with a conventional commits title and a briefing-style body. invoked at the end of every other playbook. |
+| [db migration](../skills/poteto-mode/playbooks/db-migration.md) | expand, backfill, switch, contract, each phase reversible. |
+| [auth, payments, and security](../skills/poteto-mode/playbooks/auth-payments-security.md) | threat model, server-side authorization, lemon squeezy test mode and webhook signatures. |
+| [data deletion and privacy](../skills/poteto-mode/playbooks/data-deletion-privacy.md) | data map, idempotent deletion across every store, retention. |
+| [external side effects](../skills/poteto-mode/playbooks/external-side-effects.md) | dry-run, sandbox, and live modes before anything reaches a real person. |
+| [retries, concurrency, and idempotency](../skills/poteto-mode/playbooks/retries-concurrency-idempotency.md) | invariants the database enforces, bounded retries, a duplicate test. |
+| [testing strategy](../skills/poteto-mode/playbooks/testing-strategy.md) | the cheapest test level that proves each slice of new behavior. |
+| [docs](../skills/poteto-mode/playbooks/docs.md) | when readme, env example, changelog, and runbook change. |
+| [secrets and env](../skills/poteto-mode/playbooks/secrets-and-env.md) | inventory, scanning, per-environment keys, rotation. |
+| [deploy and rollback](../skills/poteto-mode/playbooks/deploy-and-rollback.md) | rollback first, preview and production smoke, a watch window. |
+| [incident and hotfix](../skills/poteto-mode/playbooks/incident-hotfix.md) | mitigate and revert first, then fix, repair, and add the check. |
+| [dependency upgrade](../skills/poteto-mode/playbooks/dependency-upgrade.md) | one upgrade per pr, changelog read, real-app check. |
+| [observability](../skills/poteto-mode/playbooks/observability.md) | error tracking, structured logs, health check, few real alerts. |
+| [upstream sync](../skills/poteto-mode/playbooks/upstream-sync.md) | take upstream changes into this fork, or this fork into a product. |
 
 </details>
 
