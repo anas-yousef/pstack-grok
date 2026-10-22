@@ -911,13 +911,13 @@
     },
     {
       "file": ".cursor/skills/poteto-mode/SKILL.md",
-      "sha256": "92e970a75176146fbfcffde72d0a7e057851d36ba23f6e3e251febcb18178a11",
+      "sha256": "f1feb585ed9f530ac44d6cf882d97fd935943bd8804614b659e56073141c42d9",
       "source": "pstack",
       "upstreamPath": "skills/poteto-mode/SKILL.md"
     },
     {
       "file": ".cursor/skills/poteto-mode/playbooks/auth-payments-security.md",
-      "sha256": "1f3d8fa475cd2fdd82bf003ce45d4b2babf36a7332c00fbfddc23399a1d849ec",
+      "sha256": "0c670af757615384be6f7db963f728dcc5b8fc8bfb937834e5d039b2f7429887",
       "source": "local",
       "upstreamPath": null
     },
