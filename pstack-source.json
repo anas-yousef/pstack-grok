@@ -413,7 +413,7 @@
     },
     {
       "file": ".cursor/pstack/README.md",
-      "sha256": "ae71644cb6ac496974963dfae23be23c417e0c6eaa061e2523e6fea583744c81",
+      "sha256": "2dd14024a2a0fa88b5dd9e3b8b7dc03cefa4d737eb24e4aac4d0bbb365bdf50f",
       "source": "pstack",
       "upstreamPath": "README.md"
     },
@@ -911,13 +911,13 @@
     },
     {
       "file": ".cursor/skills/poteto-mode/SKILL.md",
-      "sha256": "f1feb585ed9f530ac44d6cf882d97fd935943bd8804614b659e56073141c42d9",
+      "sha256": "4c409693871b00a0d38cca6596129665165af38b4f3c391b5bb1bd898f284ff5",
       "source": "pstack",
       "upstreamPath": "skills/poteto-mode/SKILL.md"
     },
     {
       "file": ".cursor/skills/poteto-mode/playbooks/auth-payments-security.md",
-      "sha256": "0c670af757615384be6f7db963f728dcc5b8fc8bfb937834e5d039b2f7429887",
+      "sha256": "a4251c21cf6e953111f86a99fef57a1662805df568cffcad57e5e69940b7dd42",
       "source": "local",
       "upstreamPath": null
     },
@@ -995,7 +995,7 @@
     },
     {
       "file": ".cursor/skills/poteto-mode/playbooks/external-side-effects.md",
-      "sha256": "05b84308d3257657067310047be7e19c3ab684a8f6efaf9a20dbc32a62c50128",
+      "sha256": "7b330868117146325cd667264d5f5c6f3071c635f45fa205cca1d8ba0fd9eba6",
       "source": "local",
       "upstreamPath": null
     },
@@ -1091,7 +1091,7 @@
     },
     {
       "file": ".cursor/skills/poteto-mode/playbooks/secrets-and-env.md",
-      "sha256": "096f56fd65ff4029fc7a67b02a550d1936634353212a2fc65c2a7b0c6195b54a",
+      "sha256": "938f04dd3ca87951eb04e0cd9ac165d594fec7294ef381ea72119ac6abbeca48",
       "source": "local",
       "upstreamPath": null
     },
@@ -1146,6 +1146,12 @@
     {
       "file": ".cursor/skills/poteto-mode/references/interrogate-triggers.md",
       "sha256": "8f1e80a0cf67ed3060c0f8bc4e73e558832edc19d7c74345fb96d9a35de2d8e0",
+      "source": "local",
+      "upstreamPath": null
+    },
+    {
+      "file": ".cursor/skills/poteto-mode/references/payment-providers.md",
+      "sha256": "51bbbf5b25863188daee739868c050066898d3411c54aae29b453e319b59a0a1",
       "source": "local",
       "upstreamPath": null
     },
@@ -1829,7 +1835,7 @@
     },
     {
       "file": "scripts/grok-allowlist.txt",
-      "sha256": "53c831a9a7b347a491c929327453a208ed0a3e5c448013910ff806d095d6dfde",
+      "sha256": "152fc3b51ed8af160be7aa57748ea0d30892aad255a50e784232107bc61d510c",
       "source": "local",
       "upstreamPath": null
     },

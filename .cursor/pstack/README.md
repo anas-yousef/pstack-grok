@@ -79,7 +79,7 @@ morning.
 | [worktree cleanup](../skills/poteto-mode/playbooks/worktree-cleanup.md) | reclaim disk by pruning merged or abandoned worktrees and stale ios simulators, safety-gated. |
 | [opening a pr](../skills/poteto-mode/playbooks/opening-a-pr.md) | open a ready pr from small ordered commits with a conventional commits title and a briefing-style body. invoked at the end of every other playbook. |
 | [db migration](../skills/poteto-mode/playbooks/db-migration.md) | expand, backfill, switch, contract, each phase reversible. |
-| [auth, payments, and security](../skills/poteto-mode/playbooks/auth-payments-security.md) | threat model, server-side authorization, lemon squeezy test mode and webhook signatures. |
+| [auth, payments, and security](../skills/poteto-mode/playbooks/auth-payments-security.md) | threat model, server-side authorization, sandbox-only payments and webhook signatures. |
 | [data deletion and privacy](../skills/poteto-mode/playbooks/data-deletion-privacy.md) | data map, idempotent deletion across every store, retention. |
 | [external side effects](../skills/poteto-mode/playbooks/external-side-effects.md) | dry-run, sandbox, and live modes before anything reaches a real person. |
 | [retries, concurrency, and idempotency](../skills/poteto-mode/playbooks/retries-concurrency-idempotency.md) | invariants the database enforces, bounded retries, a duplicate test. |

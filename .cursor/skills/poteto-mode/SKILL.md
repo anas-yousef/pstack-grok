@@ -98,7 +98,7 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
 
 **Just do it.** Use any MCP tool. Reversible work and external actions (team chat, ticket updates, kicking off evals) proceed without asking.
 
-**Always pause** for irreversible writes: force-push to shared branches, deploys, data deletion, customer messages, live charges or refunds on a real payment account (test mode does not count), the first live send of any external side effect to real recipients, and a production migration that drops, rewrites, or narrows data. A playbook step that names one of these waits for the operator's yes, even under a session override. One exception, during an active incident only. Rolling back to the previous known-good release, or turning a feature flag off, is mitigation, not a deploy. Do it, then tell the operator right away.
+**Always pause** for irreversible writes: force-push to shared branches, deploys, data deletion, customer messages, live charges or refunds on a real payment account (test mode does not count, and no playbook calls for one), the first live send of any external side effect to real recipients, and a production migration that drops, rewrites, or narrows data. A playbook step that names one of these waits for the operator's yes, even under a session override. One exception, during an active incident only. Rolling back to the previous known-good release, or turning a feature flag off, is mitigation, not a deploy. Do it, then tell the operator right away.
 
 **Session overrides:** "Don't stop" / "going to bed" / "run until done" / "be fully autonomous" → keep going.
 
@@ -176,7 +176,7 @@ An empty repo or a new product routes to **Greenfield** (`playbooks/greenfield.m
 Risk playbooks join a main playbook when a slice touches their area, per the non-negotiable above. Each one also works alone.
 
 - **DB migration.** Expand, backfill, switch, contract, with a down path or restore point for each phase. File: `playbooks/db-migration.md`.
-- **Auth, payments, and security.** Threat model, server-side authorization, Lemon Squeezy test mode, webhook signatures, idempotent entitlements, negative tests. File: `playbooks/auth-payments-security.md`.
+- **Auth, payments, and security.** Threat model, server-side authorization, sandbox-only payments with no live keys for agents (Lemon Squeezy, PayPal, Paddle), webhook signatures, idempotent entitlements, negative tests, and an owner go-live checklist. File: `playbooks/auth-payments-security.md`.
 - **Data deletion and privacy.** Data map, idempotent deletion across every store, retention, export. File: `playbooks/data-deletion-privacy.md`.
 - **External side effects.** Dry-run, sandbox, and live modes behind one adapter, an outbox, and an operator yes before the first live send. File: `playbooks/external-side-effects.md`.
 - **Retries, concurrency, and idempotency.** Invariants the database enforces, idempotency keys, bounded retries, and a parallel-duplicate test. File: `playbooks/retries-concurrency-idempotency.md`.
