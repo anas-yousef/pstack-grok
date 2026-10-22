@@ -59,7 +59,7 @@ python3 scripts/verify-setup
 `verify-setup` runs the Grok check and its self-test, the hook tests, the path checks, the upstream self-test, every poteto-mode bun test and the typecheck, the manifest check, and installs into temp projects to prove each install promise. Without bun it fails. `python3 scripts/verify-setup --skip-bun` skips the bun step on purpose and says so. It also fails when the CI bun version and `bun-types` differ. `.github/workflows/grok.yml` runs it on every push and pull request.
 
 - `scripts/check-grok` fails when a file names a non-Grok model or a cross-family review rule, when a value in `.cursor/rules/pstack-models.mdc` or an agent's `model:` line is not a `grok-*` slug or `blocked`, or when the computerUse record contradicts itself. It also reads `~/.cursor/rules/pstack-models.mdc` when present. A non-Grok slug there fails, and a line that differs from the project rule is printed as a note. `scripts/grok-allowlist.txt` lists the paths and sha256 that may quote banned text. An edited file with a different hash is scanned again.
-- `scripts/check-paths` fails on a copied interrogate trigger list, a dangling plugin path, a TypeScript rule that is always applied, a dead relative link under `.cursor`, or a playbook poteto-mode does not route.
+- `scripts/check-paths` fails on a copied interrogate trigger list, a dangling plugin path, a TypeScript rule that is always applied, a dead relative link or `../` path anywhere in the repo, or a playbook poteto-mode does not route.
 - `scripts/update-manifest` rehashes `pstack-source.json` after an edit, lists new files as local, and refuses a changed vendored file until it has a `localPatches` reason (`--patch <file> <reason>`). `--rehash-allowlist` also rehashes the allowlist. Read the diff of each allowlisted file before using it.
 
 ## Upstream drift
@@ -84,7 +84,7 @@ Skills, agents, and rules load from `.cursor/skills`, `.cursor/agents`, and `.cu
 `/poteto-mode` is the only entry. An empty repo or a new product uses the Greenfield playbook.
 
 - Interrogate runs before implementation when the slice matches `.cursor/skills/poteto-mode/references/interrogate-triggers.md`. That file is the only copy of the trigger list.
-- A slice in a risky area also runs its risk playbook: DB migration, auth and payments, deletion and privacy, external side effects, retries and concurrency, testing strategy, docs, secrets and env, deploy and rollback, incident and hotfix, dependency upgrade, observability, or upstream sync.
+- A slice that changes data, the trust boundary, money or other external effects, a release, or a dependency also runs that playbook. A production incident runs the Incident playbook first.
 - Browser verification uses control-ui on Grok. computerUse follows the exception above.
 - `create-verification-skill` runs once the scaffold boots.
 - The trail review runs before the push. The reviewer is a fresh subagent on `grok-4.7-xhigh`, prompted to find faults.

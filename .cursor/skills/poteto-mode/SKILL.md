@@ -23,23 +23,11 @@ Remaining triggers:
 - Parallel fan-out → the **swarm** skill for coverage matrices, races, gauntlets, and exploration partitions. Use **arena** for design or code bakeoffs with base selection and grafting.
 - Contested design → the **interrogate** skill (hostile adversarial review) before shipping.
 - A slice that matches `references/interrogate-triggers.md` → **interrogate** before implementation, in a new product or an existing one. That file is the only copy of the trigger list. Interrogate reviewers stay on the `interrogate reviewers` line and follow the hostile reviewer contract below.
-- Production is broken now → **Incident and hotfix** preempts everything else. Its steps go first in the todo list, ahead of any main playbook and any other risk playbook, and its mitigation step runs before any other work. The Bug fix playbook joins only at its root-cause step.
-- A slice in one of these other areas → also open its risk playbook and copy its steps into the todo list after the main playbook's steps (Feature, Greenfield, Bug fix, or another). Several can apply at once. The interrogate gate above still runs.
-  - Schema, migrations, or a backfill → **DB migration**.
-  - Login, sessions, permissions, payments, or webhooks that move money → **Auth, payments, and security**.
-  - Deleting user data, retention, export, or personal data handling → **Data deletion and privacy**.
-  - Email, SMS, outbound webhooks, or any write to a third party → **External side effects**.
-  - Retries, jobs, cron, webhooks, or shared writes → **Retries, concurrency, and idempotency**.
-  - New behavior that needs a test plan → **Testing strategy**.
-  - Setup, env vars, commands, a public contract, or user-visible behavior changed → **Docs**.
-  - A new key, env var, or environment → **Secrets and env**.
-  - Shipping to production, or undoing a deploy → **Deploy and rollback**.
-  - A dependency version change → **Dependency upgrade**.
-  - Errors, logs, health checks, or alerts, and before any first launch → **Observability**.
-  - Updating this fork from upstream, or a product from this fork → **Upstream sync**.
+- Production is broken now → the **Incident** playbook, before anything else.
+- A slice that changes data, the trust boundary, money or other external effects, a release, or a dependency → add the matching playbook's steps after the main playbook's: **Data changes**, **Security**, **External effects and payments**, **Release**, or **Dependency upgrade**.
 - Nontrivial multi-step → write the throughput checkpoint (Feature step 3).
 - Any prose surface, your reply to the user included → the **unslop** skill. Write the reply per **Writing the reply**. Agent-facing prose also follows the **create-skill** skill (Cursor's built-in for authoring SKILL.md files).
-- Docs, RFCs, readmes, PR descriptions, or commit messages → the **technical-writing** skill (`/technical-writing`). The **Docs** playbook decides when a README, `.env.example`, `CHANGELOG.md`, or runbook has to change.
+- Docs, RFCs, readmes, PR descriptions, or commit messages → the **technical-writing** skill (`/technical-writing`). Docs change in the same PR as the behavior or setup they describe.
 - Before commit → the `deslop` skill (`/deslop`), vendored from cursor-team-kit at `.cursor/skills/deslop/SKILL.md`.
 - Before review → the **no-comments** skill (`/no-comments`).
 - Shipping UI / IDE / CLI → the matching control skill. `control-cli` covers CLIs and TUIs. `control-ui` covers browser, Electron, and web UIs. Both are vendored from cursor-team-kit. For bug fixes, reproduce first on the same UI, CLI, or HTTP path yourself. Hand to the user only under the narrow Bug fix step 1 exception. Browser verification goes through `control-ui` on Grok. computerUse follows the **computerUse exception** in Subagents.
@@ -173,18 +161,12 @@ An empty repo or a new product routes to **Greenfield** (`playbooks/greenfield.m
 - **Worktree and simulator cleanup.** Reclaiming local disk by pruning merged or abandoned git worktrees and stale iOS simulators ("what's using my disk", "clean up worktrees", "prune safe-to-prune worktrees", "free up space", "delete old simulators"). File: `playbooks/worktree-cleanup.md`.
 - **Opening a PR.** Invoked at the end of every other playbook.
 
-Risk playbooks join a main playbook when a slice touches their area, per the non-negotiable above. Each one also works alone.
+These join a main playbook when a slice touches their area, and each also works alone.
 
-- **DB migration.** Expand, backfill, switch, contract, with a down path or restore point for each phase. File: `playbooks/db-migration.md`.
-- **Auth, payments, and security.** Threat model, server-side authorization, sandbox-only payments with no live keys for agents (Lemon Squeezy, Paddle, PayPal, and Stripe covered), webhook signatures, idempotent entitlements, negative tests, and an owner go-live checklist. File: `playbooks/auth-payments-security.md`.
-- **Data deletion and privacy.** Data map, idempotent deletion across every store, retention, export. File: `playbooks/data-deletion-privacy.md`.
-- **External side effects.** Dry-run, sandbox, and live modes behind one adapter, an outbox, and an operator yes before the first live send. File: `playbooks/external-side-effects.md`.
-- **Retries, concurrency, and idempotency.** Invariants the database enforces, idempotency keys, bounded retries, and a parallel-duplicate test. File: `playbooks/retries-concurrency-idempotency.md`.
-- **Testing strategy.** The cheapest test level that proves each slice of new behavior. File: `playbooks/testing-strategy.md`.
-- **Docs.** When README, `.env.example`, CHANGELOG, ADRs, and the runbook change, and a fresh-clone quickstart run. File: `playbooks/docs.md`.
-- **Secrets and env.** Inventory, scanning, per-environment keys, startup validation, rotation. File: `playbooks/secrets-and-env.md`.
-- **Deploy and rollback.** Rollback written first, preview smoke, production smoke, a watch window, and rollback triggers. File: `playbooks/deploy-and-rollback.md`.
-- **Incident and hotfix.** Mitigate and revert first, scope, stop data damage, hotfix, repair, postmortem check. File: `playbooks/incident-hotfix.md`.
-- **Dependency upgrade.** One upgrade per PR, changelog read, lockfile committed, real-app check. File: `playbooks/dependency-upgrade.md`.
-- **Observability.** Error tracking, structured logs, health check, few real alerts, each signal proven. File: `playbooks/observability.md`.
-- **Upstream sync.** check-upstream in this fork, re-install in a product, then the checks. File: `playbooks/upstream-sync.md`.
+- **Data changes.** Schema changes, data rewrites, and deleting user data. File: `playbooks/data-changes.md`.
+- **Security.** Auth, permissions, untrusted input, and secrets. File: `playbooks/security.md`.
+- **External effects and payments.** Anything that reaches a third party, a real person, or money. File: `playbooks/external-effects.md`.
+- **Release.** Deploy, rollback, and the signals that show it worked. File: `playbooks/release.md`.
+- **Incident.** Production is broken now. File: `playbooks/incident.md`.
+- **Dependency upgrade.** A dependency version change. File: `playbooks/dependency-upgrade.md`.
+- **Upstream sync.** Updating this fork from upstream, or a project from this fork. File: `playbooks/upstream-sync.md`.

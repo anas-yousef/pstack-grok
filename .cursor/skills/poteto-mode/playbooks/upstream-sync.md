@@ -1,20 +1,16 @@
 ### Upstream sync
 
-**You own the fork. Take upstream improvements without losing a Grok patch or picking up a non-Grok default.**
+**You own the fork. Take upstream improvements without losing a Grok patch.**
 
-In the pstack-grok fork repo:
+In this fork:
 
-1. Run `python3 scripts/check-upstream`. It needs network. Run it on a schedule outside push and pull request CI, such as a daily job, or by hand before a sync. Exit 1 means drift that needs action. Exit 2 is a fetch or pin failure.
-2. For each `take`, replace the local file with the upstream blob.
-3. For each `review`, finish the 3-way merge by hand and keep the Grok patch. Read the reason on the file's `localPatches` row first.
-4. For each `skip`, upstream added a skill this fork does not vendor. Vendoring it is a separate decision with a reason in `docs/design.md`.
-5. Treat every upstream Grok hit as a patch to make before the take.
-6. Move the pin in `pstack-source.json` and `NOTICE`, run `python3 scripts/update-manifest` (with `--patch <file> <reason>` for each newly patched file), then `python3 scripts/verify-setup`. Commit one source at a time.
+1. Run `python3 scripts/check-upstream`. `take` replaces the local file with upstream. `review` needs a hand-finished 3-way merge that keeps the Grok patch. `skip` is a file the fork does not vendor.
+2. Patch any upstream Grok hit before taking it.
+3. Move the pins in `pstack-source.json` and `NOTICE`, run `python3 scripts/update-manifest`, then `python3 scripts/verify-setup`. One source per commit.
 
-In a product that installed the fork:
+In a project that installed the fork:
 
-1. Update your clone or submodule of the fork.
-2. Run `python3 <fork>/scripts/install .` from the product root. A conflict means you edited a file the fork ships. Move that edit into your own skill or rule, or re-apply it after `--force`.
-3. Run `python3 scripts/pstack-grok/check-grok`, `python3 scripts/pstack-grok/test-subagent-hook`, and `python3 scripts/pstack-grok/check-paths`. Commit with the fork id from `scripts/pstack-grok/installed.json` in the message.
+1. Re-run the fork's `scripts/install` from the project root, and resolve any conflict it lists.
+2. Run the checks in `scripts/pstack-grok/`.
 
-**Reply:** each source with its old and new pin, the takes, reviews, and skips, and the check results.
+**Reply:** each source's old and new pin, the takes, reviews, and skips, and the check results.

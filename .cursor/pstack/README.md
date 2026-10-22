@@ -37,7 +37,7 @@ pick `/poteto-mode` from the `/` menu before you type your task, so cursor attac
 
 ### just use [`/poteto-mode`](../skills/poteto-mode/SKILL.md)
 
-this skill is the main shortcut. i use it whenever i need the agent to do rigorous engineering work. it comes with thirty-seven playbooks:
+this skill is the main shortcut. i use it whenever i need the agent to do rigorous engineering work. it comes with thirty-one playbooks:
 
 ```
 /poteto-mode this pr has a subtle bug where the scroll drifts every 750ms even when idle. repro
@@ -50,7 +50,7 @@ morning.
 ```
 
 <details>
-<summary>the thirty-seven playbooks</summary>
+<summary>the thirty-one playbooks</summary>
 
 | playbook | for |
 |---|---|
@@ -78,19 +78,13 @@ morning.
 | [multi-phase plan](../skills/poteto-mode/playbooks/multi-phase-plan.md) | work that spans phases or stacked PRs. |
 | [worktree cleanup](../skills/poteto-mode/playbooks/worktree-cleanup.md) | reclaim disk by pruning merged or abandoned worktrees and stale ios simulators, safety-gated. |
 | [opening a pr](../skills/poteto-mode/playbooks/opening-a-pr.md) | open a ready pr from small ordered commits with a conventional commits title and a briefing-style body. invoked at the end of every other playbook. |
-| [db migration](../skills/poteto-mode/playbooks/db-migration.md) | expand, backfill, switch, contract, each phase reversible. |
-| [auth, payments, and security](../skills/poteto-mode/playbooks/auth-payments-security.md) | threat model, server-side authorization, sandbox-only payments and webhook signatures. |
-| [data deletion and privacy](../skills/poteto-mode/playbooks/data-deletion-privacy.md) | data map, idempotent deletion across every store, retention. |
-| [external side effects](../skills/poteto-mode/playbooks/external-side-effects.md) | dry-run, sandbox, and live modes before anything reaches a real person. |
-| [retries, concurrency, and idempotency](../skills/poteto-mode/playbooks/retries-concurrency-idempotency.md) | invariants the database enforces, bounded retries, a duplicate test. |
-| [testing strategy](../skills/poteto-mode/playbooks/testing-strategy.md) | the cheapest test level that proves each slice of new behavior. |
-| [docs](../skills/poteto-mode/playbooks/docs.md) | when readme, env example, changelog, and runbook change. |
-| [secrets and env](../skills/poteto-mode/playbooks/secrets-and-env.md) | inventory, scanning, per-environment keys, rotation. |
-| [deploy and rollback](../skills/poteto-mode/playbooks/deploy-and-rollback.md) | rollback first, preview and production smoke, a watch window. |
-| [incident and hotfix](../skills/poteto-mode/playbooks/incident-hotfix.md) | mitigate and revert first, then fix, repair, and add the check. |
+| [data changes](../skills/poteto-mode/playbooks/data-changes.md) | schema changes, data rewrites, and deleting user data, in reversible phases. |
+| [security](../skills/poteto-mode/playbooks/security.md) | threat model, server-side authorization, untrusted input, and secrets. |
+| [external effects and payments](../skills/poteto-mode/playbooks/external-effects.md) | dry-run and sandbox before anything reaches a person, account, or card. |
+| [release](../skills/poteto-mode/playbooks/release.md) | rollback first, smoke and watch, and signals that show it worked. |
+| [incident](../skills/poteto-mode/playbooks/incident.md) | mitigate first, then root-cause, fix, repair, and add the check. |
 | [dependency upgrade](../skills/poteto-mode/playbooks/dependency-upgrade.md) | one upgrade per pr, changelog read, real-app check. |
-| [observability](../skills/poteto-mode/playbooks/observability.md) | error tracking, structured logs, health check, few real alerts. |
-| [upstream sync](../skills/poteto-mode/playbooks/upstream-sync.md) | take upstream changes into this fork, or this fork into a product. |
+| [upstream sync](../skills/poteto-mode/playbooks/upstream-sync.md) | take upstream changes into this fork, or this fork into a project. |
 
 </details>
 
