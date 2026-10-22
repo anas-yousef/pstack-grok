@@ -4,9 +4,7 @@ Internal-style workflows for CI, code review, shipping, and test reliability. Th
 
 ## Installation
 
-```bash
-/add-plugin cursor-team-kit
-```
+This fork vendors the kit in `.cursor/`, and `scripts/install` copies it into a project. Do not also run `/add-plugin cursor-team-kit`. Upstream's `ci-watcher` agent uses a model alias that is not Grok, and this fork pins it to `grok-4.7-xhigh-fast`.
 
 ## Components
 

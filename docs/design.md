@@ -104,7 +104,7 @@ Same plugins commit, path `cursor-team-kit`, version 1.2.0, MIT, copyright Curso
 | thermo-nuclear-code-quality-review | A heavy code-quality pass, plus a matching agent | By name. interrogate stays the adversarial review |
 | weekly-review, what-did-i-get-done, workflow-from-chats | Status summaries | By name, when the person asks |
 
-Also vendored, unchanged. Agents `ci-watcher` and `thermo-nuclear-code-quality-review`. Rules `no-inline-imports.mdc` and `typescript-exhaustive-switch.mdc`, both `alwaysApply`. A project that copies `.cursor/` gets those two TypeScript rules.
+Also vendored, unchanged. Agents `ci-watcher` and `thermo-nuclear-code-quality-review`. Rules `no-inline-imports.mdc` and `typescript-exhaustive-switch.mdc`. Upstream marks both `alwaysApply`. This fork applies them by glob to TypeScript files only. `ci-watcher` upstream uses `model: fast`, and this fork pins it to `grok-4.7-xhigh-fast`.
 
 ## mattpocock/skills and obra/superpowers
 
@@ -201,13 +201,13 @@ orchestrate verifier: grok-4.7-xhigh
 computerUse: blocked
 ```
 
-`verification` keeps `-fast` because poteto-mode already pins verification speed to the swarm worker, and the audit names that slug. `computerUse` is blocked. The parent passed `grok-4.7-xhigh`. The recorded Task arguments for that spawn used a different slug, and the subagent quoted a non-Grok identity sentence. That probe stays in `scripts/grok-exceptions.json` with status `blocked`. Browser verification uses control-ui on Grok.
+`verification` keeps `-fast` because poteto-mode already pins verification speed to the swarm worker, and the audit names that slug. `computerUse` is `blocked` on the role line. The parent passed `grok-4.7-xhigh`. The recorded Task arguments for that spawn used `claude-4.5-sonnet`, and the subagent quoted a Claude Sonnet 4.5 identity sentence. Two cloud probes showed that the hook does not fire in cloud agents. `scripts/grok-exceptions.json` records this with status `allowed-exception`. Cursor's cloud computer-use and browser helper is server-pinned to Claude Sonnet 4.5. It is the one allowed non-Grok exception. It is paid, the owner adds credit for it, and each use is logged in the decision trail and under Attention. Browser verification uses control-ui on Grok, and computerUse is used in a cloud agent only when control-ui cannot reach the page.
 
 ## Subagent hook
 
 `.cursor/hooks.json` registers `subagentStart`. The command is `python3 .cursor/hooks/block-non-grok.py`, with `failClosed` true. Cursor's hook input is one JSON object on stdin. The fields this script reads are `subagent_type`, `subagent_model`, and the envelope `model`. The output is one JSON object on stdout and exit 0. `permission` is `allow` or `deny`. A deny carries `user_message`.
 
-The script denies a type that normalizes to computer use or browser, even when the model string is Grok, because that type is pinned server-side. It reads that type from the payload and from `tool_input` when that value is an object or a JSON object string, and it walks nested `tool_input` the same way. It allows every other type only when every present `subagent_model` or `model` value, on the payload or on `tool_input`, starts with `grok`. A present empty string, whitespace, `inherit`, `auto`, or `default` is denied even when another field is a Grok slug. A missing field is ignored. If no model field is present, the script denies. Unreadable input is denied. Unreadable input that names computer use or browser uses the browser message. `scripts/install` copies the hook with `.cursor/`. `scripts/test-subagent-hook` pipes sample payloads, and `scripts/verify-setup` runs that test.
+The script denies a type whose normalized text contains computer use or browser, so `computer_use_agent` and `browserAgent` are denied too, even when the model string is Grok, because that type is pinned server-side. It reads `subagent_type`, `subagentType`, `agent_type`, and `agentType` from the payload and from `tool_input` when that value is an object or a JSON object string, and it walks nested `tool_input` the same way. It allows every other type only when every present `subagent_model`, `subagentModel`, or `model` value, on the payload or on `tool_input`, matches `^grok-<token>`. A present empty string, whitespace, `inherit`, `auto`, or `default` is denied even when another field is a Grok slug. A missing field is ignored. If no model field is present, the script denies. Unreadable input is denied. Unreadable input that names computer use or browser uses the browser message. `scripts/install` copies the hook with `.cursor/`. `scripts/test-subagent-hook` pipes sample payloads, and `scripts/verify-setup` runs that test.
 
 The script does nothing when Cursor never starts the hook. That is what happened in the live cloud-agent check recorded under Open risks. The cookbook sample names `subagentStart` as the hook that blocks subagents by model. It does not document a second event for that job, and `beforeSubmitPrompt` does not run for cloud agents.
 
@@ -217,7 +217,7 @@ Fallback, one paragraph in poteto-mode, referenced by the reviewer skills.
 
 If a reviewer or judge spawn errors, retry once on that role's Grok slug. If the retry also fails, run the review inline, label it `self-review`, include the verbatim error, and flag it under Attention. Never report a reviewer model that did not run. Never skip the gate in silence.
 
-`scripts/check-grok` fails the process when a tracked or working file matches any of these, case insensitive.
+`scripts/check-grok` fails the process when a tracked or working file matches any of these, case insensitive. It also fails when a value in `.cursor/rules/pstack-models.mdc`, or an agent's `model:` line, is not a `grok-*` slug or `blocked`. Installed in a product, it scans only the files `installed.json` lists.
 
 - `claude-` followed by a model token
 - the words opus, sonnet, haiku, fable
@@ -229,6 +229,8 @@ If a reviewer or judge spawn errors, retry once on that role's Grok slug. If the
 - `a different model`
 - `different models`
 - `model diversity`
+- `cross-model`, `multi-model`, `two or more models`, `model perspectives`
+- other vendors' model families, an `o1` to `o4` model token, and the bare vendor names
 
 `docs/design.md` is skipped only when `scripts/grok-allowlist.txt` lists its path and the sha256 of these bytes. This file quotes the upstream sentences the check exists to ban. A different hash is scanned, and a stale row fails the check even when the new bytes are clean. A GitHub Actions workflow runs the same script.
 
@@ -251,9 +253,9 @@ The file record is the domain object. Unpatched means our bytes equal the blob a
 
 ## Adoption
 
-Copy. `scripts/install <project-dir>` copies `.cursor/`, `pstack-source.json`, `scripts/check-grok`, `scripts/check-upstream`, `scripts/grok-allowlist.txt`, and `NOTICE` into the project. It overwrites skills and rules this repo ships, and it leaves project files it does not own. It refuses to run if the target is this repo.
+Copy. `scripts/install <project-dir>` is driven by the manifest. It writes the listed `.cursor/` files, puts the checks, `NOTICE`, and the manifest under `scripts/pstack-grok/`, merges the hook into the project's `hooks.json`, and records what it wrote in `installed.json`. A project file it would overwrite and did not write before is a conflict, and nothing is written without `--force`. A re-install prunes files the fork stopped shipping. It refuses to run if the target is this repo.
 
-Reference. Add this repo as a git submodule and point the project's `.cursor` at the submodule's `.cursor` with a symlink. Updates then come from the submodule commit. A project that already has its own `.cursor` copies only the skill, agent, and rule directories it wants, using the same script with `--skills-only` left out of scope. The README documents the symlink, and the copy script is the supported path when a symlink is awkward.
+Reference. Add this repo as a git submodule and run its install script from the project. A symlinked `.cursor` works only for a project with nothing of its own in `.cursor`, and it does not install the checks.
 
 Update. Run `scripts/check-upstream`. Take unpatched files by replacing our copy with the upstream blob, then rehash the manifest. Patch files wait for a person to finish the 3-way merge. The script never does that write, and it never pushes.
 
@@ -289,7 +291,22 @@ Rigor stays high because every later project copies these rules. One writer. The
 
 ## Open risks
 
-- computerUse is `blocked` on the role line, and the hook denies that payload offline. In cloud agent `bc-62d2834c-67ee-5b3e-aa79-9edbcc9b2176` the hook did not fire. Task `computerUse` with `grok-4.7-xhigh` returned a completed reply from `bc-c634e916-7a41-584d-a35d-50514d139b69`. That reply quoted the non-Grok identity sentence in `scripts/grok-exceptions.json`. The deny text was not in the tool result. `scripts/check-grok` still prints status `blocked`, which describes the repo rule, not a platform deny. A later platform change does not update the exception file by itself.
-- `check-upstream` still needs network to read upstream head. Exit 2 is the fetch or pin failure. Exit 1 is drift. The script does not push.
+- computerUse is `blocked` on the role line, and the hook denies that payload offline. In cloud agent `bc-62d2834c-67ee-5b3e-aa79-9edbcc9b2176` the hook did not fire. Task `computerUse` with `grok-4.7-xhigh` returned a completed reply from `bc-c634e916-7a41-584d-a35d-50514d139b69`. That reply quoted the Claude Sonnet 4.5 identity sentence in `scripts/grok-exceptions.json`. The deny text was not in the tool result. The record now says `allowed-exception`, and `check-grok` and `verify-setup` check that its fields agree with each other and with the local hook. A later platform change does not update the exception file by itself.
+- The parent chat model is not checked. Aliases, the `self-review` fallback, and an omitted `model` inherit it. The owner runs Cursor on Grok.
+- A live local deny by the hook has not been recorded. The hook command path is relative to the project root, which has not been checked against Cursor's docs.
+- `check-upstream` still needs network to read upstream head. Exit 2 is the fetch or pin failure. Exit 1 is drift. The script does not push. CI does not run it. The owner runs it daily outside the repo.
 - This file is skipped only while its sha256 in `scripts/grok-allowlist.txt` matches these bytes. Updating that hash without reading the diff would hide a new banned slug.
 - Both plugin manifests point at the shared hoisted directories. A loader that trusts `plugin.json` sees every skill in `.cursor/skills`, not a per-plugin subset.
+
+## Revision after the review of 2026-10-22
+
+The review in `../opus-review.md`, outside this repo, found Grok leaks, fragile scripts, and dead references. The owner decided these points.
+
+- Keep the `inherit-parent`, `auto`, and `unpinned` aliases, and state that the fork assumes a Grok parent chat. The project rule rejects them, and a personal home rule may use them.
+- Everything this fork controls is Grok. `check-grok` parses the model rule and every agent `model:` line.
+- Record computerUse honestly as the one allowed, logged, paid cloud exception. Harden the hook for local use. Check outcomes, not labels.
+- Add risk playbooks for the parts of the cycle that only had gates. Payments use Lemon Squeezy.
+- Run the daily upstream check outside the repo, and keep `check-upstream` out of push and pull request CI.
+
+Role readers now read the project rule `.cursor/rules/pstack-models.mdc`, not `~/.cursor/rules/pstack-models.mdc`. Code roles stay on `-fast` by choice. Reviewers and judges stay on `grok-4.7-xhigh`, never lowered and never fast. Arena and architect treat a runner line as a model pool and always spawn at least two runners, because the owner keeps one entry per panel line. `../opus-fix-summary.md` maps each finding to its fix.
+

@@ -41,31 +41,31 @@
       "file": ".cursor/pstack/README.md",
       "source": "pstack",
       "upstreamPath": "README.md",
-      "reason": "Grok-only install text. The other-agent install block and the mixed default panel are gone."
+      "reason": "Grok-only install text, every role named as Grok, links point at the hoisted directories, the vendored team-kit skills are named, and the playbook table lists Greenfield and the risk playbooks."
     },
     {
       "file": ".cursor/pstack/docs/guide/01-setup.md",
       "source": "pstack",
       "upstreamPath": "docs/guide/01-setup.md",
-      "reason": "This fork installs in Cursor only, and the budget text no longer names another vendor."
+      "reason": "Installs this fork with scripts/install, writes the project rule, keeps every value Grok, and says aliases are Grok only on a Grok parent. Links point at the hoisted directories."
     },
     {
       "file": ".cursor/pstack/docs/guide/04-design.md",
       "source": "pstack",
       "upstreamPath": "docs/guide/04-design.md",
-      "reason": "The judge and interrogate descriptions no longer ask for another model family."
+      "reason": "The judge and interrogate descriptions no longer ask for another model family. Links point at the hoisted directories."
     },
     {
       "file": ".cursor/pstack/docs/guide/07-overnight.md",
       "source": "pstack",
       "upstreamPath": "docs/guide/07-overnight.md",
-      "reason": "The trail reviewer is the Grok role line."
+      "reason": "The trail reviewer is the Grok role line. Links point at the hoisted directories."
     },
     {
       "file": ".cursor/pstack/docs/harness/claude-code.md",
       "source": "pstack",
       "upstreamPath": "docs/harness/claude-code.md",
-      "reason": "The model translation table is removed. A non-Cursor session stops. plugin.json paths point at the hoisted skill directories."
+      "reason": "The model translation table is removed. A non-Cursor session stops. plugin.json paths point at the hoisted skill directories. Aliases are Grok only on a Grok parent, and the project rule rejects them."
     },
     {
       "file": ".cursor/cursor-team-kit/.cursor-plugin/plugin.json",
@@ -95,7 +95,7 @@
       "file": ".cursor/skills/architect/SKILL.md",
       "source": "pstack",
       "upstreamPath": "skills/architect/SKILL.md",
-      "reason": "A missing runners line defaults to one Grok slug."
+      "reason": "Runners come from the project rule as a model pool. At least two runners with different directions run even when the line has one entry. The intro asks for independent design candidates."
     },
     {
       "file": ".cursor/skills/architect/references/runner-prompt.md",
@@ -107,7 +107,7 @@
       "file": ".cursor/skills/arena/SKILL.md",
       "source": "pstack",
       "upstreamPath": "skills/arena/SKILL.md",
-      "reason": "Runners and the cross-judge default to Grok. The cross-family preference is gone."
+      "reason": "Runners and the cross-judge default to Grok and come from the project rule. The runner line is a model pool, and at least two runners always run. The cross-family preference is gone."
     },
     {
       "file": ".cursor/skills/blast-radius/SKILL.md",
@@ -119,25 +119,25 @@
       "file": ".cursor/skills/how/SKILL.md",
       "source": "pstack",
       "upstreamPath": "skills/how/SKILL.md",
-      "reason": "The explainer defaults to grok-4.7-xhigh, and a rejected slug retries Grok."
+      "reason": "The explainer defaults to grok-4.7-xhigh, roles come from the project rule, and a rejected slug retries Grok."
     },
     {
       "file": ".cursor/skills/interrogate/SKILL.md",
       "source": "pstack",
       "upstreamPath": "skills/interrogate/SKILL.md",
-      "reason": "One hostile Grok reviewer, and a rejected slug retries grok-4.7-xhigh."
+      "reason": "Reviewers come from the project rule and stay on grok-4.7-xhigh, never lowered or fast. A rejected slug retries grok-4.7-xhigh. Synthesis weighs confirmed findings, not how many models raised them."
     },
     {
       "file": ".cursor/skills/poteto-help/SKILL.md",
       "source": "pstack",
       "upstreamPath": "skills/poteto-help/SKILL.md",
-      "reason": "The fork does not install for another agent product."
+      "reason": "Installs this fork, not the upstream plugin. Reads the project rule and reports a conflicting home rule. Aliases are Grok only on a Grok parent. Links point at the hoisted directories."
     },
     {
       "file": ".cursor/skills/poteto-mode/SKILL.md",
       "source": "pstack",
       "upstreamPath": "skills/poteto-mode/SKILL.md",
-      "reason": "Defaults, the hostile reviewer contract, the failure fallback, the Greenfield route, the TodoWrite stop, the single interrogate trigger list, and computerUse stays blocked."
+      "reason": "Grok defaults, the Grok-parent assumption, the computerUse cloud exception, reviewer effort fixed at grok-4.7-xhigh, the hostile reviewer contract, the failure fallback, the Greenfield route, the risk playbook routes, the TodoWrite stop, the single interrogate trigger list, and the vendored deslop path."
     },
     {
       "file": ".cursor/skills/poteto-mode/playbooks/authoring-a-skill.md",
@@ -167,7 +167,7 @@
       "file": ".cursor/skills/poteto-mode/playbooks/orchestrate.md",
       "source": "pstack",
       "upstreamPath": "skills/poteto-mode/playbooks/orchestrate.md",
-      "reason": "The verifier uses the orchestrate verifier line. A tool error retries that Grok slug, then the reviewer fallback, before the unit is abandoned."
+      "reason": "The verifier uses the orchestrate verifier line. A tool error retries that Grok slug, then the reviewer fallback, before the unit is abandoned. The close step names the hostile Grok trail review."
     },
     {
       "file": ".cursor/skills/poteto-mode/scripts/orch/orch.test.ts",
@@ -179,7 +179,7 @@
       "file": ".cursor/skills/reflect/SKILL.md",
       "source": "pstack",
       "upstreamPath": "skills/reflect/SKILL.md",
-      "reason": "Judgment, divergent, synthesizer, and tooling default to grok-4.7-xhigh, and a rejected slug retries that slug."
+      "reason": "Judgment, divergent, synthesizer, and tooling default to grok-4.7-xhigh and come from the project rule, and a rejected slug retries that slug."
     },
     {
       "file": ".cursor/skills/reflect/references/synthesizer.md",
@@ -191,19 +191,19 @@
       "file": ".cursor/skills/setup-pstack/SKILL.md",
       "source": "pstack",
       "upstreamPath": "skills/setup-pstack/SKILL.md",
-      "reason": "The default role table is the Grok table. computerUse stays blocked, and setup does not rewrite that alias."
+      "reason": "Writes the project rule, keeps only grok-* slugs and blocked, moves aliases to a personal home rule with the Grok-parent caveat, reports a conflicting home rule, keeps reviewers on grok-4.7-xhigh, and keeps computerUse blocked."
     },
     {
       "file": ".cursor/skills/show-me-your-work/SKILL.md",
       "source": "pstack",
       "upstreamPath": "skills/show-me-your-work/SKILL.md",
-      "reason": "The trail reviewer line runs before the push, a failed review is labeled self-review, and a computerUse attempt is blocked only when the hook deny sentence is in the tool result."
+      "reason": "The trail reviewer line runs before the push, a failed review is labeled self-review, and a computerUse attempt follows the poteto-mode exception and names the dispatched model."
     },
     {
       "file": ".cursor/skills/swarm/SKILL.md",
       "source": "pstack",
       "upstreamPath": "skills/swarm/SKILL.md",
-      "reason": "A rejected worker slug retries grok-4.7-xhigh-fast, and a race stays on Grok."
+      "reason": "Workers come from the project rule and default to Grok, a race stays on Grok slugs, aliases are Grok only on a Grok parent, and the Frame steps are numbered in order."
     },
     {
       "file": ".cursor/skills/systematic-debugging/CREATION-LOG.md",
@@ -215,7 +215,7 @@
       "file": ".cursor/skills/why/SKILL.md",
       "source": "pstack",
       "upstreamPath": "skills/why/SKILL.md",
-      "reason": "The synthesizer defaults to grok-4.7-xhigh."
+      "reason": "Investigators and the synthesizer default to Grok and come from the project rule."
     },
     {
       "file": ".cursor/agents/ci-watcher.md",
@@ -312,6 +312,12 @@
       "source": "pstack",
       "upstreamPath": "skills/poteto-mode/scripts/package.json",
       "reason": "typescript and bun-types are pinned to the locked versions instead of latest."
+    },
+    {
+      "file": ".cursor/cursor-team-kit/README.md",
+      "source": "cursor-team-kit",
+      "upstreamPath": "README.md",
+      "reason": "Install section says the kit is vendored here and the upstream ci-watcher alias is not Grok."
     }
   ],
   "files": [
@@ -353,7 +359,7 @@
     },
     {
       "file": ".cursor/cursor-team-kit/README.md",
-      "sha256": "6f0e34073ee503824eb5baf52a52119cffe330f2685477ea8d303e881ecd1679",
+      "sha256": "e8bf508ac60d6707a48c65a8513669a18893ff88ea4760eb34dd5d6a94581e15",
       "source": "cursor-team-kit",
       "upstreamPath": "README.md"
     },
@@ -479,7 +485,7 @@
     },
     {
       "file": ".cursor/pstack/docs/guide/01-setup.md",
-      "sha256": "aa01c328756271731371bdb2af291a6de2955e0ab3bb96713765151e027e2432",
+      "sha256": "795de728daa6f4c3fcdc1384f2f63ca35adc42cd1e631eeba7e6a359fabdf6c2",
       "source": "pstack",
       "upstreamPath": "docs/guide/01-setup.md"
     },
@@ -1811,7 +1817,7 @@
     },
     {
       "file": "scripts/grok-allowlist.txt",
-      "sha256": "845fe28b644be713f58ab5c60048434a159a63b12919766e4d8aff84908fe88c",
+      "sha256": "0b19807251128ca23d24dab87a33960788938f4ac752d0363332dc670b88f42c",
       "source": "local",
       "upstreamPath": null
     },

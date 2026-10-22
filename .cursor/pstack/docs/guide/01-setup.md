@@ -4,13 +4,13 @@ In this page you install the plugin, pick which models pstack uses, and run your
 
 ## Install the plugin
 
-In a Cursor chat, run:
+Do not run `/add-plugin pstack`. That installs upstream pstack, whose defaults are not Grok. From a clone of this fork, run:
 
-```text
-/add-plugin pstack
+```bash
+python3 scripts/install /path/to/your/project
 ```
 
-Cursor confirms the plugin is installed.
+The script prints the files it wrote and the checks to run. The fork's top-level README covers conflicts and updates.
 
 This fork runs in Cursor. It does not install for any other agent product. See [the harness note](../harness/claude-code.md).
 
