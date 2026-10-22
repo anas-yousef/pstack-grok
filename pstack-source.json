@@ -1709,7 +1709,7 @@
     },
     {
       "file": "scripts/check-paths",
-      "sha256": "caa43b44ce99ea38d34c68cb36845ea6df33545078ecae93bb41216e9f539bd4",
+      "sha256": "acfce5a2e012c43b5ab2862590d1d094ecb28a24c52f291327bb73fc1ae9e720",
       "source": "local",
       "upstreamPath": null
     },

@@ -144,11 +144,68 @@ def rule_problems(root: Path) -> list[str]:
     return problems
 
 
+MD_LINK = re.compile(r"\]\(([^)\s]+)\)")
+
+
+def link_targets(text: str):
+    fenced = False
+    for number, line in enumerate(text.splitlines(), 1):
+        if line.lstrip().startswith("```"):
+            fenced = not fenced
+            continue
+        if fenced:
+            continue
+        for match in MD_LINK.finditer(line):
+            target = match.group(1).split("#", 1)[0]
+            if not target or re.match(r"[a-z][a-z0-9+.-]*:", target) or target.startswith("<"):
+                continue
+            if "/" not in target and "." not in target:
+                continue
+            yield number, target
+
+
+def link_problems(root: Path) -> list[str]:
+    problems = []
+    for rel, path in files(root):
+        if rel.parts[0] != ".cursor" or path.suffix.lower() not in {".md", ".mdc"}:
+            continue
+        for number, target in link_targets(read(path) or ""):
+            if not (path.parent / target).exists():
+                problems.append(f"dead link: {rel.as_posix()}:{number} -> {target}")
+    return problems
+
+
+PLAYBOOKS = Path(".cursor/skills/poteto-mode/playbooks")
+ROUTER = Path(".cursor/skills/poteto-mode/SKILL.md")
+
+
+def playbook_problems(root: Path) -> list[str]:
+    folder = root / PLAYBOOKS
+    router = read(root / ROUTER)
+    if router is None or not folder.is_dir():
+        return [f"missing {ROUTER.as_posix()} or {PLAYBOOKS.as_posix()}"]
+    problems = []
+    section = router.split("## Playbooks", 1)[-1]
+    routed = set(re.findall(r"playbooks/([a-z0-9-]+\.md)", router))
+    for title in re.findall(r"^- \*\*(.+?)\.\*\*", section, re.M):
+        words = re.sub(r"[^a-z0-9\s-]", "", title.lower()).split()
+        routed.add("-".join(words) + ".md")
+    for path in sorted(folder.glob("*.md")):
+        if path.name not in routed:
+            problems.append(f"playbook not routed from {ROUTER.as_posix()}: {path.name}")
+    for name in sorted(set(re.findall(r"playbooks/([a-z0-9-]+\.md)", router))):
+        if not (folder / name).is_file():
+            problems.append(f"router names a missing playbook: {name}")
+    return problems
+
+
 def problems(root: Path) -> list[str]:
     found = []
     found.extend(trigger_problems(root))
     found.extend(plugin_problems(root))
     found.extend(rule_problems(root))
+    found.extend(link_problems(root))
+    found.extend(playbook_problems(root))
     return found
 
 
@@ -168,6 +225,22 @@ def self_test() -> int:
         (plugin / "plugin.json").write_text('{"skills": "./skills/"}')
         if plugin_problems(root):
             print("self-test: resolved path failed", plugin_problems(root))
+            return 1
+        docs = root / ".cursor" / "docs"
+        docs.mkdir(parents=True)
+        (docs / "a.md").write_text("[ok](a.md) [gone](../missing.md)\n```\n[example](./src/x.md)\n```\n[u](url)\n")
+        found = link_problems(root)
+        if len(found) != 1 or "missing.md" not in found[0]:
+            print("self-test: link check", found)
+            return 1
+        books = root / PLAYBOOKS
+        books.mkdir(parents=True)
+        (books / "bug-fix.md").write_text("x\n")
+        (books / "orphan.md").write_text("x\n")
+        (root / ROUTER).write_text("## Playbooks\n\n- **Bug fix.** x\n- **Gone.** File: `playbooks/gone.md`.\n")
+        found = playbook_problems(root)
+        if not any("orphan.md" in item for item in found) or not any("gone.md" in item for item in found) or len(found) != 2:
+            print("self-test: playbook routing", found)
             return 1
     print("self-test: ok")
     return 0
