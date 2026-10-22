@@ -77,8 +77,9 @@ budgets:
   fix_minutes: 90
   operations_follow_up_minutes: 45
 
+# This fork runs every role on Grok. Each value must be a grok-* slug shown in the user's Cursor model picker.
 models:
-  triage: "choose-an-available-public-model-slug"
-  reproduce: "choose-an-available-public-model-slug"
-  code: "choose-an-available-public-model-slug"
-  media_review: "choose-an-available-public-model-slug"
+  triage: "grok-4.7-xhigh"
+  reproduce: "grok-4.7-xhigh-fast"
+  code: "grok-4.7-xhigh-fast"
+  media_review: "grok-4.7-xhigh"

@@ -318,6 +318,18 @@
       "source": "cursor-team-kit",
       "upstreamPath": "README.md",
       "reason": "Install section says the kit is vendored here and the upstream ci-watcher alias is not Grok."
+    },
+    {
+      "file": ".cursor/pstack/automations/benny/skills/setup-benny/SKILL.md",
+      "source": "pstack",
+      "upstreamPath": "automations/benny/skills/setup-benny/SKILL.md",
+      "reason": "Setup accepts only grok-* slugs."
+    },
+    {
+      "file": ".cursor/pstack/automations/benny/templates/configuration.example.yaml",
+      "source": "pstack",
+      "upstreamPath": "automations/benny/templates/configuration.example.yaml",
+      "reason": "Model defaults are Grok slugs."
     }
   ],
   "files": [
@@ -449,7 +461,7 @@
     },
     {
       "file": ".cursor/pstack/automations/benny/skills/setup-benny/SKILL.md",
-      "sha256": "5a3cbe63360c9f6373b6cb6c79a1eaf7e0eba181bfaa1577e2e6431af3407282",
+      "sha256": "c21ec7e73a8122b95cb0f7e7a0f637d1a76a23818f9096f79b2ae1d7955dfe1d",
       "source": "pstack",
       "upstreamPath": "automations/benny/skills/setup-benny/SKILL.md"
     },
@@ -467,7 +479,7 @@
     },
     {
       "file": ".cursor/pstack/automations/benny/templates/configuration.example.yaml",
-      "sha256": "13e24b4ce9b9a0913916e85fe3b080b88d45f8e55dccfe8ae38e0751a997b6f5",
+      "sha256": "f890e8a9e5f9220855a17e10ef93cdc3ee04d112bd492e6e3ce0add3b9dbfed7",
       "source": "pstack",
       "upstreamPath": "automations/benny/templates/configuration.example.yaml"
     },
@@ -1799,7 +1811,7 @@
     },
     {
       "file": "scripts/check-grok",
-      "sha256": "25c7ec2060c37fccd3f1eda5d09563a4946c1601cf4670009b6d5c6087db0035",
+      "sha256": "ec097f575e3bde262a6b035ffd55773406a445adb6396749c533bbdf4cd43cb2",
       "source": "local",
       "upstreamPath": null
     },

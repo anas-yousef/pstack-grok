@@ -109,7 +109,7 @@ Ask for or confirm:
 - Polling and effort budgets
 - Model slug for triage, repro, code work, and media review
 
-Use only model slugs shown as available in the user's Cursor model picker or supported model list. Do not guess a slug and do not carry over a private default.
+Use only `grok-*` model slugs shown as available in the user's Cursor model picker or supported model list. This fork runs every role on Grok, so refuse any other slug. If media review needs image input and no available Grok slug accepts images, stop and tell the user instead of picking another model. Do not guess a slug and do not carry over a private default.
 
 The source channel, triage identity, repository, tracker adapter, control skill, and feature map must be explicit. Fail setup if any required value stays ambiguous.
 
