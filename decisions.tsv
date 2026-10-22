@@ -62,3 +62,6 @@ ts	phase	decision	why	evidence	result
 2026-10-22T16:59:53Z	checks	the committed hook denied three legitimate spawns	a default envelope model, an input string naming another model, and log-browser	scripts/test-subagent-hook	all three now allowed, with tests
 2026-10-22T16:59:53Z	checks	test commits stay unsigned	verify-setup reruns the git-using suites with signing forced on and a signer that always fails	scripts/verify-setup	reverting either fix fails it
 2026-10-22T16:59:53Z	decision	kept earlier decision rows that name cloud-agent ids	this trail is append-only, so rows are superseded, never edited. The ids identify agent runs and are not secrets	decisions.tsv	flagged for the maintainer
+2026-10-22T17:25:54Z	decision	playbooks name no product, platform, or vendor	this repo tells agents how to work. The vendor's own docs supply specifics at the time of work	.cursor/skills/poteto-mode/playbooks	provider table deleted
+2026-10-22T17:25:54Z	decision	merged thirteen risk playbooks into seven	upstream playbooks are short and principle-driven, and the split overlapped	.cursor/skills/poteto-mode/playbooks	5257 words to 1150
+2026-10-22T17:25:54Z	decision	dropped the alias wording lint	it checked phrasing. The hook and check-grok enforce the behavior	scripts/check-paths	removed
