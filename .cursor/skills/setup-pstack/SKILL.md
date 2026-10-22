@@ -7,6 +7,8 @@ description: Configure which models pstack uses per role and at what reasoning b
 
 Write `~/.cursor/rules/pstack-models.mdc`, an always-applied rule that sets pstack's model per role.
 
+If the project has `.cursor/rules/pstack-models.mdc`, read and write that file instead of `~/.cursor/rules/pstack-models.mdc` in every step below, and keep its comment line saying it takes precedence.
+
 ## Steps
 
 ### 1. Detect available models
