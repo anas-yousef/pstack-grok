@@ -28,6 +28,9 @@ AGENTS = Path(".cursor/agents")
 GROK_SLUG = re.compile(r"^grok-[a-z0-9][a-z0-9.-]*$")
 ALIASES = {"inherit-parent", "auto", "unpinned"}
 EXCEPTION_STATUSES = {"allowed-exception", "blocked"}
+DISPATCHED_SLUG = re.compile(r"^[a-z][a-z0-9]*(-[a-z0-9.]+)+$")
+PROBE_ID = re.compile(r"^bc-[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$")
+PLACEHOLDERS = {"other", "unknown", "unpinned", "n/a", "none", "tbd", "todo", "auto"}
 
 
 def _word(text: str) -> str:
@@ -284,6 +287,7 @@ def exception_problems(item: dict) -> list[str]:
         "hookFiresInCloud",
         "billing",
         "logging",
+        "cloudProbes",
         "evidence",
         "route",
     )
@@ -302,6 +306,17 @@ def exception_problems(item: dict) -> list[str]:
         problems.append("status says blocked, but the record says the hook does not fire in cloud agents")
     if item["status"] == "allowed-exception" and item["honored"]:
         problems.append("an honored Grok request is not an exception")
+    dispatched = str(item["dispatched"])
+    if not DISPATCHED_SLUG.match(dispatched) or dispatched.lower() in PLACEHOLDERS:
+        problems.append(f"dispatched {dispatched!r} is not a concrete model slug from the probe")
+    identity = str(item["observedIdentity"]).strip()
+    if not identity or identity.lower() in PLACEHOLDERS:
+        problems.append("observedIdentity is empty or a placeholder")
+    probes = item["cloudProbes"]
+    if not isinstance(probes, list) or not probes or not all(isinstance(p, str) and PROBE_ID.match(p) for p in probes):
+        problems.append("cloudProbes must list the cloud agent ids that showed the swap")
+    elif any(p not in str(item["evidence"]) for p in probes):
+        problems.append("each cloud probe id must appear in evidence")
     return problems
 
 
@@ -330,13 +345,14 @@ def sample_record(**changes) -> dict:
         "status": "allowed-exception",
         "scope": "cloud agents",
         "requested": "grok-4.7-xhigh",
-        "dispatched": "other",
+        "dispatched": "vendor-model-1",
         "honored": False,
-        "observedIdentity": "other",
+        "observedIdentity": "Vendor Model 1",
+        "cloudProbes": ["bc-00000000-0000-0000-0000-000000000000"],
         "hookFiresInCloud": False,
         "billing": "paid",
         "logging": "decisions.tsv",
-        "evidence": "probe",
+        "evidence": "probe bc-00000000-0000-0000-0000-000000000000",
         "route": "control-ui",
     }
     record.update(changes)
@@ -374,6 +390,11 @@ def self_test() -> int:
         sample_record(honored=True),
         sample_record(dispatched="grok-4.7-xhigh"),
         sample_record(requested="other"),
+        sample_record(dispatched="other"),
+        sample_record(dispatched="anything at all"),
+        sample_record(observedIdentity=""),
+        sample_record(cloudProbes=[]),
+        sample_record(cloudProbes=["bc-11111111-1111-1111-1111-111111111111"]),
         {"status": "allowed-exception"},
     ):
         if not exception_problems(bad):
@@ -398,6 +419,11 @@ def self_test() -> int:
         hits, _stale, _absent = scan_tree(root, only=["scripts/grok-allowlist.txt"])
         if hits:
             failures.append(f"scoped scan read an unlisted file {hits}")
+        target.unlink()
+        report = run_checks(root, root / "scripts", None)
+        if report["exit"] == 0 or report["absent"] != ["docs/design.md"]:
+            failures.append(f"an absent allowlist path passed {report['absent']}")
+        target.write_text(body)
         agents = root / AGENTS
         agents.mkdir(parents=True)
         (agents / "a.md").write_text("---\nname: a\nmodel: fast\n---\n")
@@ -424,6 +450,40 @@ def self_test() -> int:
     return 0
 
 
+def run_checks(root: Path, tools: Path, only: list[str] | None) -> dict:
+    """Every check this script makes. main and check-upstream --json both call it."""
+    import io
+    from contextlib import redirect_stdout
+
+    buffer = io.StringIO()
+    with redirect_stdout(buffer):
+        exception_code = report_exceptions(tools)
+    problems = []
+    rule_path = root / RULE
+    rule_text = rule_path.read_text(encoding="utf-8") if rule_path.is_file() else None
+    if rule_text is None:
+        problems.append(f"missing {RULE}")
+    else:
+        problems.extend(rule_problems(rule_text, RULE.as_posix(), aliases_ok=False)[0])
+    problems.extend(agent_problems(root, only))
+    problems.extend(yaml_model_problems(root, only))
+    found, notes = home_problems(rule_text)
+    problems.extend(found)
+    hits, stale, absent = scan_tree(root, tools, only)
+    failed = bool(hits or stale or absent or problems or exception_code)
+    return {
+        "exit": 1 if failed else 0,
+        "scope": "installed files" if only is not None else "whole tree",
+        "allowlist": {path.as_posix(): digest for path, digest in sorted(allowlist(tools).items())},
+        "exception": buffer.getvalue(),
+        "modelProblems": problems,
+        "notes": notes,
+        "hits": hits,
+        "stale": stale,
+        "absent": absent,
+    }
+
+
 def main() -> int:
     if len(sys.argv) > 1 and sys.argv[1] == "--self-test":
         return self_test()
@@ -435,43 +495,28 @@ def main() -> int:
         return 1
     only = sorted(record["files"]) if record else None
     try:
-        permits = allowlist(tools)
+        report = run_checks(root, tools, only)
     except SystemExit as error:
         print(error, file=sys.stderr)
         return 1
-    print(f"scope: {'installed files' if only is not None else 'whole tree'}")
+    print(f"scope: {report['scope']}")
     print("allowlist:")
-    for path, digest in sorted(permits.items()):
+    for path, digest in report["allowlist"].items():
         print(f"  {path} {digest}")
-    exception_code = report_exceptions(tools)
-    problems = []
-    rule_path = root / RULE
-    rule_text = rule_path.read_text(encoding="utf-8") if rule_path.is_file() else None
-    if rule_text is None:
-        problems.append(f"missing {RULE}")
-    else:
-        found, _notes = rule_problems(rule_text, RULE.as_posix(), aliases_ok=False)
-        problems.extend(found)
-    problems.extend(agent_problems(root, only))
-    problems.extend(yaml_model_problems(root, only))
-    found, notes = home_problems(rule_text)
-    problems.extend(found)
-    hits, stale, absent = scan_tree(root, tools, only)
-    for rel in absent:
-        print(f"allowlist absent: {rel}")
-    for rel in stale:
+    sys.stdout.write(report["exception"])
+    for rel in report["absent"]:
+        print(f"allowlist absent: {rel}. Remove the row or restore the file.")
+    for rel in report["stale"]:
         print(f"allowlist stale: {rel}")
-    for note in notes:
+    for note in report["notes"]:
         print(f"note: {note}")
-    print(f"model problems: {len(problems)}")
-    for problem in problems:
+    print(f"model problems: {len(report['modelProblems'])}")
+    for problem in report["modelProblems"]:
         print(f"  {problem}")
-    print(f"hits: {len(hits)}")
-    for hit in hits:
+    print(f"hits: {len(report['hits'])}")
+    for hit in report["hits"]:
         print(hit)
-    if hits or stale or problems or exception_code:
-        return 1
-    return 0
+    return report["exit"]
 
 
 if __name__ == "__main__":

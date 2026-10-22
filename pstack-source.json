@@ -1811,7 +1811,7 @@
     },
     {
       "file": "scripts/check-grok",
-      "sha256": "ec097f575e3bde262a6b035ffd55773406a445adb6396749c533bbdf4cd43cb2",
+      "sha256": "828f14d05c4fe3fb07f18e7194332978abe3289caf5f767bea117f0340084ce5",
       "source": "local",
       "upstreamPath": null
     },
