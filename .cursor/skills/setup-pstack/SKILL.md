@@ -48,11 +48,8 @@ description: pstack per-role model choices (overrides skill defaults)
 alwaysApply: true
 ---
 # pstack model configuration. One line per role. Delete a line to fall back to the skill default.
-# Every value is a grok-* slug or `blocked`. scripts/check-grok fails on anything else.
-# This fork assumes the parent chat runs on Grok. `inherit-parent`, `auto`, and `unpinned` run a role on the parent chat model, so they are not allowed in this project rule. Put one in a personal ~/.cursor/rules/pstack-models.mdc only while Cursor runs on Grok.
-# Code roles run on -fast by choice. Reviewer and judge roles run on grok-4.7-xhigh, and are never lowered or switched to -fast.
-# interrogate runs one reviewer per entry. arena and architect treat their list as a model pool and always spawn at least two runners.
-# computerUse is blocked. Do not rewrite `blocked` to a slug. Locally the subagentStart hook denies it. In a Cursor cloud agent the hook does not fire, and Cursor's helper runs the server-pinned model in scripts/grok-exceptions.json. That helper is the one allowed, logged, paid exception. Browser checks use control-ui on Grok.
+# Every value is a grok-* slug or `blocked`, which scripts/check-grok enforces. Aliases belong only in a personal rule, per poteto-mode.
+# computerUse stays blocked. poteto-mode's computerUse exception covers cloud agents.
 # budget: large (xhigh)
 feature, refactoring: grok-4.7-xhigh-fast
 bug-fix: grok-4.7-xhigh-fast
