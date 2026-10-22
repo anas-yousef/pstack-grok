@@ -300,6 +300,18 @@
       "source": "pstack",
       "upstreamPath": "skills/recall/SKILL.md",
       "reason": "Chat-history miners use the swarm workers Grok line instead of an unnamed cheap model."
+    },
+    {
+      "file": ".cursor/skills/poteto-mode/scripts/bun.lock",
+      "source": "pstack",
+      "upstreamPath": "skills/poteto-mode/scripts/bun.lock",
+      "reason": "The workspace specs match the pinned package.json versions."
+    },
+    {
+      "file": ".cursor/skills/poteto-mode/scripts/package.json",
+      "source": "pstack",
+      "upstreamPath": "skills/poteto-mode/scripts/package.json",
+      "reason": "typescript and bun-types are pinned to the locked versions instead of latest."
     }
   ],
   "files": [
@@ -1049,7 +1061,7 @@
     },
     {
       "file": ".cursor/skills/poteto-mode/scripts/bun.lock",
-      "sha256": "667d9cf7222e9aae3fa42a4be383e657784216e9df115da02227fbc5ac7bbe46",
+      "sha256": "530b7fb6cba7f0b2a6cfc862dbcfe9020c333d45e7e0f448133006583ffdc1f2",
       "source": "pstack",
       "upstreamPath": "skills/poteto-mode/scripts/bun.lock"
     },
@@ -1085,7 +1097,7 @@
     },
     {
       "file": ".cursor/skills/poteto-mode/scripts/package.json",
-      "sha256": "fd511a0c01f522e0c781ddd8eccea0e91697a0856c6e6a3261de78a6a0287c72",
+      "sha256": "32f564147076618f27e054d693150fdbebda1fc883f393860594e514bca1c800",
       "source": "pstack",
       "upstreamPath": "skills/poteto-mode/scripts/package.json"
     },
@@ -1691,7 +1703,7 @@
     },
     {
       "file": ".github/workflows/grok.yml",
-      "sha256": "035ce34f84e7d71d00b4a9f570dcc54a220fe3435a33078926a0f2ee12420e64",
+      "sha256": "b655443de834c5ee1832d67b8cfc6c4120f84cc9d2704ecac002442a73457105",
       "source": "local",
       "upstreamPath": null
     },
@@ -1751,7 +1763,7 @@
     },
     {
       "file": "scripts/verify-setup",
-      "sha256": "fd52e82636f565c024e5bd88dba066abd6abc2097cd22ed30638ede442fa9889",
+      "sha256": "dfdae0d08468f37c6030284b466c2300b066266399c291ae028f2d784c7f76ae",
       "source": "local",
       "upstreamPath": null
     }

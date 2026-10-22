@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -84,6 +85,11 @@ def main() -> int:
     expect(["python3", "scripts/check-paths", "--self-test"], 0)
     expect(["python3", "scripts/check-paths"], 0, contains="problems: 0")
     expect(["python3", "scripts/check-upstream", "--self-test"], 0)
+    scripts_dir = ROOT / ".cursor" / "skills" / "poteto-mode" / "scripts"
+    if shutil.which("bun"):
+        expect(["bun", "test", "orch", "check-plan.test.ts"], 0, cwd=scripts_dir, contains=" 0 fail")
+    else:
+        print("skipped: bun test orch check-plan.test.ts (bun is not installed). CI runs the full bun suite.")
     problems = manifest_problems()
     if problems:
         print("manifest:")
