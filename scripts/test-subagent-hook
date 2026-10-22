@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Pipe sample subagentStart payloads into the hook and check the decision."""
+"""Pipe sample subagentStart payloads into the hook and check the decision and its reason."""
 
 from __future__ import annotations
 
@@ -12,6 +12,14 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent if HERE.name == "pstack-grok" else HERE.parent
 HOOK = ROOT / ".cursor" / "hooks" / "block-non-grok.py"
 NON_GROK = "cl" + "aude-4.5-" + "son" + "net"
+GROK = "grok-4.7-xhigh"
+
+# Each deny reason has its own sentence, and every one also names control-ui.
+REASONS = {
+    "browser": "computer use or browser",
+    "model": "not a Grok model",
+    "unreadable": "could not be read",
+}
 
 
 def run(raw: str) -> dict:
@@ -33,176 +41,83 @@ def run(raw: str) -> dict:
     return decision
 
 
-def expect(name: str, raw: str, permission: str, control_ui: bool) -> None:
+def allow(name: str, raw: str) -> None:
     decision = run(raw)
-    if decision.get("permission") != permission:
-        raise SystemExit(f"{name}: permission {decision.get('permission')!r}")
+    if decision != {"permission": "allow"}:
+        raise SystemExit(f"{name}: expected allow, got {decision}")
+    print(f"  {name}: allow")
+
+
+def deny(name: str, raw: str, reason: str) -> None:
+    decision = run(raw)
+    if decision.get("permission") != "deny":
+        raise SystemExit(f"{name}: expected deny, got {decision}")
     message = decision.get("user_message", "")
-    if control_ui and "control-ui" not in message:
+    if REASONS[reason] not in message:
+        raise SystemExit(f"{name}: expected the {reason} reason, got {message!r}")
+    if "control-ui" not in message:
         raise SystemExit(f"{name}: deny message missing control-ui: {message!r}")
-    if permission == "allow" and "user_message" in decision:
-        raise SystemExit(f"{name}: allow included user_message")
-    print(f"  {name}: {permission}")
+    print(f"  {name}: deny ({reason})")
 
 
-def payload(**fields: str) -> str:
+def payload(**fields: object) -> str:
     return json.dumps(fields)
 
 
 def main() -> int:
-    expect(
-        "computerUse non-grok",
-        payload(subagent_type="computerUse", subagent_model=NON_GROK, task="open example.com"),
-        "deny",
-        True,
-    )
-    expect(
-        "browser even on grok",
-        payload(subagent_type="browser", subagent_model="grok-4.7-xhigh"),
-        "deny",
-        True,
-    )
-    expect(
-        "computer-use kebab",
-        payload(subagent_type="computer-use", model="grok-4.7-xhigh"),
-        "deny",
-        True,
-    )
-    expect(
-        "non-grok reviewer",
-        payload(subagent_type="generalPurpose", subagent_model=NON_GROK, task="hostile review"),
-        "deny",
-        True,
-    )
+    for message in REASONS.values():
+        others = [text for text in REASONS.values() if text != message]
+        if any(message in text for text in others):
+            raise SystemExit("deny reasons are not distinct")
+
+    deny("computerUse non-grok", payload(subagent_type="computerUse", subagent_model=NON_GROK, task="open example.com"), "browser")
+    deny("browser even on grok", payload(subagent_type="browser", subagent_model=GROK), "browser")
+    deny("computer-use kebab", payload(subagent_type="computer-use", model=GROK), "browser")
     for kind in ("computer_use_agent", "browserAgent", "BrowserUse", "Computer Use Helper", "cursor-browser"):
-        expect(
-            f"blocked type {kind} on grok",
-            payload(subagent_type=kind, subagent_model="grok-4.7-xhigh"),
-            "deny",
-            True,
-        )
-    expect(
-        "camelCase computerUse type",
-        payload(subagentType="computerUse", subagentModel="grok-4.7-xhigh"),
-        "deny",
-        True,
+        deny(f"blocked type {kind} on grok", payload(subagent_type=kind, subagent_model=GROK), "browser")
+    deny("camelCase computerUse type", payload(subagentType="computerUse", subagentModel=GROK), "browser")
+
+    deny("non-grok reviewer", payload(subagent_type="generalPurpose", subagent_model=NON_GROK, task="hostile review"), "model")
+    deny("camelCase non-grok model", payload(subagent_type="explore", subagentModel=NON_GROK, model=GROK), "model")
+    for key in ("model_id", "modelId", "subagent_model_id", "subagentModelId"):
+        deny(f"non-grok {key}", payload(**{"subagent_type": "explore", "subagent_model": GROK, key: NON_GROK}), "model")
+    allow("grok model_id", payload(subagent_type="explore", model_id=GROK))
+    for model in ("grok", "grokfoo", "grok-", "xgrok-4.7-xhigh", "fast", "auto", "inherit-parent", "unpinned"):
+        deny(f"model {model!r}", payload(subagent_type="explore", subagent_model=model), "model")
+    deny("mixed models", payload(subagent_type="explore", subagent_model=GROK, model=NON_GROK), "model")
+    deny("empty child model", payload(subagent_type="explore", subagent_model="", model=GROK), "model")
+    deny("whitespace child model", payload(subagent_type="explore", subagent_model="  ", model=GROK), "model")
+    deny("envelope non-grok when child is empty", payload(subagent_type="explore", subagent_model="", model=NON_GROK), "model")
+    deny("unspecified model", payload(subagent_type="explore", subagent_model="inherit"), "model")
+    deny("no model field", payload(subagent_type="explore"), "model")
+
+    allow("padded grok model", payload(subagent_type="explore", subagent_model=" grok-4.7-xhigh "))
+    allow("grok explore", payload(subagent_type="explore", subagent_model=GROK))
+    allow("grok executor", payload(subagent_type="generalPurpose", model="grok-4.7-xhigh-fast", task="edit the hook"))
+    allow("both grok fields", payload(subagent_type="explore", subagent_model=GROK, model="grok-4.7-xhigh-fast"))
+    allow(
+        "task text that is JSON is not a spawn",
+        payload(subagent_type="explore", model=GROK, task=json.dumps({"subagent_type": "browser"})),
     )
-    expect(
-        "camelCase non-grok model",
-        payload(subagent_type="explore", subagentModel=NON_GROK, model="grok-4.7-xhigh"),
-        "deny",
-        True,
-    )
-    for model in ("grok", "grokfoo", "grok-", "xgrok-4.7-xhigh", "fast", "auto"):
-        expect(
-            f"model {model!r}",
-            payload(subagent_type="explore", subagent_model=model),
-            "deny",
-            True,
-        )
-    expect(
-        "padded grok model",
-        payload(subagent_type="explore", subagent_model=" grok-4.7-xhigh "),
-        "allow",
-        False,
-    )
-    expect(
-        "grok explore",
-        payload(subagent_type="explore", subagent_model="grok-4.7-xhigh"),
-        "allow",
-        False,
-    )
-    expect(
-        "grok executor",
-        payload(subagent_type="generalPurpose", model="grok-4.7-xhigh-fast", task="edit the hook"),
-        "allow",
-        False,
-    )
-    expect(
-        "mixed models",
-        payload(subagent_type="explore", subagent_model="grok-4.7-xhigh", model=NON_GROK),
-        "deny",
-        True,
-    )
-    expect(
-        "both grok fields",
-        payload(subagent_type="explore", subagent_model="grok-4.7-xhigh", model="grok-4.7-xhigh-fast"),
-        "allow",
-        False,
-    )
-    expect(
-        "empty child model",
-        payload(subagent_type="explore", subagent_model="", model="grok-4.7-xhigh"),
-        "deny",
-        True,
-    )
-    expect(
-        "whitespace child model",
-        payload(subagent_type="explore", subagent_model="  ", model="grok-4.7-xhigh"),
-        "deny",
-        True,
-    )
-    expect(
-        "envelope non-grok when child is empty",
-        payload(subagent_type="explore", subagent_model="", model=NON_GROK),
-        "deny",
-        True,
-    )
-    expect(
-        "nested computerUse",
-        json.dumps(
-            {
-                "tool_name": "Task",
-                "model": "grok-4.7-xhigh",
-                "tool_input": {"subagent_type": "computerUse", "model": "grok-4.7-xhigh"},
-            }
-        ),
-        "deny",
-        True,
-    )
-    expect(
-        "string tool_input computerUse",
-        json.dumps(
-            {
-                "model": "grok-4.7-xhigh",
-                "tool_input": json.dumps(
-                    {"subagent_type": "computerUse", "model": "grok-4.7-xhigh"}
-                ),
-            }
-        ),
-        "deny",
-        True,
-    )
-    expect(
-        "deeper tool_input computerUse",
-        json.dumps(
-            {
-                "model": "grok-4.7-xhigh",
-                "tool_input": {
-                    "model": "grok-4.7-xhigh",
-                    "tool_input": {"subagent_type": "computerUse", "model": "grok-4.7-xhigh"},
-                },
-            }
-        ),
-        "deny",
-        True,
-    )
-    expect(
-        "unspecified model",
-        payload(subagent_type="explore", subagent_model="inherit"),
-        "deny",
-        True,
-    )
-    expect("malformed computerUse", "computerUse {", "deny", True)
-    expect(
-        "malformed escaped computerUse",
-        '{"subagent_type":"\\u0063omputerUse","model":"grok-4.7-xhigh"',
-        "deny",
-        True,
-    )
-    expect("malformed grok", "explore grok-4.7-xhigh {", "deny", True)
-    expect("malformed empty", "", "deny", True)
-    expect("malformed other", "not-json", "deny", True)
+
+    nested = {"subagent_type": "computerUse", "model": GROK}
+    deny("nested computerUse", json.dumps({"tool_name": "Task", "model": GROK, "tool_input": nested}), "browser")
+    deny("string tool_input computerUse", json.dumps({"model": GROK, "tool_input": json.dumps(nested)}), "browser")
+    deny("deeper tool_input computerUse", json.dumps({"model": GROK, "tool_input": {"model": GROK, "tool_input": nested}}), "browser")
+    deny("tool_input list with computerUse", json.dumps({"model": GROK, "tool_input": [{"subagent_type": "explore", "model": GROK}, nested]}), "browser")
+    deny("list of string tool_inputs", json.dumps({"model": GROK, "tool_input": [json.dumps(nested)]}), "browser")
+    deny("non-grok model inside a list", json.dumps({"model": GROK, "calls": [{"subagent_type": "explore", "model": NON_GROK}]}), "model")
+
+    escaped = '{"subagent_type":"\\u0063omputerUse","model":"grok-4.7-xhigh"}'
+    if json.loads(escaped)["subagent_type"] != "computerUse":
+        raise SystemExit("escaped payload does not decode to computerUse")
+    deny("escaped computerUse, valid JSON", escaped, "browser")
+    deny("escaped computerUse, truncated", escaped[:-1], "unreadable")
+    deny("malformed computerUse", "computerUse {", "browser")
+    deny("malformed grok", "explore grok-4.7-xhigh {", "unreadable")
+    deny("malformed empty", "", "unreadable")
+    deny("malformed other", "not-json", "unreadable")
+    deny("JSON that is not an object", json.dumps([nested]), "browser")
     print("test-subagent-hook: ok")
     return 0
 

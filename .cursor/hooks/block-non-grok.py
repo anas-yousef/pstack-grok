@@ -9,7 +9,16 @@ import sys
 
 BLOCKED_MARKERS = ("computeruse", "browser")
 TYPE_KEYS = ("subagent_type", "subagentType", "agent_type", "agentType")
-MODEL_KEYS = ("subagent_model", "subagentModel", "model")
+MODEL_KEYS = (
+    "subagent_model",
+    "subagentModel",
+    "subagent_model_id",
+    "subagentModelId",
+    "model",
+    "model_id",
+    "modelId",
+)
+JSON_STRING_KEYS = ("tool_input", "toolInput", "input", "arguments")
 GROK_SLUG = re.compile(r"^grok-[a-z0-9][a-z0-9.-]*$")
 BROWSER_MESSAGE = (
     "Blocked. This subagent type is computer use or browser. "
@@ -40,24 +49,35 @@ def is_grok(model: str) -> bool:
     return bool(GROK_SLUG.match(model.lower()))
 
 
-def iter_views(value: object, seen: set[int] | None = None):
+def iter_views(value: object, seen: set[int] | None = None, parse: bool = False):
+    """Yield every object in the payload, at any depth, inside objects and lists.
+
+    A string is parsed as JSON only under a key that carries tool arguments, so a
+    task description that happens to be JSON is not read as a spawn.
+    """
     if seen is None:
         seen = set()
     current = value
     if isinstance(current, str):
+        if not parse:
+            return
         try:
             current = json.loads(current)
         except json.JSONDecodeError:
             return
+    if id(current) in seen:
+        return
+    if isinstance(current, list):
+        seen.add(id(current))
+        for item in current:
+            yield from iter_views(item, seen, parse)
+        return
     if not isinstance(current, dict):
         return
-    marker = id(current)
-    if marker in seen:
-        return
-    seen.add(marker)
+    seen.add(id(current))
     yield current
-    if "tool_input" in current:
-        yield from iter_views(current["tool_input"], seen)
+    for key, item in current.items():
+        yield from iter_views(item, seen, key in JSON_STRING_KEYS)
 
 
 def views(payload: dict) -> list[dict]:
