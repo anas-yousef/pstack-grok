@@ -1823,7 +1823,7 @@
     },
     {
       "file": "scripts/check-upstream",
-      "sha256": "6f0be6db625f470477ecb8d9721b6e86319f76691f2248e9c4bfc28cc79ac408",
+      "sha256": "4e5156a2ae1628d0bbd17320b3760f932632b4e2814693012ddc68fe8c37afb9",
       "source": "local",
       "upstreamPath": null
     },

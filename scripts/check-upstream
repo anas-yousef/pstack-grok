@@ -90,11 +90,13 @@ def ensure_repo(url: str, dest: Path, pin: str, source: str) -> str:
     return git(dest, "rev-parse", "FETCH_HEAD").stdout.strip()
 
 
-def name_status(repo: Path, pin: str, head: str, path: str) -> list[tuple[str, str]]:
+def name_status(repo: Path, pin: str, head: str, path: str | list[str]) -> list[tuple[str, str]]:
     # --no-renames reports a rename as a delete plus an add, so the old path is kept.
     args = ["diff", "--name-status", "--no-renames", pin, head]
-    if path:
-        args.extend(["--", path])
+    specs = [path] if isinstance(path, str) else path
+    specs = [spec for spec in specs if spec]
+    if specs:
+        args.extend(["--", *specs])
     out = git(repo, *args).stdout
     rows = []
     for line in out.splitlines():
@@ -146,12 +148,14 @@ def strip_prefix(path: str, prefix: str) -> str:
     return path
 
 
-def commits_since(repo: Path, pin: str, head: str, path: str = "") -> list[dict]:
+def commits_since(repo: Path, pin: str, head: str, path: str | list[str] = "") -> list[dict]:
     if pin == head:
         return []
     args = ["log", "--reverse", "--format=%H%x09%aI%x09%s", f"{pin}..{head}"]
-    if path:
-        args.extend(["--", path])
+    specs = [path] if isinstance(path, str) else path
+    specs = [spec for spec in specs if spec]
+    if specs:
+        args.extend(["--", *specs])
     out = git(repo, *args).stdout
     rows = []
     for line in out.splitlines():
@@ -172,6 +176,28 @@ def vendored_skills(manifest: dict, source: str) -> set[str]:
     return roots
 
 
+def source_scope(manifest: dict, source: dict) -> list[str]:
+    """Upstream paths this fork tracks for a source, prefixed with the source path.
+
+    A source with a path (pstack, cursor-team-kit) is vendored in full, so the
+    scope is that path. A source with an empty path (mattpocock, superpowers) is
+    a whole upstream repo of which this fork keeps a few skills, so the scope is
+    each kept skill directory plus each other vendored file.
+    """
+    prefix = source.get("path") or ""
+    if prefix:
+        return [prefix]
+    kept = vendored_skills(manifest, source["name"])
+    scope = set(kept)
+    for item in manifest["files"]:
+        upstream = item.get("upstreamPath") or ""
+        if item.get("source") != source["name"] or not upstream:
+            continue
+        if not any(upstream.startswith(root + "/") for root in kept):
+            scope.add(upstream)
+    return sorted(scope)
+
+
 def outside_kept_skills(path: str, kept: set[str]) -> bool:
     if not path.startswith("skills/"):
         return False
@@ -185,6 +211,10 @@ def advise(classification: str, merge: str | None = None) -> tuple[str, str]:
         return "review", f"local patch needs a 3-way merge ({merge})"
     if classification == "new-skill":
         return "skip", "this fork does not vendor that skill"
+    if classification == "deleted-unvendored":
+        return "skip", "upstream removed a file this fork does not vendor"
+    if classification == "unvendored":
+        return "skip", "upstream changed a file this fork chose not to vendor"
     if classification == "deleted":
         return "review", "upstream removed a file this fork vendors"
     return "review", "new upstream file in a tree this fork vendors"
@@ -223,22 +253,28 @@ def collect(manifest: dict, cache_root: Path, local_root: Path) -> tuple[list[di
             "name": name,
             "pin": pin,
             "head": head,
-            "commits": commits_since(dest, pin, head, source.get("path") or ""),
+            "commits": commits_since(dest, pin, head, source_scope(manifest, source)),
             "changes": [],
         }
         if head != pin:
             kept = vendored_skills(manifest, name)
             prefix = source.get("path") or ""
-            for status, changed in name_status(dest, pin, head, prefix):
+            for status, changed in name_status(dest, pin, head, source_scope(manifest, source)):
                 upstream_path = strip_prefix(changed, prefix)
                 record = by_key.get((name, upstream_path))
                 if outside_kept_skills(upstream_path, kept):
                     entry["changes"].append(change_row("new-skill", upstream_path, None))
                     continue
-                if status == "D" and record is not None:
-                    entry["changes"].append(change_row("deleted", upstream_path, record["file"]))
+                if status == "D":
+                    if record is not None:
+                        entry["changes"].append(change_row("deleted", upstream_path, record["file"]))
+                    else:
+                        entry["changes"].append(change_row("deleted-unvendored", upstream_path, None))
                     continue
-                if status == "A" or record is None:
+                if status != "A" and record is None:
+                    entry["changes"].append(change_row("unvendored", upstream_path, None))
+                    continue
+                if record is None:
                     entry["changes"].append(change_row("new-file", upstream_path, None))
                     blob = show_blob(dest, head, changed)
                     if blob:
@@ -325,27 +361,9 @@ def render_json(manifest: dict, sources: list[dict], drift_hits: list[str], code
 
 
 def grok_report(root: Path) -> tuple[int, dict]:
-    grok = load_grok()
-    import io
-    from contextlib import redirect_stdout
-
-    buffer = io.StringIO()
-    with redirect_stdout(buffer):
-        exception_code = grok.report_exceptions(root / "scripts")
-    hits, stale, absent = grok.scan_tree(root)
-    rule = root / grok.RULE
-    problems = grok.agent_problems(root, None)
-    if rule.is_file():
-        problems.extend(grok.rule_problems(rule.read_text(encoding="utf-8"), grok.RULE.as_posix(), False)[0])
-    code = 1 if hits or stale or exception_code or problems else 0
-    return code, {
-        "exit": code,
-        "modelProblems": problems,
-        "hits": hits,
-        "stale": stale,
-        "absent": absent,
-        "exception": buffer.getvalue(),
-    }
+    """The same checks check-grok runs, so --json and the text report agree."""
+    report = load_grok().run_checks(root, root / "scripts", None)
+    return report["exit"], report
 
 
 def init_repo(path: Path) -> None:
@@ -359,6 +377,76 @@ def commit_all(path: Path, message: str) -> str:
     subprocess.run(["git", "-C", str(path), "add", "."], check=True)
     subprocess.run(["git", "-C", str(path), "commit", "-q", "-m", message], check=True)
     return subprocess.check_output(["git", "-C", str(path), "rev-parse", "HEAD"], text=True).strip()
+
+
+def grok_parity_self_test(folder: Path) -> str | None:
+    root = folder / "parity"
+    (root / ".cursor" / "rules").mkdir(parents=True)
+    (root / "scripts").mkdir()
+    (root / ".cursor" / "rules" / "pstack-models.mdc").write_text("---\nalwaysApply: true\n---\ncomputerUse: blocked\n")
+    (root / ".cursor" / "bot.yaml").write_text('models:\n  code: "choose-a-slug"\n')
+    home = folder / "parity-home.mdc"
+    home.write_text("feature: fast\n")
+    previous = os.environ.get("PSTACK_HOME_RULE")
+    os.environ["PSTACK_HOME_RULE"] = str(home)
+    try:
+        code, report = grok_report(root)
+    finally:
+        if previous is None:
+            del os.environ["PSTACK_HOME_RULE"]
+        else:
+            os.environ["PSTACK_HOME_RULE"] = previous
+    problems = " ".join(report["modelProblems"])
+    if code == 0 or "choose-a-slug" not in problems or "fast" not in problems:
+        return f"--json skipped a check that the text report runs: {report['modelProblems']}"
+    return None
+
+
+def delete_self_test(folder: Path) -> str | None:
+    upstream = folder / "delete-upstream"
+    init_repo(upstream)
+    (upstream / "pkg").mkdir()
+    (upstream / "pkg" / "kept.md").write_text("base\n")
+    (upstream / "pkg" / "dropped.md").write_text("base\n")
+    (upstream / "pkg" / "unkept.md").write_text("base\n")
+    skill = upstream / "skills" / "kept"
+    skill.mkdir(parents=True)
+    (skill / "SKILL.md").write_text("base\n")
+    (skill / "gone.md").write_text("base\n")
+    (upstream / "skills" / "other").mkdir()
+    (upstream / "skills" / "other" / "SKILL.md").write_text("base\n")
+    (upstream / "README.md").write_text("base\n")
+    old = commit_all(upstream, "base")
+    for rel in ("pkg/dropped.md", "skills/kept/gone.md", "skills/other/SKILL.md", "README.md"):
+        (upstream / rel).unlink()
+    (upstream / "pkg" / "unkept.md").write_text("changed\n")
+    commit_all(upstream, "deletes")
+    local = folder / "delete-local"
+    local.mkdir()
+    for rel in ("kept.md", "SKILL.md", "gone.md"):
+        (local / rel).write_text("base\n")
+    manifest = {
+        "fork": "test",
+        "sources": [
+            {"name": "full", "upstream": upstream.as_uri(), "commit": old, "path": "pkg"},
+            {"name": "picked", "upstream": upstream.as_uri(), "commit": old, "path": ""},
+        ],
+        "localPatches": [],
+        "files": [
+            {"file": "kept.md", "source": "full", "upstreamPath": "kept.md"},
+            {"file": "SKILL.md", "source": "picked", "upstreamPath": "skills/kept/SKILL.md"},
+            {"file": "gone.md", "source": "picked", "upstreamPath": "skills/kept/gone.md"},
+        ],
+    }
+    sources, _hits = collect(manifest, folder / "delete-cache", local)
+    full, picked = sources
+    found = {item["path"]: item["recommendation"] for item in full["changes"]}
+    if found != {"dropped.md": "skip", "unkept.md": "skip"} or decide([full], [], 0) != EXIT_CLEAN:
+        return f"an upstream delete of an unvendored file was drift: {found}"
+    found = {item["path"]: (item["classification"], item["recommendation"]) for item in picked["changes"]}
+    if found != {"skills/kept/gone.md": ("deleted", "review")}:
+        return f"an empty-path source was not scoped to its kept skills: {found}"
+    return None
 
 
 def nested_self_test(folder: Path) -> str | None:
@@ -502,6 +590,14 @@ def self_test() -> int:
         }
         sources, _hits = collect(manifest, folder / "cache", local)
         changes = {item["path"]: item for item in sources[0]["changes"]}
+        parity_problem = grok_parity_self_test(folder)
+        if parity_problem:
+            print("self-test:", parity_problem)
+            return 1
+        delete_problem = delete_self_test(folder)
+        if delete_problem:
+            print("self-test:", delete_problem)
+            return 1
         nested_problem = nested_self_test(folder)
         if nested_problem:
             print("self-test:", nested_problem)
@@ -512,8 +608,8 @@ def self_test() -> int:
         if changes["skills/edited/SKILL.md"]["recommendation"] != "review":
             print("self-test: patched file was not a review", changes)
             return 1
-        if changes["skills/fresh/SKILL.md"]["recommendation"] != "skip":
-            print("self-test: new skill was not a skip", changes)
+        if "skills/fresh/SKILL.md" in changes:
+            print("self-test: an unvendored skill in an empty-path source was not scoped out", changes)
             return 1
         if sources[0]["commits"][0]["title"] != "theirs" or "date" not in sources[0]["commits"][0]:
             print("self-test: commit list missing", sources[0]["commits"])
