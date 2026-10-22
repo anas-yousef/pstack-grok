@@ -22,6 +22,7 @@ Remaining triggers:
 - Code crossing a function boundary → the **architect** skill, parallel design exploration before implementing.
 - Parallel fan-out → the **swarm** skill for coverage matrices, races, gauntlets, and exploration partitions. Use **arena** for design or code bakeoffs with base selection and grafting.
 - Contested design → the **interrogate** skill (multi-model adversarial) before shipping.
+- A slice matching `references/interrogate-triggers.md` → the **interrogate** skill before implementation.
 - Nontrivial multi-step → write the throughput checkpoint (Feature step 3).
 - Any prose surface, your reply to the user included → the **unslop** skill. Write the reply per **Writing the reply**. Agent-facing prose also follows the **create-skill** skill (Cursor's built-in for authoring SKILL.md files).
 - Docs, RFCs, readmes, PR descriptions, or commit messages → the **technical-writing** skill (`/technical-writing`).
@@ -82,7 +83,7 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
 
 **Just do it.** Use any MCP tool. Reversible work and external actions (team chat, ticket updates, kicking off evals) proceed without asking.
 
-**Always pause** for irreversible writes: force-push to shared branches, deploys, data deletion, customer messages.
+**Always pause** for irreversible writes: force-push to shared branches, deploys, data deletion, customer messages, live charges, first live external sends, destructive production migrations.
 
 **Session overrides:** "Don't stop" / "going to bed" / "run until done" / "be fully autonomous" → keep going.
 
@@ -131,6 +132,14 @@ A large or cross-cutting effort (a migration across many call sites, an ambitiou
 - **Runtime forensics.** Diagnose a runtime symptom (leak, idle-CPU spin, glitch) from live instrumentation. The deliverable is a diagnosis, not a fix.
 - **Trace forensics.** Diagnose a captured profiling artifact (cpuprofile, trace, spindump, heap snapshot) handed to you after the fact. The deliverable is a diagnosis, not a fix.
 - **Feature.** New or changed behavior, built from a named data shape.
+- **Greenfield.** An empty repo or a new product, built slice by slice from a named domain.
+- **DB migration.** A schema change, data migration, or backfill, shipped as expand, migrate, contract.
+- **Dependency upgrade.** Bumping a library, framework, runtime, or toolchain version.
+- **External side effects.** Code that charges money, sends email or messages, calls webhooks, or writes to a third party.
+- **Security and privacy.** Login, permissions, secrets, untrusted input, or personal data.
+- **Observability.** Adding or fixing logs, metrics, traces, or alerts.
+- **Deploy and rollback.** Releasing a change to a live environment with a tested way back.
+- **Incident hotfix.** Production is broken for users now. Mitigate first, then fix the root cause.
 - **Refactoring.** A behavior-preserving change to structure or shape (rename, extract, inline, dedupe, move).
 - **Prototype.** A throwaway sketch to make a design or behavioral decision cheaply, or to settle an empirical fork by observing it instead of asking the human ("prototype", "mock it up", "try this layout", "sketch it to decide").
 - **Visual parity.** Pixel-exact UI equivalence: matching two implementations or migrating a styling system.
