@@ -5,7 +5,7 @@ on:
   pull_request:
 
 # check-upstream is not run here. Upstream commits are not this repo's
-# failures, and the owner runs the daily upstream check outside this repo.
+# failures. Run it on a schedule or by hand, per the Upstream sync playbook.
 
 jobs:
   check:

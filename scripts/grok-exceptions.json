@@ -8,14 +8,11 @@
     "observedIdentity": "Claude Sonnet 4.5",
     "hook": ".cursor/hooks/block-non-grok.py",
     "hookFiresInCloud": false,
-    "localHook": "Denies computerUse and browser subagent types, and any non-Grok model. scripts/test-subagent-hook proves it offline. A live local deny has not been recorded.",
-    "billing": "Paid. It runs on Cursor's non-Grok helper model and is billed to the owner's Cursor usage. The owner adds credit for it.",
+    "localHook": "Denies computerUse and browser subagent types, and any non-Grok model. scripts/test-subagent-hook proves it against synthetic payloads. It has not been checked against a live subagentStart payload.",
+    "billing": "Paid. It runs on Cursor's non-Grok helper model and is billed to the Cursor account that runs the agent.",
     "logging": "Each use gets a decisions.tsv row and an Attention line that name the dispatched model. Never report it as Grok.",
-    "cloudProbes": [
-      "bc-c634e916-7a41-584d-a35d-50514d139b69",
-      "bc-62d2834c-67ee-5b3e-aa79-9edbcc9b2176"
-    ],
-    "evidence": "Parent passed grok-4.7-xhigh for bc-c634e916-7a41-584d-a35d-50514d139b69. The recorded Task arguments used claude-4.5-sonnet. Platform originalModelName was null. The subagent quoted: You are an AI coding assistant, powered by Claude Sonnet 4.5. After the hook was on disk, parent bc-62d2834c-67ee-5b3e-aa79-9edbcc9b2176 called Task computerUse with grok-4.7-xhigh. The call was not denied. The same agent id replied again and quoted the same identity sentence. The hook deny text was absent.",
+    "probes": 2,
+    "evidence": "Two Cursor cloud-agent probes. In the first, the parent called Task computerUse with model grok-4.7-xhigh. The recorded Task arguments used claude-4.5-sonnet, the platform field originalModelName was null, and the subagent's reply quoted its system prompt identity as Claude Sonnet 4.5. In the second, made after the subagentStart hook was on disk, the same call was not denied. The reply quoted the same identity, and the hook's deny sentence was absent from the tool result. The cloud agent ids are kept in the maintainer's records, not in this repo.",
     "route": "Browser checks use control-ui on Grok. In a cloud agent where control-ui cannot reach the page, computerUse is the one allowed non-Grok exception, logged per run. The role line stays blocked, so nothing spawns it by default."
   }
 }

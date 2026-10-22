@@ -4,7 +4,7 @@
 
 In the pstack-grok fork repo:
 
-1. Run `python3 scripts/check-upstream`. It needs network. The owner's daily check runs outside the repo, so this is the manual path. Exit 1 means drift that needs action. Exit 2 is a fetch or pin failure.
+1. Run `python3 scripts/check-upstream`. It needs network. Run it on a schedule outside push and pull request CI, such as a daily job, or by hand before a sync. Exit 1 means drift that needs action. Exit 2 is a fetch or pin failure.
 2. For each `take`, replace the local file with the upstream blob.
 3. For each `review`, finish the 3-way merge by hand and keep the Grok patch. Read the reason on the file's `localPatches` row first.
 4. For each `skip`, upstream added a skill this fork does not vendor. Vendoring it is a separate decision with a reason in `docs/design.md`.

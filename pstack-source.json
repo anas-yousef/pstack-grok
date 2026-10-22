@@ -911,7 +911,7 @@
     },
     {
       "file": ".cursor/skills/poteto-mode/SKILL.md",
-      "sha256": "4c409693871b00a0d38cca6596129665165af38b4f3c391b5bb1bd898f284ff5",
+      "sha256": "ded16bb6d86e2cf7cc51121bbb2521a33fba9c7fa6d05a3e7f97d117731bffa2",
       "source": "pstack",
       "upstreamPath": "skills/poteto-mode/SKILL.md"
     },
@@ -959,7 +959,7 @@
     },
     {
       "file": ".cursor/skills/poteto-mode/playbooks/data-deletion-privacy.md",
-      "sha256": "0474159e2ba7dc43f81268acef42fec76b5d11d8b057f572851485ccadaae30a",
+      "sha256": "181e9298d88d574cd72a2f556aaf454af8be501aefef9629b8a298c17993ba75",
       "source": "local",
       "upstreamPath": null
     },
@@ -1091,7 +1091,7 @@
     },
     {
       "file": ".cursor/skills/poteto-mode/playbooks/secrets-and-env.md",
-      "sha256": "938f04dd3ca87951eb04e0cd9ac165d594fec7294ef381ea72119ac6abbeca48",
+      "sha256": "f0d2f09c9917cf43476bc2c3fb08dc0fc08338dc99e241e7bd931c6cbb30bbf3",
       "source": "local",
       "upstreamPath": null
     },
@@ -1121,7 +1121,7 @@
     },
     {
       "file": ".cursor/skills/poteto-mode/playbooks/upstream-sync.md",
-      "sha256": "e7a65b825bd5c51c268a8bfdfe68260ad3b0cb55cc67fe852d9b7cc366aaebfa",
+      "sha256": "7b3e5e992bfa644f196a38de82c6bb1eeb690398e8e8cba5278eb976e7fbe5b8",
       "source": "local",
       "upstreamPath": null
     },
@@ -1805,7 +1805,7 @@
     },
     {
       "file": ".github/workflows/grok.yml",
-      "sha256": "0002a331e4bb977a09c5aa7376a5ae3f4525ec48db24d57116b96b6ae5788a1c",
+      "sha256": "b0948224e01807ea602035fea3a54443bccba63bbd459e5e63f974a7f7ea9939",
       "source": "local",
       "upstreamPath": null
     },
@@ -1817,7 +1817,7 @@
     },
     {
       "file": "scripts/check-grok",
-      "sha256": "828f14d05c4fe3fb07f18e7194332978abe3289caf5f767bea117f0340084ce5",
+      "sha256": "3302ddf783163709e0655e8cde36de8e78db8ffaa87eaead7fb86b3109398498",
       "source": "local",
       "upstreamPath": null
     },
@@ -1835,13 +1835,13 @@
     },
     {
       "file": "scripts/grok-allowlist.txt",
-      "sha256": "152fc3b51ed8af160be7aa57748ea0d30892aad255a50e784232107bc61d510c",
+      "sha256": "af59f8022e406967a2cb1260b14a9966eca6ec0cb7501f66bb0feca17e6a50a8",
       "source": "local",
       "upstreamPath": null
     },
     {
       "file": "scripts/grok-exceptions.json",
-      "sha256": "e64541991f16c2d5fb41fde58c19b139254fd627872cfd81f63a2a2cc82b082c",
+      "sha256": "3b8017e3f900671749089368b1231698b65275d252e98aa223235bcf18522278",
       "source": "local",
       "upstreamPath": null
     },
@@ -1865,7 +1865,7 @@
     },
     {
       "file": "scripts/verify-setup",
-      "sha256": "f6f229c28425318de4f3fdf18d7c807086255d5213ae6f9d3054819f027107fa",
+      "sha256": "0d6c96402bca7c2231b33fa76985470d38c92683a0a8051cf120e7974f7b3eb0",
       "source": "local",
       "upstreamPath": null
     }

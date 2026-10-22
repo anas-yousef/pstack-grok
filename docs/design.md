@@ -201,7 +201,7 @@ orchestrate verifier: grok-4.7-xhigh
 computerUse: blocked
 ```
 
-`verification` keeps `-fast` because poteto-mode already pins verification speed to the swarm worker, and the audit names that slug. `computerUse` is `blocked` on the role line. The parent passed `grok-4.7-xhigh`. The recorded Task arguments for that spawn used `claude-4.5-sonnet`, and the subagent quoted a Claude Sonnet 4.5 identity sentence. Two cloud probes showed that the hook does not fire in cloud agents. `scripts/grok-exceptions.json` records this with status `allowed-exception`. Cursor's cloud computer-use and browser helper is server-pinned to Claude Sonnet 4.5. It is the one allowed non-Grok exception. It is paid, the owner adds credit for it, and each use is logged in the decision trail and under Attention. Browser verification uses control-ui on Grok, and computerUse is used in a cloud agent only when control-ui cannot reach the page.
+`verification` keeps `-fast` because poteto-mode already pins verification speed to the swarm worker, and the audit names that slug. `computerUse` is `blocked` on the role line. The parent passed `grok-4.7-xhigh`. The recorded Task arguments for that spawn used `claude-4.5-sonnet`, and the subagent quoted a Claude Sonnet 4.5 identity sentence. Two cloud probes showed that the hook does not fire in cloud agents. `scripts/grok-exceptions.json` records this with status `allowed-exception`. Cursor's cloud computer-use and browser helper is server-pinned to Claude Sonnet 4.5. It is the one allowed non-Grok exception. Its usage is billed to the Cursor account that runs the agent, and each use is logged in the decision trail and under Attention. Browser verification uses control-ui on Grok, and computerUse is used in a cloud agent only when control-ui cannot reach the page.
 
 ## Subagent hook
 
@@ -279,7 +279,7 @@ The trigger list, the computerUse record, and the checks are one domain. A trigg
 Done for the follow-up, each one falsifiable:
 
 1. `.cursor/skills/poteto-mode/references/interrogate-triggers.md` is the only copy of the trigger list. poteto-mode and Greenfield point at that file.
-2. A computerUse spawn was asked for as `grok-4.7-xhigh`. The recorded Task arguments used a different slug. The platform record `originalModelName` was null. The subagent quoted a non-Grok identity sentence. That probe stays in `scripts/grok-exceptions.json` with status `blocked`, which is the repo rule. The offline hook denies the flat payload. Cloud agent `bc-62d2834c-67ee-5b3e-aa79-9edbcc9b2176` was not denied. Browser verification goes through control-ui on Grok.
+2. A computerUse spawn was asked for as `grok-4.7-xhigh`. The recorded Task arguments used a different slug. The platform record `originalModelName` was null. The subagent quoted a non-Grok identity sentence. That probe stays in `scripts/grok-exceptions.json`, now with status `allowed-exception` for cloud agents. The role line stays `blocked`, which is the repo rule. The offline hook denies the flat payload. In a cloud agent, the same call was not denied. Browser verification goes through control-ui on Grok.
 3. The two TypeScript rules apply by glob to TypeScript files, with `alwaysApply: false`.
 4. Plugin path fields resolve to the hoisted directories. A check fails when a path does not exist.
 5. The Grok allowlist is path plus sha256. A file whose hash differs is not skipped.
@@ -291,21 +291,21 @@ Rigor stays high because every later project copies these rules. One writer. The
 
 ## Open risks
 
-- computerUse is `blocked` on the role line, and the hook denies that payload offline. In cloud agent `bc-62d2834c-67ee-5b3e-aa79-9edbcc9b2176` the hook did not fire. Task `computerUse` with `grok-4.7-xhigh` returned a completed reply from `bc-c634e916-7a41-584d-a35d-50514d139b69`. That reply quoted the Claude Sonnet 4.5 identity sentence in `scripts/grok-exceptions.json`. The deny text was not in the tool result. The record now says `allowed-exception`, and `check-grok` and `verify-setup` check that its fields agree with each other and with the local hook. A later platform change does not update the exception file by itself.
-- The parent chat model is not checked. Aliases, the `self-review` fallback, and an omitted `model` inherit it. The owner runs Cursor on Grok.
+- computerUse is `blocked` on the role line, and the hook denies that payload offline. In a cloud agent the hook did not fire. Task `computerUse` with `grok-4.7-xhigh` returned a completed reply. That reply quoted the Claude Sonnet 4.5 identity sentence in `scripts/grok-exceptions.json`. The deny text was not in the tool result. The record now says `allowed-exception`, and `check-grok` and `verify-setup` check that its fields agree with each other and with the local hook. A later platform change does not update the exception file by itself.
+- The parent chat model is not checked. Aliases, the `self-review` fallback, and an omitted `model` inherit it. The fork assumes Cursor runs on Grok.
 - A live local deny by the hook has not been recorded. The hook command path is relative to the project root, which has not been checked against Cursor's docs.
-- `check-upstream` still needs network to read upstream head. Exit 2 is the fetch or pin failure. Exit 1 is drift. The script does not push. CI does not run it. The owner runs it daily outside the repo.
+- `check-upstream` still needs network to read upstream head. Exit 2 is the fetch or pin failure. Exit 1 is drift. The script does not push. CI does not run it. Run it on a schedule or by hand.
 - This file is skipped only while its sha256 in `scripts/grok-allowlist.txt` matches these bytes. Updating that hash without reading the diff would hide a new banned slug.
 - Both plugin manifests point at the shared hoisted directories. A loader that trusts `plugin.json` sees every skill in `.cursor/skills`, not a per-plugin subset.
 
 ## Revision after the review of 2026-10-22
 
-An outside review of this fork found Grok leaks, fragile scripts, and dead references. The owner decided these points.
+An outside review of this fork found Grok leaks, fragile scripts, and dead references. The maintainer decided these points.
 
 - Keep the `inherit-parent`, `auto`, and `unpinned` aliases, and state that the fork assumes a Grok parent chat. The project rule rejects them, and a personal home rule may use them.
 - Everything this fork controls is Grok. `check-grok` parses the model rule and every agent `model:` line.
 - Record computerUse honestly as the one allowed, logged, paid cloud exception. Harden the hook for local use. Check outcomes, not labels.
-- Add risk playbooks for the parts of the cycle that only had gates. Payments are proven in the provider's sandbox only. Agents never hold live keys or make a live charge. Lemon Squeezy is the default, and PayPal and Paddle are covered in `.cursor/skills/poteto-mode/references/payment-providers.md`.
+- Add risk playbooks for the parts of the cycle that only had gates. Payments are proven in the provider's sandbox only. Agents never hold live keys or make a live charge. No provider is the default. Lemon Squeezy, Paddle, PayPal, and Stripe are covered in `.cursor/skills/poteto-mode/references/payment-providers.md`.
 - Run the daily upstream check outside the repo, and keep `check-upstream` out of push and pull request CI.
 
 Role readers now read the project rule `.cursor/rules/pstack-models.mdc`, not `~/.cursor/rules/pstack-models.mdc`. Code roles stay on `-fast` by choice. Reviewers and judges stay on `grok-4.7-xhigh`, never lowered and never fast. Arena and architect treat a runner line as a model pool and always spawn at least two runners, because the owner keeps one entry per panel line. The commit messages on this branch map each finding to its fix.

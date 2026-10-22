@@ -6,8 +6,8 @@ pstack 0.15.29 is vendored in full, including `log.sh`, the decision-log templat
 
 ## Assumptions
 
-- **The parent chat runs on Grok.** The owner runs Cursor on Grok. A role line set to `inherit-parent`, `auto`, or `unpinned`, the inline `self-review` fallback, and any Task call that omits `model` all run on the parent chat's model. On a non-Grok parent they run off Grok. No check in this repo can see the parent model, so `check-grok` rejects those aliases in the project rule. They stay supported for a personal `~/.cursor/rules/pstack-models.mdc`.
-- **computerUse in cloud agents is a paid exception.** Cursor's computer-use and browser helper is pinned server-side to a non-Grok model, and the `subagentStart` hook does not fire in cloud agents. `scripts/grok-exceptions.json` records the probes. Browser checks use control-ui on Grok. When control-ui cannot reach a page in a cloud agent, the helper is allowed, billed to the owner's Cursor usage, and logged per run. On a local agent the hook denies it.
+- **The parent chat runs on Grok.** Run Cursor on a Grok model. A role line set to `inherit-parent`, `auto`, or `unpinned`, the inline `self-review` fallback, and any Task call that omits `model` all run on the parent chat's model. On a non-Grok parent they run off Grok. No check in this repo can see the parent model, so `check-grok` rejects those aliases in the project rule. They stay supported for a personal `~/.cursor/rules/pstack-models.mdc`.
+- **computerUse in cloud agents is a paid exception.** Cursor's computer-use and browser helper is pinned server-side to a non-Grok model, and the `subagentStart` hook does not fire in cloud agents. `scripts/grok-exceptions.json` records the probes. Browser checks use control-ui on Grok. When control-ui cannot reach a page in a cloud agent, the helper is allowed, billed to the Cursor account that runs the agent, and logged per run. On a local agent the hook denies it.
 
 ## Install into a project
 
@@ -69,7 +69,7 @@ python3 scripts/check-upstream
 python3 scripts/check-upstream --json
 ```
 
-The owner runs this daily outside the repo. CI does not run it, because an upstream commit is not a failure of this repo.
+Run it on a schedule, such as a daily job, or by hand before a sync. Push and pull request CI do not run it, because an upstream commit is not a failure of this repo.
 
 The report names the pin, the upstream head, and each commit since the pin that touched the source's path. A file this fork did not edit is `unpatched`, recommendation `take`. A patched file is `review`, with the result of a 3-way merge run in a temp directory. A new upstream skill this fork does not vendor is `skip`, at any depth under `skills/`. An upstream change to, or delete of, a file this fork does not vendor is also `skip`. A rename shows as a delete plus an add. For mattpocock and superpowers, whose source path is the whole repo, only the kept skill directories and the other vendored files count. The script does not write results back and does not push.
 

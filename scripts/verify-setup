@@ -166,6 +166,17 @@ def install_problems() -> str | None:
     return None
 
 
+def load_check_grok():
+    import importlib.machinery
+    import importlib.util
+
+    loader = importlib.machinery.SourceFileLoader("check_grok", str(ROOT / "scripts" / "check-grok"))
+    spec = importlib.util.spec_from_loader("check_grok", loader)
+    module = importlib.util.module_from_spec(spec)
+    loader.exec_module(module)
+    return module
+
+
 def computer_use_outcome(root: Path) -> list[str]:
     """Check what the hook does and what the record claims, not a status label."""
     problems = []
@@ -178,6 +189,8 @@ def computer_use_outcome(root: Path) -> list[str]:
         problems.append(f"local hook did not deny computerUse on {record['requested']}: {decision}")
     if record["dispatched"].startswith("grok-") or record["honored"]:
         problems.append("record says the platform honored Grok, which contradicts the cloud probes")
+    grok = load_check_grok()
+    problems.extend(f"record: {item}" for item in grok.exception_problems(record))
     if record["hookFiresInCloud"] and record["status"] != "blocked":
         problems.append("record says the hook fires in cloud agents but still lists an exception")
     if not record["hookFiresInCloud"] and record["status"] != "allowed-exception":

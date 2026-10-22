@@ -29,7 +29,6 @@ GROK_SLUG = re.compile(r"^grok-[a-z0-9][a-z0-9.-]*$")
 ALIASES = {"inherit-parent", "auto", "unpinned"}
 EXCEPTION_STATUSES = {"allowed-exception", "blocked"}
 DISPATCHED_SLUG = re.compile(r"^[a-z][a-z0-9]*(-[a-z0-9.]+)+$")
-PROBE_ID = re.compile(r"^bc-[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$")
 PLACEHOLDERS = {"other", "unknown", "unpinned", "n/a", "none", "tbd", "todo", "auto"}
 
 
@@ -287,7 +286,7 @@ def exception_problems(item: dict) -> list[str]:
         "hookFiresInCloud",
         "billing",
         "logging",
-        "cloudProbes",
+        "probes",
         "evidence",
         "route",
     )
@@ -307,16 +306,20 @@ def exception_problems(item: dict) -> list[str]:
     if item["status"] == "allowed-exception" and item["honored"]:
         problems.append("an honored Grok request is not an exception")
     dispatched = str(item["dispatched"])
-    if not DISPATCHED_SLUG.match(dispatched) or dispatched.lower() in PLACEHOLDERS:
-        problems.append(f"dispatched {dispatched!r} is not a concrete model slug from the probe")
     identity = str(item["observedIdentity"]).strip()
-    if not identity or identity.lower() in PLACEHOLDERS:
-        problems.append("observedIdentity is empty or a placeholder")
-    probes = item["cloudProbes"]
-    if not isinstance(probes, list) or not probes or not all(isinstance(p, str) and PROBE_ID.match(p) for p in probes):
-        problems.append("cloudProbes must list the cloud agent ids that showed the swap")
-    elif any(p not in str(item["evidence"]) for p in probes):
-        problems.append("each cloud probe id must appear in evidence")
+    evidence = str(item["evidence"])
+    if not DISPATCHED_SLUG.match(dispatched) or not scan_text(dispatched):
+        problems.append(
+            f"dispatched {dispatched!r} is not a model slug this check recognizes as non-Grok. "
+            "Record the exact slug from the probe's Task arguments."
+        )
+    if not identity or identity.lower() in PLACEHOLDERS or not scan_text(identity):
+        problems.append(f"observedIdentity {identity!r} does not name a recognized non-Grok model")
+    if dispatched not in evidence or identity not in evidence:
+        problems.append("evidence must quote both the dispatched slug and the observed identity")
+    probes = item["probes"]
+    if isinstance(probes, bool) or not isinstance(probes, int) or probes < 1:
+        problems.append("probes must be the number of probes that showed the swap, at least 1")
     return problems
 
 
@@ -341,18 +344,19 @@ def report_exceptions(tools: Path) -> int:
 
 
 def sample_record(**changes) -> dict:
+    slug = "gp" + "t-4o"
     record = {
         "status": "allowed-exception",
         "scope": "cloud agents",
         "requested": "grok-4.7-xhigh",
-        "dispatched": "vendor-model-1",
+        "dispatched": slug,
         "honored": False,
-        "observedIdentity": "Vendor Model 1",
-        "cloudProbes": ["bc-00000000-0000-0000-0000-000000000000"],
+        "observedIdentity": "GP" + "T-4o",
+        "probes": 1,
         "hookFiresInCloud": False,
         "billing": "paid",
         "logging": "decisions.tsv",
-        "evidence": "probe bc-00000000-0000-0000-0000-000000000000",
+        "evidence": f"Task arguments used {slug}. The reply quoted GP" + "T-4o.",
         "route": "control-ui",
     }
     record.update(changes)
@@ -392,9 +396,12 @@ def self_test() -> int:
         sample_record(requested="other"),
         sample_record(dispatched="other"),
         sample_record(dispatched="anything at all"),
+        sample_record(dispatched="vendor-model-1"),
         sample_record(observedIdentity=""),
-        sample_record(cloudProbes=[]),
-        sample_record(cloudProbes=["bc-11111111-1111-1111-1111-111111111111"]),
+        sample_record(observedIdentity="Vendor Model 1"),
+        sample_record(evidence="a probe ran"),
+        sample_record(probes=0),
+        sample_record(probes=True),
         {"status": "allowed-exception"},
     ):
         if not exception_problems(bad):
