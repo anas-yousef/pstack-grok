@@ -917,7 +917,7 @@
     },
     {
       "file": ".cursor/skills/poteto-mode/playbooks/auth-payments-security.md",
-      "sha256": "a4251c21cf6e953111f86a99fef57a1662805df568cffcad57e5e69940b7dd42",
+      "sha256": "a61994c595fa524837ddb672c8fc2bb23f6d5de85d6de227b039d1225110dd42",
       "source": "local",
       "upstreamPath": null
     },
@@ -1151,7 +1151,7 @@
     },
     {
       "file": ".cursor/skills/poteto-mode/references/payment-providers.md",
-      "sha256": "51bbbf5b25863188daee739868c050066898d3411c54aae29b453e319b59a0a1",
+      "sha256": "b829f34845868e565aab0dc9363f9cb6261881a68b70dd359b6b58e6b22e8d34",
       "source": "local",
       "upstreamPath": null
     },
