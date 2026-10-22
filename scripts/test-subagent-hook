@@ -79,17 +79,43 @@ def main() -> int:
 
     deny("non-grok reviewer", payload(subagent_type="generalPurpose", subagent_model=NON_GROK, task="hostile review"), "model")
     deny("camelCase non-grok model", payload(subagent_type="explore", subagentModel=NON_GROK, model=GROK), "model")
-    for key in ("model_id", "modelId", "subagent_model_id", "subagentModelId"):
-        deny(f"non-grok {key}", payload(**{"subagent_type": "explore", "subagent_model": GROK, key: NON_GROK}), "model")
-    allow("grok model_id", payload(subagent_type="explore", model_id=GROK))
-    for model in ("grok", "grokfoo", "grok-", "xgrok-4.7-xhigh", "fast", "auto", "inherit-parent", "unpinned"):
-        deny(f"model {model!r}", payload(subagent_type="explore", subagent_model=model), "model")
-    deny("mixed models", payload(subagent_type="explore", subagent_model=GROK, model=NON_GROK), "model")
+    for key in ("subagent_model_id", "subagentModelId"):
+        deny(f"non-grok {key}", payload(**{"subagent_type": "explore", key: NON_GROK}), "model")
+    for key in ("model", "model_id", "modelId"):
+        deny(
+            f"non-grok {key} inside tool_input",
+            json.dumps({"subagent_model": GROK, "tool_input": {"subagent_type": "explore", key: NON_GROK}}),
+            "model",
+        )
+    allow("grok model_id on the envelope is inherited", payload(subagent_type="explore", model_id=GROK))
+    for model in ("grok", "grokfoo", "grok-", "xgrok-4.7-xhigh", "fast", "auto", "inherit-parent", "unpinned", "default"):
+        deny(f"subagent model {model!r}", payload(subagent_type="explore", subagent_model=model), "model")
     deny("empty child model", payload(subagent_type="explore", subagent_model="", model=GROK), "model")
     deny("whitespace child model", payload(subagent_type="explore", subagent_model="  ", model=GROK), "model")
-    deny("envelope non-grok when child is empty", payload(subagent_type="explore", subagent_model="", model=NON_GROK), "model")
+    deny("empty child model under a non-grok envelope", payload(subagent_type="explore", subagent_model="", model=NON_GROK), "model")
     deny("unspecified model", payload(subagent_type="explore", subagent_model="inherit"), "model")
     deny("no model field", payload(subagent_type="explore"), "model")
+    deny("inherited non-grok envelope", payload(subagent_type="explore", model=NON_GROK), "model")
+    deny("inherited default envelope", payload(subagent_type="explore", model="default"), "model")
+
+    # The subagent's own model decides. The envelope model is the parent's and counts only when inherited.
+    allow("grok subagent beside a default envelope", payload(subagent_type="explore", subagent_model=GROK, model="default"))
+    allow("grok subagent beside a non-grok envelope", payload(subagent_type="explore", subagent_model=GROK, model=NON_GROK))
+    allow(
+        "grok subagent with an input string that names another model",
+        payload(subagent_type="explore", subagent_model=GROK, input=json.dumps({"model": "gp" + "t-4o"})),
+    )
+    allow(
+        "grok subagent with a nested context that names another model",
+        json.dumps({"subagent_type": "explore", "subagent_model": GROK, "context": {"model": "default", "calls": [{"model": NON_GROK}]}}),
+    )
+    deny("non-grok tool_input list entry", json.dumps({"subagent_model": GROK, "tool_input": [{"subagent_type": "explore", "model": NON_GROK}]}), "model")
+
+    # A type is blocked when it names a browser or computer-use agent, not when one word contains "browser".
+    for kind in ("log-browser", "logBrowser", "html_browser_parser", "explore"):
+        allow(f"type {kind} is not a browser agent", payload(subagent_type=kind, subagent_model=GROK))
+    for kind in ("browser-log-reader", "Browser", "computeruse", "cursorBrowserAgent"):
+        deny(f"type {kind} is a browser agent", payload(subagent_type=kind, subagent_model=GROK), "browser")
 
     allow("padded grok model", payload(subagent_type="explore", subagent_model=" grok-4.7-xhigh "))
     allow("grok explore", payload(subagent_type="explore", subagent_model=GROK))
@@ -106,7 +132,6 @@ def main() -> int:
     deny("deeper tool_input computerUse", json.dumps({"model": GROK, "tool_input": {"model": GROK, "tool_input": nested}}), "browser")
     deny("tool_input list with computerUse", json.dumps({"model": GROK, "tool_input": [{"subagent_type": "explore", "model": GROK}, nested]}), "browser")
     deny("list of string tool_inputs", json.dumps({"model": GROK, "tool_input": [json.dumps(nested)]}), "browser")
-    deny("non-grok model inside a list", json.dumps({"model": GROK, "calls": [{"subagent_type": "explore", "model": NON_GROK}]}), "model")
 
     escaped = '{"subagent_type":"\\u0063omputerUse","model":"grok-4.7-xhigh"}'
     if json.loads(escaped)["subagent_type"] != "computerUse":

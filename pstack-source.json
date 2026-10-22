@@ -389,7 +389,7 @@
     },
     {
       "file": ".cursor/hooks/block-non-grok.py",
-      "sha256": "2d27d654078e40b7629b9b584c0672f9d8d0e5a550d470195a5dad3fe606daed",
+      "sha256": "c79bb7ef35600da4ef7fa1ed118101022f267a696b5346f558cdec11dec69571",
       "source": "local",
       "upstreamPath": null
     },
@@ -1841,7 +1841,7 @@
     },
     {
       "file": "scripts/grok-allowlist.txt",
-      "sha256": "af59f8022e406967a2cb1260b14a9966eca6ec0cb7501f66bb0feca17e6a50a8",
+      "sha256": "34081384ea99b4a4b695cdec0f9fb866b4ae42fc35bfb1c3ff4575abf380c51b",
       "source": "local",
       "upstreamPath": null
     },
@@ -1859,7 +1859,7 @@
     },
     {
       "file": "scripts/test-subagent-hook",
-      "sha256": "f2004a242a84e6e192f52753a700a810e56184b853c6881e70ce6417c9b11e36",
+      "sha256": "18a14fa618140b397baf4e10b708d62d29ad4bcb6cbeca51c08461e661623d5e",
       "source": "local",
       "upstreamPath": null
     },

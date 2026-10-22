@@ -48,7 +48,7 @@ Run the install from the submodule after each `git submodule update`. Symlinking
 
 ## The subagent hook
 
-`.cursor/hooks.json` runs `python3 .cursor/hooks/block-non-grok.py` on `subagentStart` with `failClosed: true`. It denies a subagent whose type contains computer use or browser, and any subagent whose model fields are not all `grok-*` slugs. The command path is relative and expects Cursor to run project hooks from the project root, which this repo has not verified against Cursor's docs. If `python3` is missing or the path does not resolve, the hook fails, and `failClosed` denies every subagent. When every spawn is denied with no deny sentence, check those two things first.
+`.cursor/hooks.json` runs `python3 .cursor/hooks/block-non-grok.py` on `subagentStart` with `failClosed: true`. It denies a subagent whose type names a computer-use or browser agent, and any subagent whose own model, or the parent model it inherits, is not a `grok-*` slug. The field names are this fork's reading of Cursor's hook input. The hook is tested only against synthetic payloads in `scripts/test-subagent-hook`, not against a live `subagentStart` payload. The command path is relative and expects Cursor to run project hooks from the project root, which this repo has not verified against Cursor's docs. If `python3` is missing or the path does not resolve, the hook fails, and `failClosed` denies every subagent. When every spawn is denied with no deny sentence, check those two things first.
 
 ## Checks on this repo
 
