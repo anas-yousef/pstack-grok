@@ -216,30 +216,60 @@
       "source": "pstack",
       "upstreamPath": "skills/why/SKILL.md",
       "reason": "The synthesizer defaults to grok-4.7-xhigh."
+    },
+    {
+      "file": ".cursor/agents/ci-watcher.md",
+      "source": "cursor-team-kit",
+      "upstreamPath": "agents/ci-watcher.md",
+      "reason": "model is grok-4.7-xhigh-fast instead of the fast alias."
+    },
+    {
+      "file": ".cursor/agents/comment-sicko.md",
+      "source": "pstack",
+      "upstreamPath": "agents/comment-sicko.md",
+      "reason": "model is pinned to grok-4.7-xhigh."
+    },
+    {
+      "file": ".cursor/agents/poteto-agent.md",
+      "source": "pstack",
+      "upstreamPath": "agents/poteto-agent.md",
+      "reason": "model is pinned to grok-4.7-xhigh-fast, and a delegate with no path reads the workspace poteto-mode, never ~/.cursor/plugins."
+    },
+    {
+      "file": ".cursor/agents/thermo-nuclear-code-quality-review.md",
+      "source": "cursor-team-kit",
+      "upstreamPath": "agents/thermo-nuclear-code-quality-review.md",
+      "reason": "model is pinned to grok-4.7-xhigh, and the rubric path is the vendored skill."
+    },
+    {
+      "file": ".cursor/skills/systematic-debugging/SKILL.md",
+      "source": "superpowers",
+      "upstreamPath": "skills/systematic-debugging/SKILL.md",
+      "reason": "Dead superpowers: references point at the vendored tdd and verification-before-completion skills."
     }
   ],
   "files": [
     {
       "file": ".cursor/agents/ci-watcher.md",
-      "sha256": "8bc93b9ced5588f0ece54ce52690e9682ac49a7fd64be7124379b0e2e128556e",
+      "sha256": "7e3bd0235b6b4c7145d3db479c227ba430dfae22e05ff5f4a60a832ebca1a820",
       "source": "cursor-team-kit",
       "upstreamPath": "agents/ci-watcher.md"
     },
     {
       "file": ".cursor/agents/comment-sicko.md",
-      "sha256": "3e239e40b7b4b9beb2cf7f3ccc57f2388eb8b69bd1ba8ae888ef87ef6e0e2116",
+      "sha256": "9abe962993d18ff4d6f7bcaa7b7ad1c28da645270088d3e14d8715a45ae0fd88",
       "source": "pstack",
       "upstreamPath": "agents/comment-sicko.md"
     },
     {
       "file": ".cursor/agents/poteto-agent.md",
-      "sha256": "979f18abd000d185a0b4c41a2a4111c0910596a7f5c81cbb571885bc721b2bf7",
+      "sha256": "98910158085381f228b1ba50e933e626724470ea4c2e4d35b3148fa272501ec8",
       "source": "pstack",
       "upstreamPath": "agents/poteto-agent.md"
     },
     {
       "file": ".cursor/agents/thermo-nuclear-code-quality-review.md",
-      "sha256": "4d15c05be503f9fdb795a292807334558e7619ffc2fd75ddbc9e97e0d6312234",
+      "sha256": "4ef6e2ba434f7661709cccc78fd0ece2395dcd09e0f7c67afd64efd746360baa",
       "source": "cursor-team-kit",
       "upstreamPath": "agents/thermo-nuclear-code-quality-review.md"
     },
@@ -299,7 +329,7 @@
     },
     {
       "file": ".cursor/pstack/README.md",
-      "sha256": "351b99637c19934229e4cd7c3b47f13b83cf15085eb3c35ebcc19b729c2cd254",
+      "sha256": "7b76a9d74760e7fddcae86d87f031c999ac1ef2a617dc4560658ae2192624a33",
       "source": "pstack",
       "upstreamPath": "README.md"
     },
@@ -515,7 +545,7 @@
     },
     {
       "file": ".cursor/skills/architect/SKILL.md",
-      "sha256": "4787eb8909a6fc80b542bc7ee8127d24a5d46ace5fafd5249103e6b98d8c5abe",
+      "sha256": "a4b1c92cdb598ca7e96aa6f62e972addd9e596d4d766f83a6725adc14265238f",
       "source": "pstack",
       "upstreamPath": "skills/architect/SKILL.md"
     },
@@ -701,7 +731,7 @@
     },
     {
       "file": ".cursor/skills/interrogate/SKILL.md",
-      "sha256": "99d770e80564f1382170085a80c1b13bc11ccc0bebb3ed026ecee2ddf98bf320",
+      "sha256": "3459b73559817b7ee6abe489903cadf93ce1c1b67745e7c9dd8c2626266c056d",
       "source": "pstack",
       "upstreamPath": "skills/interrogate/SKILL.md"
     },
@@ -881,7 +911,7 @@
     },
     {
       "file": ".cursor/skills/poteto-mode/playbooks/orchestrate.md",
-      "sha256": "872fdfffa8d7c2deb369fc036f0f5098c2230b822a0a0fafe36d6cc9b6627864",
+      "sha256": "d3a95803183c84f2a9a264ef679c7159c8010cab80e84b714c964f2a4e81235a",
       "source": "pstack",
       "upstreamPath": "skills/poteto-mode/playbooks/orchestrate.md"
     },
@@ -1349,7 +1379,7 @@
     },
     {
       "file": ".cursor/skills/systematic-debugging/SKILL.md",
-      "sha256": "51c6435d98c83c42c96ba7c35725a0b2c376cd487fb1a4e6bd0ddbe7e33ef202",
+      "sha256": "4834bb96247dbe4cd027eb598f092596f44e7706c345739903cff77453dfd043",
       "source": "superpowers",
       "upstreamPath": "skills/systematic-debugging/SKILL.md"
     },
@@ -1619,7 +1649,7 @@
     },
     {
       "file": "scripts/check-grok",
-      "sha256": "b2394a46f0a6506ec13cd691ff509157b9672d575815b5bf7af39cbfe0af2765",
+      "sha256": "25c7ec2060c37fccd3f1eda5d09563a4946c1601cf4670009b6d5c6087db0035",
       "source": "local",
       "upstreamPath": null
     },
@@ -1637,13 +1667,13 @@
     },
     {
       "file": "scripts/grok-allowlist.txt",
-      "sha256": "18782b492c2a5002305655067af736b054424dab1f6e970b8abd1cc3cc2db8f9",
+      "sha256": "845fe28b644be713f58ab5c60048434a159a63b12919766e4d8aff84908fe88c",
       "source": "local",
       "upstreamPath": null
     },
     {
       "file": "scripts/grok-exceptions.json",
-      "sha256": "b22a4e052d0f8babbcf0c88914c0289dad6381ba8446a1dc43b79db36ba042be",
+      "sha256": "e64541991f16c2d5fb41fde58c19b139254fd627872cfd81f63a2a2cc82b082c",
       "source": "local",
       "upstreamPath": null
     },
@@ -1661,13 +1691,13 @@
     },
     {
       "file": "scripts/update-manifest",
-      "sha256": "8bf8c8bb0fe4d9da107d5b9ad570de5ab94732395a802bbb56d6c258cd2e6e65",
+      "sha256": "2258d722fde91abcb5f7b5e3beba2fe060d7cba8ab1f32399da55cd3f7caf43e",
       "source": "local",
       "upstreamPath": null
     },
     {
       "file": "scripts/verify-setup",
-      "sha256": "3184a9d34e46bab8a92d9759757563192733e39ffe7416f8e87e161d75e20a55",
+      "sha256": "fd52e82636f565c024e5bd88dba066abd6abc2097cd22ed30638ede442fa9889",
       "source": "local",
       "upstreamPath": null
     }

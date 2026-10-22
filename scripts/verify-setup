@@ -49,10 +49,37 @@ def manifest_problems() -> list[str]:
     return problems
 
 
+def computer_use_outcome(root: Path) -> list[str]:
+    """Check what the hook does and what the record claims, not a status label."""
+    problems = []
+    hook = root / ".cursor" / "hooks" / "block-non-grok.py"
+    record = json.loads((root / "scripts" / "grok-exceptions.json").read_text(encoding="utf-8"))["computerUse"]
+    payload = json.dumps({"subagent_type": "computerUse", "subagent_model": record["requested"]})
+    result = subprocess.run([sys.executable, str(hook)], input=payload, capture_output=True, text=True)
+    decision = json.loads(result.stdout or "{}")
+    if decision.get("permission") != "deny":
+        problems.append(f"local hook did not deny computerUse on {record['requested']}: {decision}")
+    if record["dispatched"].startswith("grok-") or record["honored"]:
+        problems.append("record says the platform honored Grok, which contradicts the cloud probes")
+    if record["hookFiresInCloud"] and record["status"] != "blocked":
+        problems.append("record says the hook fires in cloud agents but still lists an exception")
+    if not record["hookFiresInCloud"] and record["status"] != "allowed-exception":
+        problems.append("the hook does not fire in cloud agents, so the record must say allowed-exception")
+    rule = (root / ".cursor" / "rules" / "pstack-models.mdc").read_text(encoding="utf-8")
+    if "computerUse: blocked" not in rule.splitlines():
+        problems.append("the model rule no longer keeps computerUse blocked")
+    return problems
+
+
 def main() -> int:
     expect(["python3", "scripts/check-grok", "--self-test"], 0)
     expect(["python3", "scripts/check-grok"], 0, contains="hits: 0")
-    expect(["python3", "scripts/check-grok"], 0, contains="status: blocked")
+    hook_problems = computer_use_outcome(ROOT)
+    if hook_problems:
+        print("computerUse outcome:")
+        for item in hook_problems:
+            print(f"  {item}")
+        return 1
     expect(["python3", "scripts/test-subagent-hook"], 0, contains="test-subagent-hook: ok")
     expect(["python3", "scripts/check-paths", "--self-test"], 0)
     expect(["python3", "scripts/check-paths"], 0, contains="problems: 0")

@@ -72,11 +72,35 @@ def update(root: Path, data: dict, patches: dict[str, str]) -> tuple[list[str], 
     return notes, refused
 
 
+def rehash_allowlist(root: Path) -> list[str]:
+    path = root / "scripts" / "grok-allowlist.txt"
+    rows = []
+    notes = []
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        parts = raw.split()
+        if len(parts) == 2 and not raw.startswith("#"):
+            new = digest(root / parts[0])
+            if new != parts[1]:
+                notes.append(f"allowlist rehashed {parts[0]}")
+            raw = f"{parts[0]} {new}"
+        rows.append(raw)
+    path.write_text("\n".join(rows) + "\n", encoding="utf-8")
+    return notes
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--patch", nargs=2, action="append", default=[], metavar=("FILE", "REASON"))
     parser.add_argument("--check", action="store_true", help="exit 1 if the manifest is out of date")
+    parser.add_argument(
+        "--rehash-allowlist",
+        action="store_true",
+        help="also rehash scripts/grok-allowlist.txt. Read the diff of every listed file first.",
+    )
     args = parser.parse_args()
+    if args.rehash_allowlist and not args.check:
+        for line in rehash_allowlist(ROOT):
+            print(line)
     data = json.loads(MANIFEST.read_text(encoding="utf-8"))
     notes, refused = update(ROOT, data, dict(args.patch))
     for line in notes:
