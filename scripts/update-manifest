@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parent.parent
 MANIFEST = ROOT / "pstack-source.json"
 TRACKED = (".cursor", "scripts", ".github")
 SKIP_PARTS = {"__pycache__", "node_modules"}
-ROOT_FILES = ("NOTICE",)
+ROOT_FILES = ("LICENSE", "NOTICE")
 
 
 def digest(path: Path) -> str:

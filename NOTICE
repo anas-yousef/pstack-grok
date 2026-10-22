@@ -1,6 +1,6 @@
 # Notices
 
-This fork vendors other people's work. Each license below is the upstream license, copied unchanged.
+This fork's own files (the scripts, hook, rules, playbooks, and docs it adds or patches) are under the MIT License in `LICENSE`, copyright (c) 2026 Anas Yousef. It also vendors other people's work. Each license below is the upstream license, copied unchanged, and covers its vendored tree.
 
 ## pstack
 

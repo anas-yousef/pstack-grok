@@ -47,8 +47,9 @@ def manifest_problems() -> list[str]:
             rel = path.relative_to(ROOT).as_posix()
             if rel not in listed:
                 problems.append(f"unlisted {rel}")
-    if "NOTICE" not in listed:
-        problems.append("unlisted NOTICE")
+    for name in ("LICENSE", "NOTICE"):
+        if name not in listed:
+            problems.append(f"unlisted {name}")
     return problems
 
 
@@ -106,6 +107,7 @@ def install_problems() -> str | None:
             f"{TOOLS}/check-paths",
             f"{TOOLS}/test-subagent-hook",
             f"{TOOLS}/NOTICE",
+            f"{TOOLS}/LICENSE",
             f"{TOOLS}/installed.json",
         )
         for rel in required:

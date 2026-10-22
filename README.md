@@ -20,10 +20,10 @@ python3 scripts/install /path/to/your/project
 The script reads `pstack-source.json` and writes:
 
 - every `.cursor/` file the manifest lists, at the same path
-- `scripts/pstack-grok/`, which holds `check-grok`, `check-paths`, `test-subagent-hook`, `grok-exceptions.json`, a generated `grok-allowlist.txt`, `NOTICE`, the manifest, and `installed.json`
+- `scripts/pstack-grok/`, which holds `check-grok`, `check-paths`, `test-subagent-hook`, `grok-exceptions.json`, a generated `grok-allowlist.txt`, `LICENSE`, `NOTICE`, the manifest, and `installed.json`
 - the `subagentStart` entry, merged into the project's `.cursor/hooks.json`. The project's other hooks stay.
 
-A project file the install would overwrite, and that the last install did not write, is a conflict. So is a file the last install wrote and the project edited since. On a conflict the script lists the files and writes nothing. Move the project's file aside, or re-run with `--force`. A re-install removes files the fork no longer ships, unless the project edited them. The script never writes `NOTICE`, `scripts/install`, or `scripts/verify-setup` in the project, and it refuses to run when the target is this repo.
+A project file the install would overwrite, and that the last install did not write, is a conflict. So is a file the last install wrote and the project edited since. On a conflict the script lists the files and writes nothing. Move the project's file aside, or re-run with `--force`. A re-install removes files the fork no longer ships, unless the project edited them. The script never writes the project's own `LICENSE`, `NOTICE`, `scripts/install`, or `scripts/verify-setup`, and it refuses to run when the target is this repo.
 
 Then, in the project:
 
@@ -91,3 +91,7 @@ Skills, agents, and rules load from `.cursor/skills`, `.cursor/agents`, and `.cu
 - If that spawn fails, it is retried once on the same Grok slug. If the retry fails, the parent reviews inline, labels it `self-review`, and includes the verbatim error under Attention.
 - If TodoWrite returns `success: false`, the run stops.
 - `deslop` and `no-comments` run before each commit.
+
+## License
+
+This fork's own work is under the MIT License in `LICENSE`. The vendored trees keep their upstream MIT licenses, which `NOTICE` lists with each upstream commit.

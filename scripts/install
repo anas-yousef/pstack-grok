@@ -43,6 +43,7 @@ def plan() -> dict[Path, bytes]:
     for name in SHIPPED_SCRIPTS:
         files[TOOLS / name] = (ROOT / "scripts" / name).read_bytes()
     files[TOOLS / "NOTICE"] = (ROOT / "NOTICE").read_bytes()
+    files[TOOLS / "LICENSE"] = (ROOT / "LICENSE").read_bytes()
     files[TOOLS / "pstack-source.json"] = (ROOT / "pstack-source.json").read_bytes()
     files[TOOLS / "grok-allowlist.txt"] = allowlist_for(files).encode("utf-8")
     return files

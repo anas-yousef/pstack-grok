@@ -1810,8 +1810,14 @@
       "upstreamPath": null
     },
     {
+      "file": "LICENSE",
+      "sha256": "f7cf18f56e228de61ea9097bcefda122ee066a07749155377f8e9d757105bbde",
+      "source": "local",
+      "upstreamPath": null
+    },
+    {
       "file": "NOTICE",
-      "sha256": "5561665254ccdf526ef799dd80db7eb12e95223384c8c78c1095577cd4ece3e6",
+      "sha256": "9745da8c3836de06ce4e103be5ee041f90e51d0b3f0da34e3b6a1d40f171b75f",
       "source": "local",
       "upstreamPath": null
     },
@@ -1847,7 +1853,7 @@
     },
     {
       "file": "scripts/install",
-      "sha256": "eb923b7e937901853ae8bbf19ac2cd026493459b8b44a3514ac0686df21e00ed",
+      "sha256": "97e67e55073ad94f9495352978a5c5b1d642c7e57eac29fec24976788ceb4ba9",
       "source": "local",
       "upstreamPath": null
     },
@@ -1859,13 +1865,13 @@
     },
     {
       "file": "scripts/update-manifest",
-      "sha256": "2258d722fde91abcb5f7b5e3beba2fe060d7cba8ab1f32399da55cd3f7caf43e",
+      "sha256": "55cd7bb51ee091ca9a2109bd292f21ca39fab132c813145c5b7eb2464c21e040",
       "source": "local",
       "upstreamPath": null
     },
     {
       "file": "scripts/verify-setup",
-      "sha256": "0d6c96402bca7c2231b33fa76985470d38c92683a0a8051cf120e7974f7b3eb0",
+      "sha256": "4ba1de907c9f0bfdf39a84d09d6d18653ae42cb15187ae217cdfeb4a4d38b0a3",
       "source": "local",
       "upstreamPath": null
     }
