@@ -1721,7 +1721,7 @@
     },
     {
       "file": "scripts/check-paths",
-      "sha256": "acfce5a2e012c43b5ab2862590d1d094ecb28a24c52f291327bb73fc1ae9e720",
+      "sha256": "e073dd93ecbb413b6019a9e5b18a8f67c4e183341f2f12ce496ac602a7e73344",
       "source": "local",
       "upstreamPath": null
     },
@@ -1745,7 +1745,7 @@
     },
     {
       "file": "scripts/install",
-      "sha256": "b0e098520b7304d050b5b38813abfd251044846f6066748cb532989d7c152ba8",
+      "sha256": "10810501995a1c2096245120701454207ecb128ddd018b28afa5d8ab6b34d618",
       "source": "local",
       "upstreamPath": null
     },
@@ -1763,7 +1763,7 @@
     },
     {
       "file": "scripts/verify-setup",
-      "sha256": "dfdae0d08468f37c6030284b466c2300b066266399c291ae028f2d784c7f76ae",
+      "sha256": "849e9f8e032d616f46efb8a0144fb5b8a3f8063bfd4341dbacdc29287540e67f",
       "source": "local",
       "upstreamPath": null
     }

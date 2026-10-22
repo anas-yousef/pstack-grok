@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -48,6 +49,108 @@ def manifest_problems() -> list[str]:
     if "NOTICE" not in listed:
         problems.append("unlisted NOTICE")
     return problems
+
+
+TOOLS = "scripts/pstack-grok"
+
+
+def installed_run(target: Path, name: str) -> subprocess.CompletedProcess:
+    env = dict(os.environ, PSTACK_HOME_RULE=str(target / "no-home-rule"))
+    return subprocess.run(
+        [sys.executable, f"{TOOLS}/{name}"], cwd=target, capture_output=True, text=True, env=env
+    )
+
+
+def install_problems() -> str | None:
+    """Install into temp projects and check every promise scripts/install makes."""
+    with tempfile.TemporaryDirectory() as tmp:
+        target = Path(tmp) / "project"
+        own = {
+            ".cursor/skills/local-only/SKILL.md": "keep\n",
+            "NOTICE": "the project's own notice\n",
+            "scripts/install": "the project's own installer\n",
+            "scripts/verify-setup": "the project's own check\n",
+            "docs/design.md": "op" + "us is a word in this product\n",
+            ".venv/lib/vendor.py": "MODEL = 'gp" + "t-4o'\n",
+            "src/app.py": "PROVIDER = 'gemi" + "ni'\n",
+        }
+        for rel, text in own.items():
+            (target / rel).parent.mkdir(parents=True, exist_ok=True)
+            (target / rel).write_text(text)
+        (target / ".cursor" / "hooks.json").write_text(
+            json.dumps({"version": 1, "hooks": {"afterFileEdit": [{"command": "./format.sh"}]}})
+        )
+        first = run(["python3", "scripts/install", str(target)])
+        if first.returncode != 0:
+            return f"first install failed: {first.stderr}"
+        for rel, text in own.items():
+            if (target / rel).read_text(encoding="utf-8") != text:
+                return f"install changed the project's {rel}"
+        hooks = json.loads((target / ".cursor" / "hooks.json").read_text(encoding="utf-8"))["hooks"]
+        if hooks.get("afterFileEdit") != [{"command": "./format.sh"}]:
+            return f"install dropped the project's own hook: {hooks}"
+        starts = hooks.get("subagentStart", [])
+        if len(starts) != 1 or not starts[0].get("failClosed"):
+            return f"install did not merge one failClosed subagentStart hook: {hooks}"
+        required = (
+            ".cursor/skills/show-me-your-work/scripts/log.sh",
+            ".cursor/skills/deslop/SKILL.md",
+            ".cursor/skills/control-ui/SKILL.md",
+            ".cursor/skills/control-cli/SKILL.md",
+            ".cursor/skills/poteto-mode/references/interrogate-triggers.md",
+            ".cursor/rules/pstack-models.mdc",
+            ".cursor/hooks/block-non-grok.py",
+            f"{TOOLS}/grok-exceptions.json",
+            f"{TOOLS}/check-grok",
+            f"{TOOLS}/check-paths",
+            f"{TOOLS}/test-subagent-hook",
+            f"{TOOLS}/NOTICE",
+            f"{TOOLS}/installed.json",
+        )
+        for rel in required:
+            if not (target / rel).is_file():
+                return f"missing {rel}"
+        for rel in (f"{TOOLS}/install", f"{TOOLS}/verify-setup", "pstack-source.json"):
+            if (target / rel).exists():
+                return f"shipped {rel}, which belongs to the fork repo only"
+        allow = (target / TOOLS / "grok-allowlist.txt").read_text(encoding="utf-8")
+        if "docs/design.md" in allow:
+            return "shipped the fork's docs/design.md allowlist row"
+        checks = (("check-grok", "hits: 0"), ("test-subagent-hook", "test-subagent-hook: ok"), ("check-paths", "problems: 0"))
+        for name, text in checks:
+            result = installed_run(target, name)
+            if result.returncode != 0 or text not in result.stdout:
+                return f"installed {name} failed in a product repo:\n{result.stdout}{result.stderr}"
+        rule = target / ".cursor" / "rules" / "pstack-models.mdc"
+        rule.write_text(rule.read_text(encoding="utf-8").replace("bug-fix: grok-4.7-xhigh-fast", "bug-fix: auto"))
+        if installed_run(target, "check-grok").returncode == 0:
+            return "installed check-grok accepted an alias in the project rule"
+        again = run(["python3", "scripts/install", str(target)])
+        if again.returncode == 0 or "edited in the project" not in again.stderr:
+            return f"re-install overwrote an edited rule: {again.stdout}{again.stderr}"
+        record_path = target / TOOLS / "installed.json"
+        record = json.loads(record_path.read_text(encoding="utf-8"))
+        retired = target / ".cursor" / "skills" / "retired" / "SKILL.md"
+        retired.parent.mkdir(parents=True)
+        retired.write_text("old\n")
+        record["files"][".cursor/skills/retired/SKILL.md"] = hashlib.sha256(b"old\n").hexdigest()
+        record_path.write_text(json.dumps(record))
+        forced = run(["python3", "scripts/install", "--force", str(target)])
+        if forced.returncode != 0 or retired.exists():
+            return f"re-install did not prune a retired file: {forced.stdout}{forced.stderr}"
+        hooks = json.loads((target / ".cursor" / "hooks.json").read_text(encoding="utf-8"))["hooks"]
+        if len(hooks.get("subagentStart", [])) != 1:
+            return f"re-install duplicated the subagentStart hook: {hooks}"
+        clash = Path(tmp) / "clash"
+        theirs = clash / ".cursor" / "skills" / "tdd" / "SKILL.md"
+        theirs.parent.mkdir(parents=True)
+        theirs.write_text("the project's own tdd\n")
+        refused = run(["python3", "scripts/install", str(clash)])
+        if refused.returncode == 0 or theirs.read_text(encoding="utf-8") != "the project's own tdd\n":
+            return "install overwrote a project skill with the same name"
+        if (clash / TOOLS).exists():
+            return "install wrote files before reporting a conflict"
+    return None
 
 
 def computer_use_outcome(root: Path) -> list[str]:
@@ -97,49 +200,10 @@ def main() -> int:
             print(item)
         print("run python3 scripts/update-manifest after reading the diff")
         return 1
-    with tempfile.TemporaryDirectory() as tmp:
-        target = Path(tmp) / "project"
-        target.mkdir()
-        extra = target / ".cursor" / "skills" / "local-only"
-        extra.mkdir(parents=True)
-        (extra / "SKILL.md").write_text("keep\n")
-        installed = run(["python3", "scripts/install", str(target)])
-        if installed.returncode != 0:
-            sys.stderr.write(installed.stderr)
-            return 1
-        if (extra / "SKILL.md").read_text(encoding="utf-8") != "keep\n":
-            print("install removed a project skill")
-            return 1
-        required = (
-            ".cursor/skills/show-me-your-work/scripts/log.sh",
-            ".cursor/skills/deslop/SKILL.md",
-            ".cursor/skills/control-ui/SKILL.md",
-            ".cursor/skills/control-cli/SKILL.md",
-            ".cursor/skills/poteto-mode/references/interrogate-triggers.md",
-            "scripts/grok-exceptions.json",
-            "scripts/check-paths",
-            "scripts/test-subagent-hook",
-            ".cursor/hooks.json",
-            ".cursor/hooks/block-non-grok.py",
-        )
-        for rel in required:
-            if not (target / rel).is_file():
-                print(f"install missing {rel}")
-                return 1
-        hook_text = (target / ".cursor" / "hooks.json").read_text(encoding="utf-8")
-        if "subagentStart" not in hook_text or "failClosed" not in hook_text:
-            print("install hook is missing subagentStart or failClosed")
-            return 1
-        expect(["python3", "scripts/check-grok"], 0, cwd=target, contains="hits: 0")
-        expect(["python3", "scripts/test-subagent-hook"], 0, cwd=target, contains="test-subagent-hook: ok")
-        expect(["python3", "scripts/check-paths"], 0, cwd=target, contains="problems: 0")
-        (target / "docs").mkdir()
-        (target / "docs" / "design.md").write_text("op" + "us is a word\n")
-        stale = run(["python3", "scripts/check-grok"], cwd=target)
-        if stale.returncode == 0 or "allowlist stale" not in stale.stdout:
-            sys.stdout.write(stale.stdout)
-            print("edited design.md was skipped")
-            return 1
+    failure = install_problems()
+    if failure:
+        print(f"install: {failure}")
+        return 1
     refused = run(["python3", "scripts/install", str(ROOT)])
     if refused.returncode == 0:
         print("install accepted this repo")

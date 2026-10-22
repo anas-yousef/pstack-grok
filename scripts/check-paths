@@ -22,11 +22,32 @@ TS_RULES = (
 )
 
 
+HERE = Path(__file__).resolve().parent
+INSTALLED = HERE.name == "pstack-grok"
+
+
 def repo_root() -> Path:
-    return Path(__file__).resolve().parent.parent
+    return HERE.parent.parent if INSTALLED else HERE.parent
+
+
+def installed_files(root: Path) -> list[str] | None:
+    """In a project that installed the fork, only the files the install wrote are checked."""
+    if not INSTALLED or root != repo_root():
+        return None
+    record = HERE / "installed.json"
+    if not record.is_file():
+        raise SystemExit(f"missing {record}. Re-run the fork's scripts/install.")
+    return sorted(json.loads(record.read_text(encoding="utf-8"))["files"])
 
 
 def files(root: Path):
+    only = installed_files(root)
+    if only is not None:
+        for rel in only:
+            path = root / rel
+            if path.is_file():
+                yield Path(rel), path
+        return
     for path in root.rglob("*"):
         if not path.is_file():
             continue
