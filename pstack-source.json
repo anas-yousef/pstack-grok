@@ -173,7 +173,7 @@
       "file": ".cursor/skills/poteto-mode/scripts/orch/orch.test.ts",
       "source": "pstack",
       "upstreamPath": "skills/poteto-mode/scripts/orch/orch.test.ts",
-      "reason": "The ledger fixture's verifier field is a Grok slug."
+      "reason": "The ledger fixture's verifier field is a Grok slug, and the test's git calls disable commit and tag signing so a signing config cannot hang or fail them."
     },
     {
       "file": ".cursor/skills/reflect/SKILL.md",
@@ -1181,7 +1181,7 @@
     },
     {
       "file": ".cursor/skills/poteto-mode/scripts/orch/orch.test.ts",
-      "sha256": "b861f62911986529fbced539132995c2a07066147532bd62cd17c69276cfb479",
+      "sha256": "33885f683464ed5488ae253ae0f9e1214646422e9643f8563309ac89c51f1285",
       "source": "pstack",
       "upstreamPath": "skills/poteto-mode/scripts/orch/orch.test.ts"
     },
@@ -1835,7 +1835,7 @@
     },
     {
       "file": "scripts/check-upstream",
-      "sha256": "4e5156a2ae1628d0bbd17320b3760f932632b4e2814693012ddc68fe8c37afb9",
+      "sha256": "0d71d76cb0a21c06fbdb6be31d12de5244c24dde3ea417d042325cb2f870ebb2",
       "source": "local",
       "upstreamPath": null
     },
@@ -1871,7 +1871,7 @@
     },
     {
       "file": "scripts/verify-setup",
-      "sha256": "4ba1de907c9f0bfdf39a84d09d6d18653ae42cb15187ae217cdfeb4a4d38b0a3",
+      "sha256": "5b81d002b3898f71fefeba4ad8791849ee0332e551951f7d414ac162922af211",
       "source": "local",
       "upstreamPath": null
     }

@@ -207,6 +207,46 @@ BUN_DIR = ROOT / ".cursor" / "skills" / "poteto-mode" / "scripts"
 SKIP_BUN = "--skip-bun"
 
 
+def signing_env() -> dict[str, str]:
+    """Git config that turns signing on with a signer that always fails, the reviewer's case.
+
+    A test that does not opt out of signing fails at once here, instead of hanging on a passphrase prompt.
+    """
+    pairs = [("commit.gpgsign", "true"), ("tag.gpgsign", "true"), ("gpg.program", "false")]
+    env = dict(os.environ, GIT_CONFIG_COUNT=str(len(pairs)))
+    for index, (key, value) in enumerate(pairs):
+        env[f"GIT_CONFIG_KEY_{index}"] = key
+        env[f"GIT_CONFIG_VALUE_{index}"] = value
+    return env
+
+
+def signing_problems(skip_bun: bool) -> str | None:
+    env = signing_env()
+    probe = Path(tempfile.mkdtemp())
+    try:
+        subprocess.run(["git", "init", "-q", str(probe)], check=True, env=env)
+        (probe / "f").write_text("x\n")
+        subprocess.run(["git", "-C", str(probe), "add", "."], check=True, env=env)
+        signed = subprocess.run(
+            ["git", "-C", str(probe), "-c", "user.name=t", "-c", "user.email=t@example.com", "commit", "-q", "-m", "x"],
+            capture_output=True, text=True, env=env,
+        )
+        if signed.returncode == 0:
+            return "the signing-on environment did not make an unsigned-unaware commit fail, so it proves nothing"
+    finally:
+        shutil.rmtree(probe, ignore_errors=True)
+    checks = [(["python3", "scripts/check-upstream", "--self-test"], ROOT)]
+    if not skip_bun and shutil.which("bun"):
+        checks.append((["bun", "test", "orch"], BUN_DIR))
+    for args, cwd in checks:
+        result = subprocess.run(args, cwd=cwd, capture_output=True, text=True, env=env, timeout=600)
+        if result.returncode != 0:
+            sys.stdout.write(result.stdout + result.stderr)
+            return f"{' '.join(args)} failed with commit signing on"
+    print(f"signing on: {len(checks)} git-using test suites passed")
+    return None
+
+
 def bun_problems(skip: bool) -> str | None:
     """Run every poteto-mode bun test and the typecheck. Missing bun fails unless --skip-bun is given."""
     package = json.loads((BUN_DIR / "package.json").read_text(encoding="utf-8"))
@@ -260,6 +300,10 @@ def main() -> int:
     bun_failure = bun_problems(skip_bun)
     if bun_failure:
         print(f"bun: {bun_failure}")
+        return 1
+    signing_failure = signing_problems(skip_bun)
+    if signing_failure:
+        print(f"signing: {signing_failure}")
         return 1
     problems = manifest_problems()
     if problems:

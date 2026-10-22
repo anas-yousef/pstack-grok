@@ -63,7 +63,17 @@ function git({
   args: readonly string[];
   repo: string;
 }): string {
-  const result = Bun.spawnSync(["git", "-C", repo, ...args]);
+  // Test commits are never signed, so a user's commit.gpgsign cannot prompt or fail here.
+  const result = Bun.spawnSync([
+    "git",
+    "-c",
+    "commit.gpgsign=false",
+    "-c",
+    "tag.gpgsign=false",
+    "-C",
+    repo,
+    ...args,
+  ]);
   if (result.exitCode !== 0) {
     throw new Error(
       `git ${args.join(" ")} failed: ${result.stderr.toString()}`

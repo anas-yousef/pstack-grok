@@ -366,6 +366,10 @@ def grok_report(root: Path) -> tuple[int, dict]:
     return report["exit"], report
 
 
+# Self-test commits are never signed, so a user's commit.gpgsign cannot prompt or fail here.
+UNSIGNED = ["-c", "commit.gpgsign=false", "-c", "tag.gpgsign=false"]
+
+
 def init_repo(path: Path) -> None:
     path.mkdir(parents=True)
     subprocess.run(["git", "init", "-q", str(path)], check=True)
@@ -375,7 +379,7 @@ def init_repo(path: Path) -> None:
 
 def commit_all(path: Path, message: str) -> str:
     subprocess.run(["git", "-C", str(path), "add", "."], check=True)
-    subprocess.run(["git", "-C", str(path), "commit", "-q", "-m", message], check=True)
+    subprocess.run(["git", *UNSIGNED, "-C", str(path), "commit", "-q", "-m", message], check=True)
     return subprocess.check_output(["git", "-C", str(path), "rev-parse", "HEAD"], text=True).strip()
 
 
@@ -518,13 +522,13 @@ def self_test() -> int:
         (repo / "keep.txt").write_text("base\n")
         (repo / "edit.txt").write_text("base\n")
         subprocess.run(["git", "-C", str(repo), "add", "."], check=True)
-        subprocess.run(["git", "-C", str(repo), "commit", "-q", "-m", "base"], check=True)
+        subprocess.run(["git", *UNSIGNED, "-C", str(repo), "commit", "-q", "-m", "base"], check=True)
         pin = subprocess.check_output(["git", "-C", str(repo), "rev-parse", "HEAD"], text=True).strip()
         (repo / "keep.txt").write_text("theirs\n")
         (repo / "edit.txt").write_text("theirs\n")
         (repo / "fresh.txt").write_text("new\n")
         subprocess.run(["git", "-C", str(repo), "add", "."], check=True)
-        subprocess.run(["git", "-C", str(repo), "commit", "-q", "-m", "theirs"], check=True)
+        subprocess.run(["git", *UNSIGNED, "-C", str(repo), "commit", "-q", "-m", "theirs"], check=True)
         head = subprocess.check_output(["git", "-C", str(repo), "rev-parse", "HEAD"], text=True).strip()
         rows = {name: status for status, name in name_status(repo, pin, head, "")}
         if rows.get("keep.txt") != "M" or rows.get("fresh.txt") != "A":
