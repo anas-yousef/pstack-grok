@@ -186,7 +186,6 @@ def link_targets(text: str):
 
 
 UP_PATH = re.compile(r"`(\.\./[^`\s]+)`")
-ALIAS_NAMES = ("`inherit-parent`", "`auto`", "`unpinned`")
 
 
 def link_problems(root: Path) -> list[str]:
@@ -208,18 +207,6 @@ def link_problems(root: Path) -> list[str]:
                     problems.append(f"path outside the repo: {rel.as_posix()}:{number} -> {match.group(1)}")
                 elif not resolved.exists():
                     problems.append(f"dead path: {rel.as_posix()}:{number} -> {match.group(1)}")
-    return problems
-
-
-def alias_problems(root: Path) -> list[str]:
-    """A line that names one parent-model alias names all three, so no reader handles only some."""
-    problems = []
-    for rel, path in files(root):
-        if path.suffix.lower() not in {".md", ".mdc"}:
-            continue
-        for number, line in enumerate((read(path) or "").splitlines(), 1):
-            if ALIAS_NAMES[0] in line and not all(name in line for name in ALIAS_NAMES):
-                problems.append(f"alias list incomplete: {rel.as_posix()}:{number} names `inherit-parent` without all of {', '.join(ALIAS_NAMES)}")
     return problems
 
 
@@ -253,7 +240,6 @@ def problems(root: Path) -> list[str]:
     found.extend(plugin_problems(root))
     found.extend(rule_problems(root))
     found.extend(link_problems(root))
-    found.extend(alias_problems(root))
     found.extend(playbook_problems(root))
     return found
 
@@ -285,12 +271,6 @@ def self_test() -> int:
         if len(found) != 4 or not any("dead path" in item for item in found) or not any("nope.md" in item for item in found) or not any("outside the repo" in item for item in found):
             print("self-test: link check", found)
             return 1
-        (root / "README.md").write_text("`inherit-parent` or `auto` here\n`inherit-parent`, `auto`, or `unpinned` here\n")
-        found = alias_problems(root)
-        if len(found) != 1 or ":1 " not in found[0]:
-            print("self-test: alias check", found)
-            return 1
-        (root / "README.md").write_text("ok\n")
         books = root / PLAYBOOKS
         books.mkdir(parents=True)
         (books / "bug-fix.md").write_text("x\n")

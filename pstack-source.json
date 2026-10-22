@@ -1787,7 +1787,7 @@
     },
     {
       "file": "scripts/check-paths",
-      "sha256": "945d9fb234879561a22f8cf5b9c91dfcbb78e259734cc9de2ba7de7c12a77c51",
+      "sha256": "9849ed57932445a73163724ca66bad1df9a6b6cb603e60b41b1e90ebbf7a9eec",
       "source": "local",
       "upstreamPath": null
     },
