@@ -44,7 +44,9 @@ The defaults are `grok-4.7-xhigh-fast` for code, runner, and worker roles, and `
 Upstream files are vendored byte for byte except these:
 
 - `setup-pstack/SKILL.md`. One added sentence. It reads and writes the project `.cursor/rules/pstack-models.mdc` when that file exists.
-- `show-me-your-work/SKILL.md` and `poteto-mode/playbooks/orchestrate.md`. Three places that asked for a reviewer on a different model family now use the reviewer model from `pstack-models.mdc`.
+- `arena/SKILL.md`, `swarm/SKILL.md`, `interrogate/SKILL.md`, `poteto-help/SKILL.md`. One added sentence each. They read the project `.cursor/rules/pstack-models.mdc` when that file exists.
+- `show-me-your-work/SKILL.md`, `poteto-mode/playbooks/orchestrate.md`, `poteto-mode/playbooks/eval.md`. Four places that asked for a reviewer or judge on a different model family now name a line in `pstack-models.mdc`.
+- `poteto-mode/playbooks/multi-phase-plan.md`. The `check-plan.mjs` path points at `.cursor/skills/poteto-mode/scripts/`.
 - `poteto-mode/SKILL.md`. Additions only: routes for the eight new playbooks, one line sending interrogate-trigger matches to `interrogate`, and three more items on the Always-pause list (live charges, first live external sends, destructive production migrations). Data deletion was already on it.
 
 ## License

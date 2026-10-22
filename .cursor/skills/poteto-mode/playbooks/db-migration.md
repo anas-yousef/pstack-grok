@@ -1,6 +1,6 @@
 ### DB migration
 
-**You own the data. Plan, review, verify.** Delegate the migration code. Stay in the lead. Run `interrogate` before implementing, per `references/interrogate-triggers.md`.
+**You own the data. Plan, review, verify.** Delegate the migration code. Stay in the lead. Run `interrogate` before implementing, per `../references/interrogate-triggers.md`.
 
 1. `how` over every reader and writer of the affected tables or collections, including jobs, reports, and other services.
 2. Write the change as expand, migrate, contract. Expand adds the new shape alongside the old. Migrate moves the data and switches readers and writers. Contract removes the old shape in a later deploy, after nothing reads it. Each phase ships and deploys on its own.

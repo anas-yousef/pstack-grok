@@ -6,6 +6,8 @@ disable-model-invocation: true
 
 # Arena
 
+If the project has `.cursor/rules/pstack-models.mdc`, read that file instead of `~/.cursor/rules/pstack-models.mdc` in every step below.
+
 Open a todolist with one entry per phase (Frame, Fan out, Cross-judge, Pick, Graft, Verify) before launching anything.
 
 ## Phase A: Frame

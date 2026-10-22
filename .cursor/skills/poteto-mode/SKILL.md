@@ -132,14 +132,14 @@ A large or cross-cutting effort (a migration across many call sites, an ambitiou
 - **Runtime forensics.** Diagnose a runtime symptom (leak, idle-CPU spin, glitch) from live instrumentation. The deliverable is a diagnosis, not a fix.
 - **Trace forensics.** Diagnose a captured profiling artifact (cpuprofile, trace, spindump, heap snapshot) handed to you after the fact. The deliverable is a diagnosis, not a fix.
 - **Feature.** New or changed behavior, built from a named data shape.
-- **Greenfield.** An empty repo or a new product, built slice by slice from a named domain.
+- **Greenfield.** An empty repo or a new product, built slice by slice from a named domain. Wins over Feature and figure-it-out for that work.
 - **DB migration.** A schema change, data migration, or backfill, shipped as expand, migrate, contract.
 - **Dependency upgrade.** Bumping a library, framework, runtime, or toolchain version.
 - **External side effects.** Code that charges money, sends email or messages, calls webhooks, or writes to a third party.
 - **Security and privacy.** Login, permissions, secrets, untrusted input, or personal data.
 - **Observability.** Adding or fixing logs, metrics, traces, or alerts.
 - **Deploy and rollback.** Releasing a change to a live environment with a tested way back.
-- **Incident hotfix.** Production is broken for users now. Mitigate first, then fix the root cause.
+- **Incident hotfix.** Production is broken for users now. Mitigate first, then fix the root cause. Wins over Bug fix for a production outage.
 - **Refactoring.** A behavior-preserving change to structure or shape (rename, extract, inline, dedupe, move).
 - **Prototype.** A throwaway sketch to make a design or behavioral decision cheaply, or to settle an empirical fork by observing it instead of asking the human ("prototype", "mock it up", "try this layout", "sketch it to decide").
 - **Visual parity.** Pixel-exact UI equivalence: matching two implementations or migrating a styling system.

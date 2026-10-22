@@ -1,6 +1,6 @@
 ### External side effects
 
-**You own every effect that leaves the system. Plan, review, verify.** Payments, email, messages, webhooks, and any write to a third party. Run `interrogate` before implementing, per `references/interrogate-triggers.md`.
+**You own every effect that leaves the system. Plan, review, verify.** Payments, email, messages, webhooks, and any write to a third party. Run `interrogate` before implementing, per `../references/interrogate-triggers.md`.
 
 1. List every effect the change can trigger, who receives it, and whether it can be undone. Most cannot.
 2. Work in the provider's sandbox or test mode first. Never use live keys in development, tests, or an agent session. If no test mode exists, stub the boundary and record the payloads you would send.

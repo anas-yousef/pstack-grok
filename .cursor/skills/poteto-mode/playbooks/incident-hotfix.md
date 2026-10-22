@@ -7,7 +7,7 @@
 3. Confirm the mitigation on the real surface with the health signals. Users recovering is the pass, not the change landing.
 4. Find the root cause with the **Bug fix** playbook's steps 1 and 2. Keep the evidence: timestamps, logs, the first bad event.
 5. Write the smallest fix the evidence justifies, with a failing repro first. No refactors and no extra scope in a hotfix.
-6. Ship it through **Deploy and rollback**. Pause for the operator before the deploy, per Autonomy.
+6. Commit the repro and the fix, and name that commit range. Ship it through **Deploy and rollback**. Pause for the operator before the deploy, per Autonomy.
 7. Write follow-ups for the gap that let it through: a missing test, alert, or guard. Route each one to its playbook rather than folding it into the hotfix.
 
 **Reply:** impact and duration, the mitigation and when it took effect, root cause with evidence, the fix, and the follow-ups.

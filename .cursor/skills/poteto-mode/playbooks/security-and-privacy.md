@@ -1,6 +1,6 @@
 ### Security and privacy
 
-**You own the trust boundary. Plan, review, verify.** Login, permissions, secrets, untrusted input, and personal data. Run `interrogate` before implementing, per `references/interrogate-triggers.md`.
+**You own the trust boundary. Plan, review, verify.** Login, permissions, secrets, untrusted input, and personal data. Run `interrogate` before implementing, per `../references/interrogate-triggers.md`.
 
 1. Draw the boundary. Name who can call the code, what they control, and what they must never reach. Treat every input that crosses the boundary as hostile.
 2. Check access on the server for every request, per **principle-boundary-discipline**. Deny by default. A check that runs only in the client is not a check.

@@ -6,6 +6,8 @@ disable-model-invocation: true
 
 # Swarm
 
+If the project has `.cursor/rules/pstack-models.mdc`, read that file instead of `~/.cursor/rules/pstack-models.mdc` in every step below.
+
 ## Start
 
 Open a todolist with one entry per phase before launching anything.
