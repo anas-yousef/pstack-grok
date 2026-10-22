@@ -107,7 +107,7 @@
       "file": ".cursor/skills/arena/SKILL.md",
       "source": "pstack",
       "upstreamPath": "skills/arena/SKILL.md",
-      "reason": "Runners and the cross-judge default to Grok and come from the project rule. The runner line is a model pool, and at least two runners always run. The cross-family preference is gone."
+      "reason": "Runners and the cross-judge default to Grok and come from the project rule. The runner line is a model pool, and at least two runners always run. A rejected judge retries on grok-4.7-xhigh, never a fast slug. The cross-family preference is gone."
     },
     {
       "file": ".cursor/skills/blast-radius/SKILL.md",
