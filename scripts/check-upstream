@@ -91,7 +91,8 @@ def ensure_repo(url: str, dest: Path, pin: str, source: str) -> str:
 
 
 def name_status(repo: Path, pin: str, head: str, path: str) -> list[tuple[str, str]]:
-    args = ["diff", "--name-status", pin, head]
+    # --no-renames reports a rename as a delete plus an add, so the old path is kept.
+    args = ["diff", "--name-status", "--no-renames", pin, head]
     if path:
         args.extend(["--", path])
     out = git(repo, *args).stdout
@@ -145,10 +146,13 @@ def strip_prefix(path: str, prefix: str) -> str:
     return path
 
 
-def commits_since(repo: Path, pin: str, head: str) -> list[dict]:
+def commits_since(repo: Path, pin: str, head: str, path: str = "") -> list[dict]:
     if pin == head:
         return []
-    out = git(repo, "log", "--reverse", "--format=%H%x09%aI%x09%s", f"{pin}..{head}").stdout
+    args = ["log", "--reverse", "--format=%H%x09%aI%x09%s", f"{pin}..{head}"]
+    if path:
+        args.extend(["--", path])
+    out = git(repo, *args).stdout
     rows = []
     for line in out.splitlines():
         sha, date, title = line.split("\t", 2)
@@ -157,22 +161,21 @@ def commits_since(repo: Path, pin: str, head: str) -> list[dict]:
 
 
 def vendored_skills(manifest: dict, source: str) -> set[str]:
-    names = set()
+    """Upstream directories that hold a SKILL.md this fork vendors, at any depth."""
+    roots = set()
     for item in manifest["files"]:
         if item.get("source") != source:
             continue
         upstream = item.get("upstreamPath") or ""
-        parts = upstream.split("/")
-        if len(parts) >= 2 and parts[0] == "skills":
-            names.add(parts[1])
-    return names
+        if upstream.startswith("skills/") and upstream.endswith("/SKILL.md"):
+            roots.add(upstream.rsplit("/", 1)[0])
+    return roots
 
 
-def skill_of(path: str) -> str | None:
-    parts = path.split("/")
-    if len(parts) >= 2 and parts[0] == "skills":
-        return parts[1]
-    return None
+def outside_kept_skills(path: str, kept: set[str]) -> bool:
+    if not path.startswith("skills/"):
+        return False
+    return not any(path.startswith(root + "/") for root in kept)
 
 
 def advise(classification: str, merge: str | None = None) -> tuple[str, str]:
@@ -220,7 +223,7 @@ def collect(manifest: dict, cache_root: Path, local_root: Path) -> tuple[list[di
             "name": name,
             "pin": pin,
             "head": head,
-            "commits": commits_since(dest, pin, head),
+            "commits": commits_since(dest, pin, head, source.get("path") or ""),
             "changes": [],
         }
         if head != pin:
@@ -229,9 +232,7 @@ def collect(manifest: dict, cache_root: Path, local_root: Path) -> tuple[list[di
             for status, changed in name_status(dest, pin, head, prefix):
                 upstream_path = strip_prefix(changed, prefix)
                 record = by_key.get((name, upstream_path))
-                skill = skill_of(upstream_path)
-                outside = skill is not None and skill not in kept
-                if outside:
+                if outside_kept_skills(upstream_path, kept):
                     entry["changes"].append(change_row("new-skill", upstream_path, None))
                     continue
                 if status == "D" and record is not None:
@@ -272,7 +273,9 @@ def flag_blob(grok, name: str, blob: bytes) -> list[str]:
 def decide(sources: list[dict], drift_hits: list[str], grok_code: int) -> int:
     if grok_code:
         return EXIT_GROK
-    drifted = any(item["changes"] or item["commits"] for item in sources)
+    drifted = any(
+        change["recommendation"] != "skip" for item in sources for change in item["changes"]
+    )
     if drifted or drift_hits:
         return EXIT_DRIFT
     return EXIT_CLEAN
@@ -291,7 +294,8 @@ def render_text(manifest: dict, sources: list[dict], drift_hits: list[str]) -> s
         if not source["changes"] and source["pin"] == source["head"]:
             lines.append("  drift: none")
             continue
-        lines.append("  drift: yes" if source["changes"] or source["commits"] else "  drift: none")
+        acted = [change for change in source["changes"] if change["recommendation"] != "skip"]
+        lines.append("  drift: yes" if acted else "  drift: none (only skipped upstream skills changed)")
         for change in source["changes"]:
             lines.append(
                 f"  {change['classification']}, {change['recommendation']}: {change['path']}"
@@ -327,11 +331,16 @@ def grok_report(root: Path) -> tuple[int, dict]:
 
     buffer = io.StringIO()
     with redirect_stdout(buffer):
-        exception_code = grok.report_exceptions(root)
+        exception_code = grok.report_exceptions(root / "scripts")
     hits, stale, absent = grok.scan_tree(root)
-    code = 1 if hits or stale or exception_code else 0
+    rule = root / grok.RULE
+    problems = grok.agent_problems(root, None)
+    if rule.is_file():
+        problems.extend(grok.rule_problems(rule.read_text(encoding="utf-8"), grok.RULE.as_posix(), False)[0])
+    code = 1 if hits or stale or exception_code or problems else 0
     return code, {
         "exit": code,
+        "modelProblems": problems,
         "hits": hits,
         "stale": stale,
         "absent": absent,
@@ -352,13 +361,60 @@ def commit_all(path: Path, message: str) -> str:
     return subprocess.check_output(["git", "-C", str(path), "rev-parse", "HEAD"], text=True).strip()
 
 
+def nested_self_test(folder: Path) -> str | None:
+    upstream = folder / "nested-upstream"
+    init_repo(upstream)
+    kept = upstream / "pkg" / "skills" / "engineering" / "kept"
+    kept.mkdir(parents=True)
+    (kept / "SKILL.md").write_text("base\n")
+    (kept / "old.md").write_text("base\n")
+    (upstream / "outside.txt").write_text("base\n")
+    old = commit_all(upstream, "base")
+    (upstream / "outside.txt").write_text("changed\n")
+    commit_all(upstream, "outside the source path")
+    fresh = upstream / "pkg" / "skills" / "engineering" / "fresh"
+    fresh.mkdir()
+    (fresh / "SKILL.md").write_text("new\n")
+    commit_all(upstream, "unvendored skill")
+    subprocess.run(["git", "-C", str(upstream), "mv", "pkg/skills/engineering/kept/old.md", "pkg/skills/engineering/kept/new.md"], check=True)
+    commit_all(upstream, "rename")
+    local = folder / "nested-local"
+    (local / "kept").mkdir(parents=True)
+    (local / "kept" / "SKILL.md").write_text("base\n")
+    (local / "kept" / "old.md").write_text("base\n")
+    manifest = {
+        "fork": "test",
+        "sources": [{"name": "nested", "upstream": upstream.as_uri(), "commit": old, "path": "pkg"}],
+        "localPatches": [],
+        "files": [
+            {"file": "kept/SKILL.md", "source": "nested", "upstreamPath": "skills/engineering/kept/SKILL.md"},
+            {"file": "kept/old.md", "source": "nested", "upstreamPath": "skills/engineering/kept/old.md"},
+        ],
+    }
+    sources, _hits = collect(manifest, folder / "nested-cache", local)
+    titles = [commit["title"] for commit in sources[0]["commits"]]
+    if titles != ["unvendored skill", "rename"]:
+        return f"commits were not scoped to the source path: {titles}"
+    changes = {item["path"]: item["classification"] for item in sources[0]["changes"]}
+    expected = {
+        "skills/engineering/fresh/SKILL.md": "new-skill",
+        "skills/engineering/kept/old.md": "deleted",
+        "skills/engineering/kept/new.md": "new-file",
+    }
+    if changes != expected:
+        return f"nested skill or rename was misclassified: {changes}"
+    return None
+
+
 def self_test() -> int:
     source = Path(__file__).read_text(encoding="utf-8")
     needle = "git " + "push"
     if needle in source or re.search(r"git\([^)]*[\"']push[\"']", source):
         print("self-test: script contains a push invocation")
         return 1
-    if decide([], [], 0) != EXIT_CLEAN or decide([{"changes": [{}], "commits": []}], [], 0) != EXIT_DRIFT:
+    skipped = [{"changes": [{"recommendation": "skip"}], "commits": [{}]}]
+    taken = [{"changes": [{"recommendation": "take"}], "commits": []}]
+    if decide([], [], 0) != EXIT_CLEAN or decide(taken, [], 0) != EXIT_DRIFT or decide(skipped, [], 0) != EXIT_CLEAN:
         print("self-test: exit codes drifted")
         return 1
     if decide([], [], 1) != EXIT_GROK or EXIT_FETCH == EXIT_DRIFT:
@@ -446,6 +502,10 @@ def self_test() -> int:
         }
         sources, _hits = collect(manifest, folder / "cache", local)
         changes = {item["path"]: item for item in sources[0]["changes"]}
+        nested_problem = nested_self_test(folder)
+        if nested_problem:
+            print("self-test:", nested_problem)
+            return 1
         if changes["skills/kept/SKILL.md"]["recommendation"] != "take":
             print("self-test: unpatched file was not a take", changes)
             return 1

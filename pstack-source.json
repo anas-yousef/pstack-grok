@@ -1715,7 +1715,7 @@
     },
     {
       "file": "scripts/check-upstream",
-      "sha256": "7eedc5a6e34c23fb2a7c137f081e7b4e2b151a173a01d0cdf508e4b5bc464755",
+      "sha256": "6f0be6db625f470477ecb8d9721b6e86319f76691f2248e9c4bfc28cc79ac408",
       "source": "local",
       "upstreamPath": null
     },
