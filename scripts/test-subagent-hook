@@ -8,7 +8,8 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parent.parent if HERE.name == "pstack-grok" else HERE.parent
 HOOK = ROOT / ".cursor" / "hooks" / "block-non-grok.py"
 NON_GROK = "cl" + "aude-4.5-" + "son" + "net"
 
@@ -72,6 +73,38 @@ def main() -> int:
         payload(subagent_type="generalPurpose", subagent_model=NON_GROK, task="hostile review"),
         "deny",
         True,
+    )
+    for kind in ("computer_use_agent", "browserAgent", "BrowserUse", "Computer Use Helper", "cursor-browser"):
+        expect(
+            f"blocked type {kind} on grok",
+            payload(subagent_type=kind, subagent_model="grok-4.7-xhigh"),
+            "deny",
+            True,
+        )
+    expect(
+        "camelCase computerUse type",
+        payload(subagentType="computerUse", subagentModel="grok-4.7-xhigh"),
+        "deny",
+        True,
+    )
+    expect(
+        "camelCase non-grok model",
+        payload(subagent_type="explore", subagentModel=NON_GROK, model="grok-4.7-xhigh"),
+        "deny",
+        True,
+    )
+    for model in ("grok", "grokfoo", "grok-", "xgrok-4.7-xhigh", "fast", "auto"):
+        expect(
+            f"model {model!r}",
+            payload(subagent_type="explore", subagent_model=model),
+            "deny",
+            True,
+        )
+    expect(
+        "padded grok model",
+        payload(subagent_type="explore", subagent_model=" grok-4.7-xhigh "),
+        "allow",
+        False,
     )
     expect(
         "grok explore",

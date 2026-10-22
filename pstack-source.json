@@ -275,7 +275,7 @@
     },
     {
       "file": ".cursor/hooks/block-non-grok.py",
-      "sha256": "9d5eeb9d638b7fa80b833a343e6c29d1fad0320c0f2d50358d882e8797b0cd78",
+      "sha256": "eae8667f108fcd8b575cc30c8f425197431f3fc3be387fc3ea7de48eafd92f3a",
       "source": "local",
       "upstreamPath": null
     },
@@ -1655,7 +1655,7 @@
     },
     {
       "file": "scripts/test-subagent-hook",
-      "sha256": "9f47b8cc48cbe4a832bd948e65008b5a8edd84438fb672cc6a120b7bdf318676",
+      "sha256": "f38e5a8782cdada6fee1e7884e9c46fdf7a5451a1ab986227d446fbcac797bb1",
       "source": "local",
       "upstreamPath": null
     },

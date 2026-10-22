@@ -4,9 +4,13 @@
 from __future__ import annotations
 
 import json
+import re
 import sys
 
-BLOCKED_TYPES = {"computeruse", "browser", "browseruse"}
+BLOCKED_MARKERS = ("computeruse", "browser")
+TYPE_KEYS = ("subagent_type", "subagentType", "agent_type", "agentType")
+MODEL_KEYS = ("subagent_model", "subagentModel", "model")
+GROK_SLUG = re.compile(r"^grok-[a-z0-9][a-z0-9.-]*$")
 BROWSER_MESSAGE = (
     "Blocked. This subagent type is computer use or browser. "
     "Use control-ui on Grok instead."
@@ -27,13 +31,13 @@ def normalize_type(value: object) -> str:
     return "".join(ch for ch in value.lower() if ch.isalnum())
 
 
-def looks_blocked(text: str) -> bool:
+def looks_blocked(text: object) -> bool:
     compact = normalize_type(text)
-    return "computeruse" in compact or "browser" in compact
+    return any(marker in compact for marker in BLOCKED_MARKERS)
 
 
 def is_grok(model: str) -> bool:
-    return model.lower().startswith("grok")
+    return bool(GROK_SLUG.match(model.lower()))
 
 
 def iter_views(value: object, seen: set[int] | None = None):
@@ -63,7 +67,7 @@ def views(payload: dict) -> list[dict]:
 def models_allowed(payload: dict) -> bool:
     saw = False
     for view in views(payload):
-        for key in ("subagent_model", "model"):
+        for key in MODEL_KEYS:
             if key not in view:
                 continue
             saw = True
@@ -79,7 +83,7 @@ def decide(payload: object, raw: str) -> dict:
             return {"permission": "deny", "user_message": BROWSER_MESSAGE}
         return {"permission": "deny", "user_message": UNREADABLE_MESSAGE}
     for view in views(payload):
-        if normalize_type(view.get("subagent_type")) in BLOCKED_TYPES:
+        if any(looks_blocked(view.get(key)) for key in TYPE_KEYS):
             return {"permission": "deny", "user_message": BROWSER_MESSAGE}
     if not models_allowed(payload):
         return {"permission": "deny", "user_message": MODEL_MESSAGE}
