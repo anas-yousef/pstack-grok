@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -187,7 +188,48 @@ def computer_use_outcome(root: Path) -> list[str]:
     return problems
 
 
+BUN_DIR = ROOT / ".cursor" / "skills" / "poteto-mode" / "scripts"
+SKIP_BUN = "--skip-bun"
+
+
+def bun_problems(skip: bool) -> str | None:
+    """Run every poteto-mode bun test and the typecheck. Missing bun fails unless --skip-bun is given."""
+    package = json.loads((BUN_DIR / "package.json").read_text(encoding="utf-8"))
+    types = package["devDependencies"]["bun-types"]
+    workflow = (ROOT / ".github" / "workflows" / "grok.yml").read_text(encoding="utf-8")
+    pinned = re.search(r"bun-version:\s*([0-9.]+)", workflow)
+    if not pinned or pinned.group(1) != types:
+        return f"CI bun-version {pinned.group(1) if pinned else 'missing'} does not match bun-types {types}"
+    if skip:
+        print(f"SKIPPED: bun tests and typecheck ({SKIP_BUN}). This run does not prove the poteto-mode scripts.")
+        return None
+    if not shutil.which("bun"):
+        return f"bun is not installed. Install bun {types}, or pass {SKIP_BUN} to skip on purpose."
+    local = run(["bun", "--version"]).stdout.strip()
+    if local != types:
+        print(f"warning: local bun {local} differs from the pinned {types} that CI uses")
+    for args in (
+        ["bun", "install", "--frozen-lockfile"],
+        ["bun", "test"],
+        ["bun", "run", "typecheck"],
+    ):
+        result = run(args, cwd=BUN_DIR)
+        text = result.stdout + result.stderr
+        if result.returncode != 0 or (args[1] == "test" and " 0 fail" not in text):
+            sys.stdout.write(text)
+            return f"{' '.join(args)} exited {result.returncode}"
+        if args[1] == "test":
+            passed = re.search(r"(\d+) pass", text)
+            print(f"bun test: {passed.group(1) if passed else '?'} pass, 0 fail")
+    return None
+
+
 def main() -> int:
+    skip_bun = SKIP_BUN in sys.argv[1:]
+    unknown = [arg for arg in sys.argv[1:] if arg != SKIP_BUN]
+    if unknown:
+        print(f"usage: scripts/verify-setup [{SKIP_BUN}]", file=sys.stderr)
+        return 2
     expect(["python3", "scripts/check-grok", "--self-test"], 0)
     expect(["python3", "scripts/check-grok"], 0, contains="hits: 0")
     hook_problems = computer_use_outcome(ROOT)
@@ -200,11 +242,10 @@ def main() -> int:
     expect(["python3", "scripts/check-paths", "--self-test"], 0)
     expect(["python3", "scripts/check-paths"], 0, contains="problems: 0")
     expect(["python3", "scripts/check-upstream", "--self-test"], 0)
-    scripts_dir = ROOT / ".cursor" / "skills" / "poteto-mode" / "scripts"
-    if shutil.which("bun"):
-        expect(["bun", "test", "orch", "check-plan.test.ts"], 0, cwd=scripts_dir, contains=" 0 fail")
-    else:
-        print("skipped: bun test orch check-plan.test.ts (bun is not installed). CI runs the full bun suite.")
+    bun_failure = bun_problems(skip_bun)
+    if bun_failure:
+        print(f"bun: {bun_failure}")
+        return 1
     problems = manifest_problems()
     if problems:
         print("manifest:")

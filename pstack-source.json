@@ -305,13 +305,13 @@
       "file": ".cursor/skills/poteto-mode/scripts/bun.lock",
       "source": "pstack",
       "upstreamPath": "skills/poteto-mode/scripts/bun.lock",
-      "reason": "The workspace specs match the pinned package.json versions."
+      "reason": "The workspace specs and the bun-types entry match the pinned package.json versions."
     },
     {
       "file": ".cursor/skills/poteto-mode/scripts/package.json",
       "source": "pstack",
       "upstreamPath": "skills/poteto-mode/scripts/package.json",
-      "reason": "typescript and bun-types are pinned to the locked versions instead of latest."
+      "reason": "typescript and bun-types are pinned to exact versions, and bun-types matches the CI bun version."
     },
     {
       "file": ".cursor/cursor-team-kit/README.md",
@@ -1157,7 +1157,7 @@
     },
     {
       "file": ".cursor/skills/poteto-mode/scripts/bun.lock",
-      "sha256": "530b7fb6cba7f0b2a6cfc862dbcfe9020c333d45e7e0f448133006583ffdc1f2",
+      "sha256": "2f4ceee62624b9ab92c9cf7a94ff7c9909cc74299b9999416314fa25a8298c33",
       "source": "pstack",
       "upstreamPath": "skills/poteto-mode/scripts/bun.lock"
     },
@@ -1193,7 +1193,7 @@
     },
     {
       "file": ".cursor/skills/poteto-mode/scripts/package.json",
-      "sha256": "32f564147076618f27e054d693150fdbebda1fc883f393860594e514bca1c800",
+      "sha256": "8d8f7a57611d1328ef2525bc1e3556fe71da020fb34ca45ac050990ea4741c53",
       "source": "pstack",
       "upstreamPath": "skills/poteto-mode/scripts/package.json"
     },
@@ -1799,7 +1799,7 @@
     },
     {
       "file": ".github/workflows/grok.yml",
-      "sha256": "b655443de834c5ee1832d67b8cfc6c4120f84cc9d2704ecac002442a73457105",
+      "sha256": "0002a331e4bb977a09c5aa7376a5ae3f4525ec48db24d57116b96b6ae5788a1c",
       "source": "local",
       "upstreamPath": null
     },
@@ -1859,7 +1859,7 @@
     },
     {
       "file": "scripts/verify-setup",
-      "sha256": "77985890525aef549e6af9d7973280590743d5f3c059d6405b5a7dcbed1d3f2b",
+      "sha256": "f6f229c28425318de4f3fdf18d7c807086255d5213ae6f9d3054819f027107fa",
       "source": "local",
       "upstreamPath": null
     }

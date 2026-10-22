@@ -56,7 +56,7 @@ Run the install from the submodule after each `git submodule update`. Symlinking
 python3 scripts/verify-setup
 ```
 
-`verify-setup` runs the Grok check and its self-test, the hook tests, the path checks, the upstream self-test, the poteto-mode `orch` and `check-plan` bun tests when bun is installed, the manifest check, and installs into temp projects to prove each install promise. `.github/workflows/grok.yml` runs it on every push and pull request, then the full bun suite and the typecheck.
+`verify-setup` runs the Grok check and its self-test, the hook tests, the path checks, the upstream self-test, every poteto-mode bun test and the typecheck, the manifest check, and installs into temp projects to prove each install promise. Without bun it fails. `python3 scripts/verify-setup --skip-bun` skips the bun step on purpose and says so. It also fails when the CI bun version and `bun-types` differ. `.github/workflows/grok.yml` runs it on every push and pull request.
 
 - `scripts/check-grok` fails when a file names a non-Grok model or a cross-family review rule, when a value in `.cursor/rules/pstack-models.mdc` or an agent's `model:` line is not a `grok-*` slug or `blocked`, or when the computerUse record contradicts itself. It also reads `~/.cursor/rules/pstack-models.mdc` when present. A non-Grok slug there fails, and a line that differs from the project rule is printed as a note. `scripts/grok-allowlist.txt` lists the paths and sha256 that may quote banned text. An edited file with a different hash is scanned again.
 - `scripts/check-paths` fails on a copied interrogate trigger list, a dangling plugin path, a TypeScript rule that is always applied, a dead relative link under `.cursor`, or a playbook poteto-mode does not route.
@@ -71,9 +71,9 @@ python3 scripts/check-upstream --json
 
 The owner runs this daily outside the repo. CI does not run it, because an upstream commit is not a failure of this repo.
 
-The report names the pin, the upstream head, and each commit since the pin that touched the source's path. A file this fork did not edit is `unpatched`, recommendation `take`. A patched file is `review`, with the result of a 3-way merge run in a temp directory. A new upstream skill this fork does not vendor is `skip`, at any depth under `skills/`. A rename shows as a delete plus an add. The script does not write results back and does not push.
+The report names the pin, the upstream head, and each commit since the pin that touched the source's path. A file this fork did not edit is `unpatched`, recommendation `take`. A patched file is `review`, with the result of a 3-way merge run in a temp directory. A new upstream skill this fork does not vendor is `skip`, at any depth under `skills/`. An upstream change to, or delete of, a file this fork does not vendor is also `skip`. A rename shows as a delete plus an add. For mattpocock and superpowers, whose source path is the whole repo, only the kept skill directories and the other vendored files count. The script does not write results back and does not push.
 
-Exit 0 is clean, including when only skipped skills changed. Exit 1 is drift that needs a take or a review. Exit 2 is a fetch or pin failure. Exit 3 is a local Grok failure.
+Exit 0 is clean, including when only skipped files changed. `--json` runs the same Grok checks as the text report. Exit 1 is drift that needs a take or a review. Exit 2 is a fetch or pin failure. Exit 3 is a local Grok failure.
 
 ## Plugin manifests
 
