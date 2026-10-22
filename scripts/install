@@ -81,10 +81,13 @@ def merged_hooks(target: Path) -> bytes:
     hooks = theirs.setdefault("hooks", {})
     for event, entries in ours["hooks"].items():
         current = hooks.setdefault(event, [])
-        commands = {entry.get("command") for entry in current}
         for entry in entries:
-            if entry["command"] not in commands:
-                current.append(entry)
+            same = [item for item in current if item.get("command") == entry["command"]]
+            if not same:
+                current.append(dict(entry))
+            for item in same:
+                # The project's copy of this hook gets every field the fork sets, failClosed included.
+                item.update(entry)
     return (json.dumps(theirs, indent=2) + "\n").encode("utf-8")
 
 

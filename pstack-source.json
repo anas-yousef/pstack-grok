@@ -1841,7 +1841,7 @@
     },
     {
       "file": "scripts/install",
-      "sha256": "10810501995a1c2096245120701454207ecb128ddd018b28afa5d8ab6b34d618",
+      "sha256": "eb923b7e937901853ae8bbf19ac2cd026493459b8b44a3514ac0686df21e00ed",
       "source": "local",
       "upstreamPath": null
     },
@@ -1859,7 +1859,7 @@
     },
     {
       "file": "scripts/verify-setup",
-      "sha256": "849e9f8e032d616f46efb8a0144fb5b8a3f8063bfd4341dbacdc29287540e67f",
+      "sha256": "77985890525aef549e6af9d7973280590743d5f3c059d6405b5a7dcbed1d3f2b",
       "source": "local",
       "upstreamPath": null
     }

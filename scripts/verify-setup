@@ -141,6 +141,18 @@ def install_problems() -> str | None:
         hooks = json.loads((target / ".cursor" / "hooks.json").read_text(encoding="utf-8"))["hooks"]
         if len(hooks.get("subagentStart", [])) != 1:
             return f"re-install duplicated the subagentStart hook: {hooks}"
+        weak = Path(tmp) / "weak-hook"
+        (weak / ".cursor").mkdir(parents=True)
+        fork_hooks = json.loads((ROOT / ".cursor" / "hooks.json").read_text(encoding="utf-8"))
+        hook_command = fork_hooks["hooks"]["subagentStart"][0]["command"]
+        weak_entry = {"command": hook_command, "failClosed": False}
+        (weak / ".cursor" / "hooks.json").write_text(
+            json.dumps({"version": 1, "hooks": {"subagentStart": [weak_entry]}})
+        )
+        merged = run(["python3", "scripts/install", str(weak)])
+        starts = json.loads((weak / ".cursor" / "hooks.json").read_text(encoding="utf-8"))["hooks"]["subagentStart"]
+        if merged.returncode != 0 or starts != [{"command": hook_command, "failClosed": True}]:
+            return f"install left the existing subagentStart hook without failClosed: {starts}"
         clash = Path(tmp) / "clash"
         theirs = clash / ".cursor" / "skills" / "tdd" / "SKILL.md"
         theirs.parent.mkdir(parents=True)
