@@ -1660,8 +1660,14 @@
       "upstreamPath": null
     },
     {
+      "file": "scripts/update-manifest",
+      "sha256": "8bf8c8bb0fe4d9da107d5b9ad570de5ab94732395a802bbb56d6c258cd2e6e65",
+      "source": "local",
+      "upstreamPath": null
+    },
+    {
       "file": "scripts/verify-setup",
-      "sha256": "bdd8b2fb4a0cf270586cb190092332b9835acc40714eaa52cd8e815d8e3bcaae",
+      "sha256": "3184a9d34e46bab8a92d9759757563192733e39ffe7416f8e87e161d75e20a55",
       "source": "local",
       "upstreamPath": null
     }

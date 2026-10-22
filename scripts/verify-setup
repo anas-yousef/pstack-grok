@@ -39,7 +39,7 @@ def manifest_problems() -> list[str]:
             problems.append(f"hash {item['file']}")
     for folder in (".cursor", "scripts", ".github"):
         for path in (ROOT / folder).rglob("*"):
-            if not path.is_file() or "__pycache__" in path.parts:
+            if not path.is_file() or {"__pycache__", "node_modules"}.intersection(path.parts):
                 continue
             rel = path.relative_to(ROOT).as_posix()
             if rel not in listed:
@@ -62,6 +62,7 @@ def main() -> int:
         print("manifest:")
         for item in problems:
             print(item)
+        print("run python3 scripts/update-manifest after reading the diff")
         return 1
     with tempfile.TemporaryDirectory() as tmp:
         target = Path(tmp) / "project"
