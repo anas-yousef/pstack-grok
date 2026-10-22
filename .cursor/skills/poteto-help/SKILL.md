@@ -41,7 +41,7 @@ When the model rule is missing and it matters, ask whether the user wants to pic
 
 Installing changes nothing until the user invokes a skill. Only `/setup-pstack` loads from the user's words. The [README](../../pstack/README.md) and [guide page 1](../../pstack/docs/guide/01-setup.md) have the details. Offer to word their first prompt with them, per [`references/prompting.md`](references/prompting.md).
 
-If cost is the worry, say where the tokens go and how to spend fewer. pstack spends extra tokens on subagents and review panels. Rerun `/setup-pstack` and pick a smaller budget or cheaper models. A role set to `auto` or `inherit-parent` runs on the chat's model. This fork assumes the chat runs on Grok. On any other chat model, an alias role is no longer Grok. A shorter panel list runs fewer subagents, one for each entry. Save `/poteto-mode` for work that needs rigor.
+If cost is the worry, say where the tokens go and how to spend fewer. pstack spends extra tokens on subagents and review panels. Rerun `/setup-pstack` and pick a smaller budget or cheaper models. A role set to `inherit-parent`, `auto`, or `unpinned` runs on the chat's model. This fork assumes the chat runs on Grok. On any other chat model, an alias role is no longer Grok. A shorter panel list runs fewer subagents, one for each entry. Save `/poteto-mode` for work that needs rigor.
 
 This fork is built for Cursor, and every role is Grok. It does not install for any other agent product. The note in [docs/harness/claude-code.md](../../pstack/docs/harness/claude-code.md) says so.
 

@@ -77,7 +77,7 @@ Exit 0 is clean, including when only skipped skills changed. Exit 1 is drift tha
 
 ## Plugin manifests
 
-Skills, agents, and rules load from `.cursor/skills`, `.cursor/agents`, and `.cursor/rules`. `.cursor/pstack/plugin.json` has no path fields. The two `.cursor-plugin/plugin.json` files point at `../skills/` and `../agents/`, which resolve to those hoisted directories, and `check-paths` fails if one stops resolving.
+Skills, agents, and rules load from `.cursor/skills`, `.cursor/agents`, and `.cursor/rules`. `.cursor/pstack/plugin.json` has no path fields. The two `.cursor-plugin/plugin.json` files point their skill and agent paths at those hoisted directories, and `check-paths` fails if one stops resolving.
 
 ## What a product build does
 

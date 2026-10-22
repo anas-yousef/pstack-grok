@@ -300,7 +300,7 @@ Rigor stays high because every later project copies these rules. One writer. The
 
 ## Revision after the review of 2026-10-22
 
-The review in `../opus-review.md`, outside this repo, found Grok leaks, fragile scripts, and dead references. The owner decided these points.
+An outside review of this fork found Grok leaks, fragile scripts, and dead references. The owner decided these points.
 
 - Keep the `inherit-parent`, `auto`, and `unpinned` aliases, and state that the fork assumes a Grok parent chat. The project rule rejects them, and a personal home rule may use them.
 - Everything this fork controls is Grok. `check-grok` parses the model rule and every agent `model:` line.
@@ -308,5 +308,5 @@ The review in `../opus-review.md`, outside this repo, found Grok leaks, fragile 
 - Add risk playbooks for the parts of the cycle that only had gates. Payments use Lemon Squeezy.
 - Run the daily upstream check outside the repo, and keep `check-upstream` out of push and pull request CI.
 
-Role readers now read the project rule `.cursor/rules/pstack-models.mdc`, not `~/.cursor/rules/pstack-models.mdc`. Code roles stay on `-fast` by choice. Reviewers and judges stay on `grok-4.7-xhigh`, never lowered and never fast. Arena and architect treat a runner line as a model pool and always spawn at least two runners, because the owner keeps one entry per panel line. `../opus-fix-summary.md` maps each finding to its fix.
+Role readers now read the project rule `.cursor/rules/pstack-models.mdc`, not `~/.cursor/rules/pstack-models.mdc`. Code roles stay on `-fast` by choice. Reviewers and judges stay on `grok-4.7-xhigh`, never lowered and never fast. Arena and architect treat a runner line as a model pool and always spawn at least two runners, because the owner keeps one entry per panel line. The commit messages on this branch map each finding to its fix.
 

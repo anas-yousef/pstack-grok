@@ -30,7 +30,7 @@ Launch all reviewers in a single message with the Task tool, one per entry on th
 |----------|---------------|
 | Reviewer A | `grok-4.7-xhigh` |
 
-Each reviewer gets `subagent_type: generalPurpose`, `readonly: true`, and `model` set to its configured entry, or its table default when there is no configured line. Omit `model` for an `auto` or `inherit-parent` entry, so that reviewer runs on the parent model. That stays Grok only while the parent chat runs on Grok, per the alias note in the **poteto-mode** skill.
+Each reviewer gets `subagent_type: generalPurpose`, `readonly: true`, and `model` set to its configured entry, or its table default when there is no configured line. Omit `model` for an `inherit-parent`, `auto`, or `unpinned` entry, so that reviewer runs on the parent model. That stays Grok only while the parent chat runs on Grok, per the alias note in the **poteto-mode** skill.
 
 If the Task tool rejects a configured entry, retry that reviewer once on `grok-4.7-xhigh` and say so. If the retry fails, follow the reviewer fallback in the **poteto-mode** skill. Never treat an alias entry as a rejected slug. Prompt every reviewer to find faults, per that same contract.
 

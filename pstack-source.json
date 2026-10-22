@@ -497,7 +497,7 @@
     },
     {
       "file": ".cursor/pstack/docs/guide/01-setup.md",
-      "sha256": "795de728daa6f4c3fcdc1384f2f63ca35adc42cd1e631eeba7e6a359fabdf6c2",
+      "sha256": "0fa46c8fe4fbc1ff96fad4021b4066d8c85c4f914b2f836572623ff77431ccdb",
       "source": "pstack",
       "upstreamPath": "docs/guide/01-setup.md"
     },
@@ -551,7 +551,7 @@
     },
     {
       "file": ".cursor/pstack/docs/guide/10-recipes-and-pitfalls.md",
-      "sha256": "e589378e625a6144462f3398514c67638a5eea2be62dc78aa9fd70fe8914d3a3",
+      "sha256": "48773177678706e337d375fee31f115367829f6c70b55ee6c414c14f512d3d6a",
       "source": "pstack",
       "upstreamPath": "docs/guide/10-recipes-and-pitfalls.md"
     },
@@ -599,7 +599,7 @@
     },
     {
       "file": ".cursor/pstack/docs/harness/claude-code.md",
-      "sha256": "0971589de7cea0164d086f18f1d7092b03a1456ba7938d466d72ac4c7ba0ed4e",
+      "sha256": "5dde02d20781438ad10c885680d769b1180848c9df16e6a12ad299e92c358f32",
       "source": "pstack",
       "upstreamPath": "docs/harness/claude-code.md"
     },
@@ -653,7 +653,7 @@
     },
     {
       "file": ".cursor/skills/arena/SKILL.md",
-      "sha256": "21a87d4a7277ed502529be4b8bff89cdea4ecbde7f2652c117b8b605d93eef35",
+      "sha256": "7d8fd2ec2221cc21d73f81651548ac1aadab214e1438f82f892e4df751f7f391",
       "source": "pstack",
       "upstreamPath": "skills/arena/SKILL.md"
     },
@@ -791,7 +791,7 @@
     },
     {
       "file": ".cursor/skills/how/SKILL.md",
-      "sha256": "0366226dfa1eb8da99b35f7f8fb503698183ff69af1d5f0568632f1cb40913d2",
+      "sha256": "6e7db9ab2db4173e7ff8c46bcc9d376f248bcc4cb0800f201c5f55d6be4c511a",
       "source": "pstack",
       "upstreamPath": "skills/how/SKILL.md"
     },
@@ -815,7 +815,7 @@
     },
     {
       "file": ".cursor/skills/interrogate/SKILL.md",
-      "sha256": "3459b73559817b7ee6abe489903cadf93ce1c1b67745e7c9dd8c2626266c056d",
+      "sha256": "6060cc49c99917226c1dc88d67eef097636d9f57db512d2188680a87fde6f86f",
       "source": "pstack",
       "upstreamPath": "skills/interrogate/SKILL.md"
     },
@@ -893,7 +893,7 @@
     },
     {
       "file": ".cursor/skills/poteto-help/SKILL.md",
-      "sha256": "ed1be2badd0950ead53a7e495ff3f0de3c991c3d031ffabbda777113d4e4cabb",
+      "sha256": "b58147edb00d105bb88a17ef78d60cf05819084f22c72178c4b385a230eb37f5",
       "source": "pstack",
       "upstreamPath": "skills/poteto-help/SKILL.md"
     },
@@ -1457,7 +1457,7 @@
     },
     {
       "file": ".cursor/skills/reflect/SKILL.md",
-      "sha256": "1ce93a67f1d9b743f5813bb8429e0c32065588eabd8755c5e4e899cf4f6a5c7b",
+      "sha256": "33990dd39683e56ffd0a5ab40775ad6cbb35a6e5b0250992b9bb645e8545e124",
       "source": "pstack",
       "upstreamPath": "skills/reflect/SKILL.md"
     },
@@ -1499,7 +1499,7 @@
     },
     {
       "file": ".cursor/skills/setup-pstack/SKILL.md",
-      "sha256": "46a8ba944e806eca2e9a2277e0925bedd81416c495bc7bf520ce7d6271e1438d",
+      "sha256": "a15b9c0a8ad6bd83462183a3f18fed915d7913ad55e04a845e41fcf00b53c3a2",
       "source": "pstack",
       "upstreamPath": "skills/setup-pstack/SKILL.md"
     },
@@ -1529,7 +1529,7 @@
     },
     {
       "file": ".cursor/skills/swarm/SKILL.md",
-      "sha256": "42b9403a454765384d55fce5b8ef4bd0ceaebf958f0fc1bbb8ce844cf91b55b7",
+      "sha256": "2a8ea4d9cc707b22b17be2274b82e9d559f906ac0f964bf979341ece2f8c932d",
       "source": "pstack",
       "upstreamPath": "skills/swarm/SKILL.md"
     },
@@ -1667,7 +1667,7 @@
     },
     {
       "file": ".cursor/skills/why/SKILL.md",
-      "sha256": "9f3f40a83fb078f804728c31c87d35f2f554779c6de964d78e32f35a86614f12",
+      "sha256": "123a2c1f18bddc29ac782bc787074a7cb935745d9bb876db91c94fa887a1ce3e",
       "source": "pstack",
       "upstreamPath": "skills/why/SKILL.md"
     },
@@ -1817,7 +1817,7 @@
     },
     {
       "file": "scripts/check-paths",
-      "sha256": "e073dd93ecbb413b6019a9e5b18a8f67c4e183341f2f12ce496ac602a7e73344",
+      "sha256": "945d9fb234879561a22f8cf5b9c91dfcbb78e259734cc9de2ba7de7c12a77c51",
       "source": "local",
       "upstreamPath": null
     },
@@ -1829,7 +1829,7 @@
     },
     {
       "file": "scripts/grok-allowlist.txt",
-      "sha256": "0b19807251128ca23d24dab87a33960788938f4ac752d0363332dc670b88f42c",
+      "sha256": "3af36ef8fa44b64b3b1f1855ebc015295b065b947591112a832b8cffc698dea5",
       "source": "local",
       "upstreamPath": null
     },

@@ -24,7 +24,7 @@ That covers the legacy flat (`<id>.jsonl`), current nested (`<id>/<id>.jsonl`), 
 
 One message, three `Task` calls, `subagent_type: generalPurpose`, agent mode (`readonly: false`). Reviewers need MCP access to look up the tickets, chat threads, and observability traces the transcript references, and readonly strips MCPs.
 
-Each reviewer and the synthesizer name a role line in the project rule `.cursor/rules/pstack-models.mdc` and a default. Set `model` to that line's value, or to the default if the rule or the line is missing. Leave `model` unset when the value is `auto` or `inherit-parent`. If the Task tool rejects a slug, use the default and say so. If it rejects the default, retry once on `grok-4.7-xhigh` and then follow the reviewer fallback in the **poteto-mode** skill. Prompt each reviewer to find faults, per that contract. Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section of the **poteto-mode** skill.
+Each reviewer and the synthesizer name a role line in the project rule `.cursor/rules/pstack-models.mdc` and a default. Set `model` to that line's value, or to the default if the rule or the line is missing. Leave `model` unset when the value is `inherit-parent`, `auto`, or `unpinned`. If the Task tool rejects a slug, use the default and say so. If it rejects the default, retry once on `grok-4.7-xhigh` and then follow the reviewer fallback in the **poteto-mode** skill. Prompt each reviewer to find faults, per that contract. Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section of the **poteto-mode** skill.
 
 | Lens | Role line | Default `model` | Prompt template |
 |---|---|---|---|

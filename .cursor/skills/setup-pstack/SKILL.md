@@ -15,7 +15,7 @@ This fork assumes the parent chat runs on Grok. Read **The parent chat is Grok**
 
 Enumerate the model slugs you can pass to a `Task` subagent in this session. That is the dependable source. If Cursor also exposes a models API or CLI that lists the user's entitled models, prefer it for completeness. If you cannot detect any, ask the user to paste the slugs they have access to. Never write a real slug you have not confirmed is available. Keep only slugs that start with `grok-`. Drop every other detected slug from the choices, and say how many you dropped. `blocked` is always valid in the project rule and means do not spawn that subagent. computerUse stays `blocked`. Do not rewrite it to a slug.
 
-The aliases `inherit-parent`, `auto`, and `unpinned` stay supported by every role reader. Each one omits `model`, so the role runs on the parent chat model. They are not valid in the project rule, because `scripts/check-grok` cannot see the parent model and rejects them there. A user who wants an alias puts that one line in a personal `~/.cursor/rules/pstack-models.mdc`, and only while their Cursor chat runs on Grok.
+The aliases `inherit-parent`, `auto`, and `unpinned` stay supported by every role reader. All three mean the same thing. Each reader omits the Task `model` field, so the role runs on the parent chat model. No reader passes the alias as the `model` string, because the subagentStart hook denies any model value that is not a `grok-*` slug. They are not valid in the project rule, because `scripts/check-grok` cannot see the parent model and rejects them there. A user who wants an alias puts that one line in a personal `~/.cursor/rules/pstack-models.mdc`, and only while their Cursor chat runs on Grok.
 
 ### 2. Load current state
 

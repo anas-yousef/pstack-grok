@@ -31,7 +31,7 @@ The tables below are the upstream tool map, kept so a reader can see what was re
 
 ## Models
 
-Every role uses the Grok slug on its line in `.cursor/rules/pstack-models.mdc`. Reviewers and judges use `grok-4.7-xhigh`. There is no translation table. `auto` and `inherit-parent` omit `model` and run on the parent chat, which this fork assumes is Grok. The project rule rejects them.
+Every role uses the Grok slug on its line in `.cursor/rules/pstack-models.mdc`. Reviewers and judges use `grok-4.7-xhigh`. There is no translation table. `inherit-parent`, `auto`, and `unpinned` omit `model` and run on the parent chat, which this fork assumes is Grok. The project rule rejects them.
 
 ## Paths
 

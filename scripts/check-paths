@@ -185,14 +185,41 @@ def link_targets(text: str):
             yield number, target
 
 
+UP_PATH = re.compile(r"`(\.\./[^`\s]+)`")
+ALIAS_NAMES = ("`inherit-parent`", "`auto`", "`unpinned`")
+
+
 def link_problems(root: Path) -> list[str]:
     problems = []
+    top = root.resolve()
     for rel, path in files(root):
-        if rel.parts[0] != ".cursor" or path.suffix.lower() not in {".md", ".mdc"}:
+        if path.suffix.lower() not in {".md", ".mdc"}:
             continue
-        for number, target in link_targets(read(path) or ""):
+        text = read(path) or ""
+        for number, target in link_targets(text):
             if not (path.parent / target).exists():
                 problems.append(f"dead link: {rel.as_posix()}:{number} -> {target}")
+        for number, line in enumerate(text.splitlines(), 1):
+            for match in UP_PATH.finditer(line):
+                if "<" in match.group(1):
+                    continue
+                resolved = (path.parent / match.group(1)).resolve()
+                if top != resolved and top not in resolved.parents:
+                    problems.append(f"path outside the repo: {rel.as_posix()}:{number} -> {match.group(1)}")
+                elif not resolved.exists():
+                    problems.append(f"dead path: {rel.as_posix()}:{number} -> {match.group(1)}")
+    return problems
+
+
+def alias_problems(root: Path) -> list[str]:
+    """A line that names one parent-model alias names all three, so no reader handles only some."""
+    problems = []
+    for rel, path in files(root):
+        if path.suffix.lower() not in {".md", ".mdc"}:
+            continue
+        for number, line in enumerate((read(path) or "").splitlines(), 1):
+            if ALIAS_NAMES[0] in line and not all(name in line for name in ALIAS_NAMES):
+                problems.append(f"alias list incomplete: {rel.as_posix()}:{number} names `inherit-parent` without all of {', '.join(ALIAS_NAMES)}")
     return problems
 
 
@@ -226,6 +253,7 @@ def problems(root: Path) -> list[str]:
     found.extend(plugin_problems(root))
     found.extend(rule_problems(root))
     found.extend(link_problems(root))
+    found.extend(alias_problems(root))
     found.extend(playbook_problems(root))
     return found
 
@@ -250,10 +278,19 @@ def self_test() -> int:
         docs = root / ".cursor" / "docs"
         docs.mkdir(parents=True)
         (docs / "a.md").write_text("[ok](a.md) [gone](../missing.md)\n```\n[example](./src/x.md)\n```\n[u](url)\n")
+        (root / "README.md").write_text("[top](nope.md) see `../../../outside.md`\n")
+        (root / "notes").mkdir()
+        (root / "notes" / "b.md").write_text("inside: `../.cursor/docs/a.md`, gone: `../summary.md`\n")
         found = link_problems(root)
-        if len(found) != 1 or "missing.md" not in found[0]:
+        if len(found) != 4 or not any("dead path" in item for item in found) or not any("nope.md" in item for item in found) or not any("outside the repo" in item for item in found):
             print("self-test: link check", found)
             return 1
+        (root / "README.md").write_text("`inherit-parent` or `auto` here\n`inherit-parent`, `auto`, or `unpinned` here\n")
+        found = alias_problems(root)
+        if len(found) != 1 or ":1 " not in found[0]:
+            print("self-test: alias check", found)
+            return 1
+        (root / "README.md").write_text("ok\n")
         books = root / PLAYBOOKS
         books.mkdir(parents=True)
         (books / "bug-fix.md").write_text("x\n")
