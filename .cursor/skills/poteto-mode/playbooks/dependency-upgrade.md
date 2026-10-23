@@ -2,7 +2,7 @@
 
 **You own the upgrade. Plan, review, verify.** Delegate the mechanical edits. Stay in the lead.
 
-1. Name the package, the current and target versions, and why. Read every changelog and migration note in between. List each breaking change and each new default.
+1. Name the package, the current and target versions, and why. Read every changelog and migration note in between. List each breaking change and each new default. Where the upgrade changes how you call the package, follow **principle-follow-official-docs**.
 2. Find every use. Search for imports, configuration, and transitive users, and run `how` where the use is more than a call site.
 3. Upgrade one dependency per commit. Never bundle unrelated bumps. A major version that needs code changes gets its own PR.
 4. Prefer the upstream codemod or a script you write over hand edits, per **principle-build-the-lever**.

@@ -2,10 +2,11 @@ pstack-grok
 Copyright (c) 2026 Anas Yousef. MIT License, see LICENSE.
 
 The root LICENSE covers original work only: .cursor/rules/pstack-models.mdc,
-the playbooks greenfield, db-migration, dependency-upgrade,
-external-side-effects, security-and-privacy, observability,
-deploy-and-rollback and incident-hotfix, poteto-mode's
-references/interrogate-triggers.md, README.md, NOTICE and sources.json.
+.cursor/skills/principle-follow-official-docs/, the playbooks greenfield,
+db-migration, dependency-upgrade, external-side-effects,
+security-and-privacy, observability, deploy-and-rollback and
+incident-hotfix, poteto-mode's references/interrogate-triggers.md,
+README.md, NOTICE and sources.json.
 
 Everything else is vendored from the projects below under their own MIT
 licenses. Pinned commits are in sources.json.

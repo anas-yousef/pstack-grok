@@ -8,7 +8,7 @@ A Cursor project setup that teaches agents how to work. It is [pstack](https://g
 - **cursor-team-kit** from `cursor/plugins`. CI, PR, review, and control skills.
 - **superpowers** from `obra/superpowers`. `verification-before-completion`, `systematic-debugging`, `receiving-code-review`.
 - **mattpocock/skills**. `domain-modeling`, `writing-for-agents`, `wizard`.
-- **Original work.** A Grok-pinned `pstack-models.mdc`, the interrogate trigger list, and eight poteto-mode playbooks: greenfield, DB migration, dependency upgrade, external side effects, security and privacy, observability, deploy and rollback, and incident hotfix.
+- **Original work.** A Grok-pinned `pstack-models.mdc`, the `principle-follow-official-docs` skill, the interrogate trigger list, and eight poteto-mode playbooks: greenfield, DB migration, dependency upgrade, external side effects, security and privacy, observability, deploy and rollback, and incident hotfix.
 
 Everything lives under `.cursor/`, where Cursor loads project skills, agents, and rules. `NOTICE` lists each source and its license. `sources.json` pins the upstream commits.
 
