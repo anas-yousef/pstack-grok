@@ -3,7 +3,7 @@
 **You own every effect that leaves the system. Plan, review, verify.** Payments, email, messages, webhooks, and any write to a third party. Run `interrogate` before implementing, per `../references/interrogate-triggers.md`.
 
 1. List every effect the change can trigger, who receives it, and whether it can be undone. Most cannot.
-2. Work in the provider's sandbox or test mode first. Never use live keys in development, tests, or an agent session. If no test mode exists, stub the boundary and record the payloads you would send.
+2. Work in the provider's sandbox or test mode first. Follow **principle-follow-official-docs** for that provider. Never use live keys in development, tests, or an agent session. If no test mode exists, stub the boundary and record the payloads you would send.
 3. Make each effect idempotent. Send an idempotency key or check a record before you act, so a retry never double-charges or double-sends, per **principle-make-operations-idempotent**.
 4. Handle every response: success, a known failure, a timeout with an unknown outcome, and a duplicate. Make a timeout reconcile against the third party, not retry blindly.
 5. Verify inbound webhooks. Check the signature, reject replays, and handle events that arrive late or out of order.

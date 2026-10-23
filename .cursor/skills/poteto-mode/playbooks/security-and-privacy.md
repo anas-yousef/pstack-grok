@@ -2,7 +2,7 @@
 
 **You own the trust boundary. Plan, review, verify.** Login, permissions, secrets, untrusted input, and personal data. Run `interrogate` before implementing, per `../references/interrogate-triggers.md`.
 
-1. Draw the boundary. Name who can call the code, what they control, and what they must never reach. Treat every input that crosses the boundary as hostile.
+1. Draw the boundary. Name who can call the code, what they control, and what they must never reach. Treat every input that crosses the boundary as hostile. When a third-party library, platform, or service supplies auth or access, follow **principle-follow-official-docs**.
 2. Check access on the server for every request, per **principle-boundary-discipline**. Deny by default. A check that runs only in the client is not a check.
 3. Parse and validate input at the boundary. Use parameterized queries and context-aware output encoding. Never build a command, query, or path from raw input.
 4. Store no secret in code, config committed to the repo, logs, or prompts. Rotate any secret that leaked, even to a branch.
