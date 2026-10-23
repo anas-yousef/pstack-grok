@@ -1,16 +1,14 @@
 ### Greenfield
 
-**You own the product.** The repo is empty, or the product is new. poteto-mode stays the entry. This playbook is the route.
+**You own the product. Plan, review, verify.** The repo is empty or the product is new. Delegate implementation. Stay in the lead.
 
-1. Open the todo list with these steps copied verbatim. If TodoWrite returns `success: false`, stop and report the tool error. Do not continue.
-2. Name the domain before code, per **principle-model-the-domain**. When the nouns are still fuzzy, run **domain-modeling** and write the glossary and ADRs it asks for.
-3. Run **interrogate** before implementation when the slice matches `../references/interrogate-triggers.md`. That file is the only copy of the trigger list. Do not restate it here.
-4. Boot the smallest scaffold that runs. Then run **create-verification-skill** once. Later checks use that project skill.
-5. Follow the Feature playbook from architect through verify. Skip `how` when there is no subsystem to read, and record `skip: <reason>` on the todo.
-6. Before each commit, run **deslop** and **no-comments**.
-7. Verify with the project verification skill, **control-ui** or **control-cli**, and **verification-before-completion**. A claim without a fresh command output is not done. Use **verify-this** for the claim, the baseline, and the treatment.
-8. If a step needs a click only a human can do in a third-party dashboard, run **wizard** for that step alone. Do not stop the rest of the build for it.
-9. Run the **show-me-your-work** trail review before any push. Do not push until that review has returned, or until the fallback self-review is in the log and under Attention.
-10. Commit in small ordered units. Skip Opening a PR when the user said to commit on the current branch, and record `skip: <reason>`.
+1. Name the domain before any code, per **principle-model-the-domain**. When the nouns are still fuzzy, run the **domain-modeling** skill and write the glossary and decision records it asks for.
+2. Run `interrogate` before implementing any slice that matches `../references/interrogate-triggers.md`.
+3. Boot the smallest scaffold that runs end to end. Then run **create-verification-skill** once, so every later check drives the real app.
+4. Build each slice with the **Feature** playbook from step 2 on. Skip its `how` step while there is no subsystem to read, with `skip: <reason>`.
+5. When a step needs an action only a human can take in a third-party dashboard, run the **wizard** skill for that step alone. Keep building everything else.
+6. Before claiming any slice done, run **verification-before-completion**. A claim without fresh command output is not done.
+7. Commit in small ordered units, per the **sequence-verifiable-units** principle skill.
+8. Run **Opening a PR**.
 
-**Reply:** what shipped, the gates that fired, the verification command and its result, open decisions.
+**Reply:** what shipped, the domain model you chose, which interrogate triggers fired, the verification command and its output, open decisions.

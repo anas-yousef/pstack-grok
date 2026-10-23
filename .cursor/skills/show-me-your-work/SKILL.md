@@ -62,16 +62,16 @@ At the end of the run, before handing back, check the log told the truth. Read t
 
 Correct the log, not the story. The audit never edits or removes a row, even an invented one. When a row records neither a real decision nor a real action, or its claim or evidence is wrong, add a row that supersedes it with what actually happened and a pointer that resolves. This audit does not check rows outside this run's stretches. If this run's own work shows one of them is wrong, supersede it like any wrong call.
 
-## Trail review
+## Cross-model review of the trail
 
-Before handing back, and before any push, spawn the reviewer on the `show-me-your-work trail reviewer` line (default `grok-4.7-xhigh`). Fresh context. Prompt it to find faults, per the reviewer contract in the **poteto-mode** skill. The subagent reads the audit trail and the run's transcript, then flags what the user should pay attention to. Not a redo of the work, a scan for what's suboptimal or risky.
+Before handing back, spawn a subagent on the reviewer model from `pstack-models.mdc` (its `judgment and prose` line). Self-review is not a substitute. The subagent reads the audit trail and the run's transcript, then flags what the user should pay attention to. Not a redo of the work, a scan for what's suboptimal or risky. Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section of the **poteto-mode** skill.
 
 - Decisions logged with weak or absent evidence.
 - Verification steps skipped or claimed without proof in the transcript.
 - Choices that look risky in hindsight (premature, scope-creeping, papering over a symptom).
 - Gaps the user would otherwise miss on a casual skim.
 
-Every reply for a run that produced a trail ends with an "Attention" section. When the reviewer returned, lead with `reviewed by <model>` on its own line. When the spawn failed and the inline fallback ran, lead with `self-review` and the verbatim error. Never lead with a model that did not run. If this run attempted computerUse, paste the `computerUse record` lines from `scripts/check-grok`. Say the attempt is blocked only when the tool result contains the hook deny sentence. If a reply came back, say the call was not denied. Do not lead that reply with `reviewed by` plus a Grok slug. Then list each flag pointing to specific rows or moments. "No flags" is a valid value.
+Every reply for a run that produced a trail ends with an "Attention" section. Lead with the reviewer's model on its own line (`reviewed by <model>`), then list each flag pointing to specific rows or moments. "No flags" is a valid value. The model name is not.
 
 ## Reviewing the trail
 

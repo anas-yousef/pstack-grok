@@ -1,37 +1,49 @@
-# Notices
+pstack-grok
+Copyright (c) 2026 Anas Yousef. MIT License, see LICENSE.
 
-This fork vendors other people's work. Each license below is the upstream license, copied unchanged.
+The root LICENSE covers original work only: .cursor/rules/pstack-models.mdc,
+the playbooks greenfield, db-migration, dependency-upgrade,
+external-side-effects, security-and-privacy, observability,
+deploy-and-rollback and incident-hotfix, poteto-mode's
+references/interrogate-triggers.md, README.md, NOTICE and sources.json.
 
-## pstack
+Everything else is vendored from the projects below under their own MIT
+licenses. Pinned commits are in sources.json.
 
-Upstream is https://github.com/cursor/plugins, path `pstack`, commit `190d28736eff128ec94f502a22c7fe0c4b56cd37`, version 0.15.29.
+pstack
+  Source:  https://github.com/cursor/plugins (pstack/)
+  Commit:  7698375f92a729f8bb89d113c633dce9ff9dc6db
+  License: MIT, Copyright (c) 2026 Lauren Tan. See .cursor/pstack/LICENSE.
+  Files:   .cursor/skills (pstack skills), .cursor/agents/comment-sicko.md,
+           .cursor/agents/poteto-agent.md, .cursor/pstack/
+  Changes: setup-pstack/SKILL.md, show-me-your-work/SKILL.md,
+           poteto-mode/SKILL.md and poteto-mode/playbooks/orchestrate.md.
+           See README.md.
 
-MIT License. Copyright (c) 2026 Lauren Tan.
+cursor-team-kit
+  Source:  https://github.com/cursor/plugins (cursor-team-kit/)
+  Commit:  7698375f92a729f8bb89d113c633dce9ff9dc6db
+  License: MIT, Copyright (c) 2026 Cursor. See .cursor/cursor-team-kit/LICENSE.
+  Files:   .cursor/skills (team-kit skills), .cursor/agents/ci-watcher.md,
+           .cursor/agents/thermo-nuclear-code-quality-review.md,
+           .cursor/rules/no-inline-imports.mdc,
+           .cursor/rules/typescript-exhaustive-switch.mdc,
+           .cursor/cursor-team-kit/
+  Changes: none.
 
-The license file is `.cursor/pstack/LICENSE`.
+superpowers
+  Source:  https://github.com/obra/superpowers (skills/)
+  Commit:  2ce8aa15d05bd57213e6f746f953aafb7ded7a8b
+  License: MIT, Copyright (c) 2025 Jesse Vincent. See .cursor/third-party/superpowers/LICENSE.
+  Files:   .cursor/skills/verification-before-completion,
+           .cursor/skills/systematic-debugging,
+           .cursor/skills/receiving-code-review
+  Changes: none.
 
-## cursor-team-kit
-
-Same repository and commit, path `cursor-team-kit`, version 1.2.0.
-
-MIT License. Copyright (c) 2026 Cursor.
-
-The license file is `.cursor/cursor-team-kit/LICENSE`.
-
-## mattpocock/skills
-
-Upstream is https://github.com/mattpocock/skills, commit `5beb35b040e3de97e54fa9e386d7e42d15c295c2`.
-
-MIT License. Copyright (c) 2026 Matt Pocock.
-
-This fork keeps `domain-modeling`, `writing-for-agents`, and `wizard`. The license file is `.cursor/third-party/mattpocock/LICENSE`.
-
-## superpowers
-
-Upstream is https://github.com/obra/superpowers, commit `b739a8af570e10a95898f2bdf6cec97467fa6c12`.
-
-MIT License. Copyright (c) 2025 Jesse Vincent.
-
-This fork keeps `verification-before-completion`, `systematic-debugging`, and `receiving-code-review`. The license file is `.cursor/third-party/superpowers/LICENSE`.
-
-Local edits are listed in `pstack-source.json` under `localPatches`.
+mattpocock/skills
+  Source:  https://github.com/mattpocock/skills (skills/)
+  Commit:  5beb35b040e3de97e54fa9e386d7e42d15c295c2
+  License: MIT, Copyright (c) 2026 Matt Pocock. See .cursor/third-party/mattpocock-skills/LICENSE.
+  Files:   .cursor/skills/domain-modeling, .cursor/skills/writing-for-agents,
+           .cursor/skills/wizard
+  Changes: none.

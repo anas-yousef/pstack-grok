@@ -1,0 +1,48 @@
+{
+  "note": "Each path maps an upstream path to its vendored path. A directory entry covers everything under it that a longer entry does not claim.",
+  "sources": [
+    {
+      "name": "pstack",
+      "repo": "https://github.com/cursor/plugins",
+      "commit": "7698375f92a729f8bb89d113c633dce9ff9dc6db",
+      "paths": {
+        "pstack/skills/": ".cursor/skills/",
+        "pstack/agents/": ".cursor/agents/",
+        "pstack/": ".cursor/pstack/"
+      }
+    },
+    {
+      "name": "cursor-team-kit",
+      "repo": "https://github.com/cursor/plugins",
+      "commit": "7698375f92a729f8bb89d113c633dce9ff9dc6db",
+      "paths": {
+        "cursor-team-kit/skills/": ".cursor/skills/",
+        "cursor-team-kit/agents/": ".cursor/agents/",
+        "cursor-team-kit/rules/": ".cursor/rules/",
+        "cursor-team-kit/": ".cursor/cursor-team-kit/"
+      }
+    },
+    {
+      "name": "superpowers",
+      "repo": "https://github.com/obra/superpowers",
+      "commit": "2ce8aa15d05bd57213e6f746f953aafb7ded7a8b",
+      "paths": {
+        "skills/verification-before-completion/": ".cursor/skills/verification-before-completion/",
+        "skills/systematic-debugging/": ".cursor/skills/systematic-debugging/",
+        "skills/receiving-code-review/": ".cursor/skills/receiving-code-review/",
+        "LICENSE": ".cursor/third-party/superpowers/LICENSE"
+      }
+    },
+    {
+      "name": "mattpocock-skills",
+      "repo": "https://github.com/mattpocock/skills",
+      "commit": "5beb35b040e3de97e54fa9e386d7e42d15c295c2",
+      "paths": {
+        "skills/engineering/domain-modeling/": ".cursor/skills/domain-modeling/",
+        "skills/productivity/writing-for-agents/": ".cursor/skills/writing-for-agents/",
+        "skills/engineering/wizard/": ".cursor/skills/wizard/",
+        "LICENSE": ".cursor/third-party/mattpocock-skills/LICENSE"
+      }
+    }
+  ]
+}

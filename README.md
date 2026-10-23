@@ -1,63 +1,54 @@
-# Grok-only pstack
+# pstack-grok
 
-Fork `pstack-grok-v0.15.29-1`. A Cursor project copies this tree, or points at it, and gets one poteto-mode setup where every role is Grok.
+A Cursor project setup that teaches agents how to work. It is [pstack](https://github.com/cursor/plugins/tree/main/pstack) as upstream ships it, with every model role pinned to Grok, plus a few vendored skills and playbooks. It sets which model fills each role. It does not choose your app's vendors.
 
-pstack 0.15.29 is vendored in full, including `log.sh`, the decision-log template, and the poteto-mode scripts. cursor-team-kit 1.2.0 is vendored in full. Three mattpocock skills and three superpowers skills are vendored with their licenses. `NOTICE` names each upstream commit. `pstack-source.json` lists every file, its sha256, and each local patch.
+## What it combines
 
-## Copy it into a project
+- **pstack** from `cursor/plugins`. Skills, agents, and the poteto-mode playbooks.
+- **cursor-team-kit** from `cursor/plugins`. CI, PR, review, and control skills.
+- **superpowers** from `obra/superpowers`. `verification-before-completion`, `systematic-debugging`, `receiving-code-review`.
+- **mattpocock/skills**. `domain-modeling`, `writing-for-agents`, `wizard`.
+- **Original work.** A Grok-pinned `pstack-models.mdc`, the interrogate trigger list, and eight poteto-mode playbooks: greenfield, DB migration, dependency upgrade, external side effects, security and privacy, observability, deploy and rollback, and incident hotfix.
 
-From this repo:
+Everything lives under `.cursor/`, where Cursor loads project skills, agents, and rules. `NOTICE` lists each source and its license. `sources.json` pins the upstream commits.
 
-```bash
-python3 scripts/install /path/to/your/project
-```
+## Adopt it in a project
 
-The script copies `.cursor/`, `pstack-source.json`, `NOTICE`, and the check scripts. A skill or rule this fork ships is overwritten. A file the project already has, and this fork does not, is left in place. The script refuses to run when the target is this repo.
+**Copy.** Copy this repo's `.cursor/` directory into your project root. If the project already has a `.cursor/`, merge the `skills/`, `agents/`, and `rules/` directories into it.
 
-## Reference it
+**Git submodule.** Add the repo as a submodule, then link its `.cursor/` into place:
 
-Add this repository as a submodule and point the project's `.cursor` at the submodule.
-
-```bash
-git submodule add <this-repo-url> vendor/pstack-grok
+```sh
+git submodule add <repo-url> vendor/pstack-grok
 ln -s vendor/pstack-grok/.cursor .cursor
 ```
 
-A later `git submodule update` moves the project to a newer commit of this fork. Use the copy script instead when a symlink is awkward, or when the project already has its own `.cursor` and you only want these skills merged in.
+Update later with `git submodule update --remote vendor/pstack-grok`. Check that your Cursor version follows the symlink. If it does not, use the copy method.
 
-## Update
+Then run `/poteto-mode` in a Cursor chat.
 
-```bash
-python3 scripts/check-upstream
-python3 scripts/check-upstream --json
+## Change a role's model
+
+Edit one line in `.cursor/rules/pstack-models.mdc`. For example, to run feature work on another model:
+
+```
+feature, refactoring: claude-opus-5-5-xhigh
 ```
 
-The report names the pinned commit, the upstream head, and each commit since the pin with its title and date. A file this fork did not edit is `unpatched` with recommendation `take`. Replace that file with the upstream blob, then put the new sha256 on its row in `pstack-source.json`. A patched file is `review`, because it needs a 3-way merge. The script runs that merge in a temp directory and the reason says `clean` or `conflict`. A new upstream skill this fork does not vendor is `skip`. The script does not write the result back, and it does not push.
+The change applies to new chats. Delete a line to fall back to the skill default. `/setup-pstack` also edits this project file when it exists.
 
-Exit 0 is a clean report. Exit 1 is drift. Exit 2 is a fetch or pin failure, and the first line is `fetch-failed` or `pin-missing`. Exit 3 is a local Grok failure.
+The defaults are `grok-4.7-xhigh-fast` for code, runner, and worker roles, and `grok-4.7-xhigh` for review, judgment, and prose roles.
 
-`python3 scripts/check-grok` fails if a file names a non-Grok model or a cross-family review rule. `scripts/grok-allowlist.txt` lists a path and the sha256 that may be skipped. A copied or edited file with a different hash is scanned, and a stale row fails the check. `.github/workflows/grok.yml` runs the same checks.
+## Changes to upstream text
 
-Skills, agents, and rules are loaded from `.cursor/skills`, `.cursor/agents`, and `.cursor/rules`. `.cursor/pstack/plugin.json` still has the upstream relative paths. Those paths do not resolve inside `.cursor/pstack`, because the skills were hoisted to where Cursor reads them.
+Upstream files are vendored byte for byte except these:
 
-## What a product build does
+- `setup-pstack/SKILL.md`. One added sentence. It reads and writes the project `.cursor/rules/pstack-models.mdc` when that file exists.
+- `arena/SKILL.md`, `swarm/SKILL.md`, `interrogate/SKILL.md`, `poteto-help/SKILL.md`. One added sentence each. They read the project `.cursor/rules/pstack-models.mdc` when that file exists.
+- `show-me-your-work/SKILL.md`, `poteto-mode/playbooks/orchestrate.md`, `poteto-mode/playbooks/eval.md`. Four places that asked for a reviewer or judge on a different model family now name a line in `pstack-models.mdc`.
+- `poteto-mode/playbooks/multi-phase-plan.md`. The `check-plan.mjs` path points at `.cursor/skills/poteto-mode/scripts/`.
+- `poteto-mode/SKILL.md`. Additions only: routes for the eight new playbooks, one line sending interrogate-trigger matches to `interrogate`, and three more items on the Always-pause list (live charges, first live external sends, destructive production migrations). Data deletion was already on it.
 
-`/poteto-mode` is the only entry. An empty repo or a new product uses the Greenfield playbook.
+## License
 
-- Interrogate runs before implementation when the slice matches `.cursor/skills/poteto-mode/references/interrogate-triggers.md`. That file is the only copy of the trigger list.
-- Browser verification uses control-ui on Grok. `.cursor/hooks.json` denies computerUse, browser, and any subagent whose model is not Grok when Cursor runs the hook. A reply from that spawn means the hook did not deny it. `scripts/check-grok` prints the blocked record from `scripts/grok-exceptions.json`.
-- `create-verification-skill` runs once the scaffold boots.
-- The trail review runs before the push. The reviewer is a fresh subagent on `grok-4.7-xhigh`, prompted to find faults.
-- If that spawn fails, it is retried once on the same Grok slug. If the retry fails, the parent reviews inline, labels it `self-review`, and includes the verbatim error under Attention.
-- If TodoWrite returns `success: false`, the run stops.
-- `deslop` and `no-comments` run before each commit.
-
-## Checks on this repo
-
-```bash
-python3 scripts/verify-setup
-python3 scripts/check-upstream
-python3 scripts/check-upstream --json
-```
-
-`verify-setup` runs the Grok check, the path check, the upstream self-test, and an install into a temp project.
+Original work is MIT, see `LICENSE`. Vendored work keeps its own MIT license, see `NOTICE`.
