@@ -39,6 +39,18 @@ The change applies to new chats. Delete a line to fall back to the skill default
 
 The defaults are `grok-4.7-xhigh-fast` for code, runner, and worker roles, and `grok-4.7-xhigh` for review, judgment, and prose roles.
 
+## Check whether upstream moved
+
+From the repo root, run `scripts/check-upstream`.
+
+The command reads `sources.json`. It prints one line per source. The line is the source name, the pinned commit, the default-branch tip, and a status word. The status word is last.
+
+`skip` means the tip equals the pin, or the tip moved and no mapped path changed. `take` means a mapped path changed and each changed path still matches the pin in the work tree. `review` means a mapped path changed and at least one changed path does not match the pin.
+
+The command exits 0 when every line says `skip`. It exits 1 when any line says `take` or `review`. It exits 2 when it cannot read `sources.json` or a remote, and it prints no status line.
+
+To refresh a source, edit its commit in `sources.json`. Copy the mapped paths from that commit into the tree. Reapply the edits listed under Changes to upstream text. Update `NOTICE`. This command does not write the tree.
+
 ## Changes to upstream text
 
 Upstream files are vendored byte for byte except these:

@@ -1,0 +1,422 @@
+#!/usr/bin/env node
+
+import { spawnSync } from "node:child_process";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+
+const COPY_SAFETY = {
+	add: { absent: "safe", present: "unsafe" },
+	modify: { "matches-pin": "safe", differs: "unsafe", absent: "unsafe" },
+	delete: { "matches-pin": "safe", differs: "unsafe", absent: "unsafe" },
+};
+
+const FOLD = {
+	empty: { safe: "safe", unsafe: "unsafe" },
+	safe: { safe: "safe", unsafe: "unsafe" },
+	unsafe: { safe: "unsafe", unsafe: "unsafe" },
+};
+
+const STATUS = { empty: "skip", safe: "take", unsafe: "review" };
+
+export function classifyClaims(claims) {
+	let fold = "empty";
+	for (const claim of claims) {
+		const safety = lookup(COPY_SAFETY, claim.change, claim.local);
+		fold = lookup(FOLD, fold, safety);
+	}
+	if (!Object.hasOwn(STATUS, fold)) throw new Error(`missing cell ${fold}`);
+	return STATUS[fold];
+}
+
+function lookup(table, row, col) {
+	if (!Object.hasOwn(table, row) || !Object.hasOwn(table[row], col)) {
+		throw new Error(`missing cell ${row} ${col}`);
+	}
+	return table[row][col];
+}
+
+export function run({
+	catalogJson,
+	root,
+	loadRepo = loadRepoFromGit,
+	readWorktree = readWorktreeAt,
+}) {
+	try {
+		const sources = parseCatalog(catalogJson);
+		const snaps = new Map();
+		for (const source of sources) {
+			const key = `${source.repo}\n${source.commit}`;
+			if (!snaps.has(key)) snaps.set(key, loadRepo(source.repo, source.commit));
+		}
+		let stdout = "";
+		let exitCode = 0;
+		for (const source of sources) {
+			const snap = snaps.get(`${source.repo}\n${source.commit}`);
+			const status = statusFor(source, snap, root, readWorktree);
+			if (status !== "skip") exitCode = 1;
+			stdout += `${source.name} ${source.commit} ${snap.tip} ${status}\n`;
+		}
+		return { exitCode, stdout, stderr: "" };
+	} catch (err) {
+		const message = err instanceof Error ? err.message : String(err);
+		return { exitCode: 2, stdout: "", stderr: failureText(message) };
+	}
+}
+
+function failureText(message) {
+	return `check-upstream: ${message}\n`;
+}
+
+function statusFor(source, snap, root, readWorktree) {
+	if (!snap || typeof snap.tip !== "string" || !Array.isArray(snap.changes)) {
+		throw new Error("loadRepo returned a bad snapshot");
+	}
+	const facts = [];
+	for (const change of snap.changes) {
+		const vendored = vendoredFor(source.claims, change.path);
+		if (vendored === null) continue;
+		facts.push({
+			change: change.change,
+			local: toLocalFact(change, readWorktree(root, vendored)),
+		});
+	}
+	return classifyClaims(facts);
+}
+
+function vendoredFor(claims, changedPath) {
+	for (const claim of claims) {
+		if (claim.upstream.endsWith("/")) {
+			if (
+				changedPath.startsWith(claim.upstream) &&
+				changedPath.length > claim.upstream.length
+			) {
+				return claim.vendored + changedPath.slice(claim.upstream.length);
+			}
+		} else if (changedPath === claim.upstream) {
+			return claim.vendored;
+		}
+	}
+	return null;
+}
+
+function toLocalFact(change, work) {
+	if (change.change === "add") return work.kind === "absent" ? "absent" : "present";
+	if (change.change !== "modify" && change.change !== "delete") {
+		throw new Error(`bad change ${change.change}`);
+	}
+	if (work.kind === "absent") return "absent";
+	if (work.kind !== "file") return "differs";
+	return sameBytes(work.bytes, change.pinBlob) ? "matches-pin" : "differs";
+}
+
+function sameBytes(left, right) {
+	return asBytes(left).equals(asBytes(right));
+}
+
+function asBytes(value) {
+	if (Buffer.isBuffer(value)) return value;
+	if (value instanceof Uint8Array) return Buffer.from(value);
+	throw new Error("expected bytes");
+}
+
+function parseCatalog(catalogJson) {
+	let data;
+	try {
+		data = JSON.parse(catalogJson);
+	} catch (err) {
+		throw new Error(`sources.json: ${err.message}`);
+	}
+	const duplicate = duplicateKey(catalogJson);
+	if (duplicate !== null) {
+		throw new Error(`sources.json: duplicate key ${JSON.stringify(duplicate)}`);
+	}
+	if (data === null || typeof data !== "object" || Array.isArray(data)) {
+		throw new Error("sources.json: expected an object");
+	}
+	if (!Array.isArray(data.sources)) throw new Error("sources.json: sources must be an array");
+	const names = new Set();
+	return data.sources.map((source) => parseSource(source, names));
+}
+
+function parseSource(source, names) {
+	if (source === null || typeof source !== "object" || Array.isArray(source)) {
+		throw new Error("sources.json: source must be an object");
+	}
+	const name = source.name;
+	if (typeof name !== "string" || !/^[A-Za-z0-9._-]+$/.test(name)) {
+		throw new Error(`sources.json: bad name ${JSON.stringify(name)}`);
+	}
+	if (names.has(name)) throw new Error(`sources.json: duplicate name ${name}`);
+	names.add(name);
+	assertRepo(source.repo);
+	if (typeof source.commit !== "string" || !/^[0-9a-f]{40}$/.test(source.commit)) {
+		throw new Error(`sources.json: bad commit for ${name}`);
+	}
+	return {
+		name,
+		repo: source.repo,
+		commit: source.commit,
+		claims: parseClaims(source.paths, name),
+	};
+}
+
+function assertRepo(repo) {
+	if (typeof repo !== "string") throw new Error("sources.json: repo must be an https URL");
+	let url;
+	try {
+		url = new URL(repo);
+	} catch {
+		throw new Error(`sources.json: repo is not an https URL: ${repo}`);
+	}
+	if (
+		url.protocol !== "https:" ||
+		url.username !== "" ||
+		url.password !== "" ||
+		url.search !== "" ||
+		url.hash !== "" ||
+		repo.includes("?") ||
+		repo.includes("#")
+	) {
+		throw new Error(
+			`sources.json: repo must be https without userinfo, query, or hash: ${repo}`,
+		);
+	}
+}
+
+function parseClaims(paths, name) {
+	if (paths === null || typeof paths !== "object" || Array.isArray(paths)) {
+		throw new Error(`sources.json: paths for ${name} must be an object`);
+	}
+	const entries = Object.entries(paths);
+	if (entries.length === 0) throw new Error(`sources.json: paths for ${name} must be non-empty`);
+	const claims = [];
+	for (const [upstream, vendored] of entries) {
+		if (typeof vendored !== "string") {
+			throw new Error(`sources.json: vendored path for ${upstream} must be a string`);
+		}
+		assertRelativePosix(upstream);
+		assertRelativePosix(vendored);
+		if (upstream.endsWith("/") !== vendored.endsWith("/")) {
+			throw new Error(`sources.json: slash mismatch for ${upstream} and ${vendored}`);
+		}
+		claims.push({ upstream, vendored });
+	}
+	claims.sort((a, b) => b.upstream.length - a.upstream.length);
+	return claims;
+}
+
+function assertRelativePosix(entry) {
+	if (typeof entry !== "string" || entry.length === 0) {
+		throw new Error("sources.json: path must be a relative posix path");
+	}
+	if (entry.includes("\\")) throw new Error(`sources.json: path has a backslash: ${entry}`);
+	if (entry.startsWith("/")) throw new Error(`sources.json: path is absolute: ${entry}`);
+	const body = entry.endsWith("/") ? entry.slice(0, -1) : entry;
+	if (body.length === 0) throw new Error(`sources.json: path is empty: ${entry}`);
+	for (const segment of body.split("/")) {
+		if (segment.length === 0) throw new Error(`sources.json: path has an empty segment: ${entry}`);
+		if (segment === "." || segment === "..") {
+			throw new Error(`sources.json: path has a ${segment} segment: ${entry}`);
+		}
+	}
+}
+
+function duplicateKey(text) {
+	const stack = [];
+	let i = 0;
+	while (i < text.length) {
+		const c = text[i];
+		if (c === '"') {
+			i += 1;
+			let str = "";
+			while (i < text.length) {
+				const d = text[i];
+				if (d === "\\") {
+					const width = text[i + 1] === "u" ? 6 : 2;
+					str += JSON.parse(`"${text.slice(i, i + width)}"`);
+					i += width;
+					continue;
+				}
+				if (d === '"') {
+					i += 1;
+					break;
+				}
+				str += d;
+				i += 1;
+			}
+			let j = i;
+			while (j < text.length && " \n\r\t".includes(text[j])) j += 1;
+			if (text[j] === ":") {
+				const top = stack.at(-1);
+				if (top) {
+					if (top.has(str)) return str;
+					top.add(str);
+				}
+				i = j + 1;
+			}
+			continue;
+		}
+		if (c === "{") {
+			stack.push(new Set());
+			i += 1;
+			continue;
+		}
+		if (c === "}") {
+			stack.pop();
+			i += 1;
+			continue;
+		}
+		i += 1;
+	}
+	return null;
+}
+
+function readWorktreeAt(root, vendoredPath) {
+	const full = path.join(root, vendoredPath);
+	let stat;
+	try {
+		stat = fs.lstatSync(full);
+	} catch (err) {
+		if (err && err.code === "ENOENT") return { kind: "absent" };
+		throw err;
+	}
+	if (!stat.isFile()) return { kind: "not-file" };
+	return { kind: "file", bytes: fs.readFileSync(full) };
+}
+
+function loadRepoFromGit(repoUrl, pin) {
+	const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "check-upstream-"));
+	try {
+		git(["init", "--bare", "-q", "-b", "main", tmp], tmp);
+		const tip = readTip(repoUrl, tmp);
+		if (tip === pin) return { tip, changes: [] };
+		git(["--git-dir=" + tmp, "fetch", "--depth=1", repoUrl, pin, tip], tmp);
+		const diff = git(
+			[
+				"-c",
+				"diff.renames=false",
+				"--git-dir=" + tmp,
+				"diff",
+				"--raw",
+				"-z",
+				"--no-renames",
+				pin,
+				tip,
+			],
+			tmp,
+			{ binary: true },
+		);
+		return { tip, changes: changesFromDiff(diff, tmp) };
+	} finally {
+		fs.rmSync(tmp, { recursive: true, force: true });
+	}
+}
+
+function readTip(repoUrl, tmp) {
+	const stdout = git(["ls-remote", "--symref", repoUrl, "HEAD"], tmp);
+	const tips = [];
+	for (const line of stdout.split("\n")) {
+		if (line.length === 0) continue;
+		const fields = line.split(/\s+/);
+		if (fields[1] === "HEAD" && /^[0-9a-f]{40}$/.test(fields[0])) tips.push(fields[0]);
+	}
+	if (tips.length !== 1) {
+		throw new Error(`expected one HEAD from ${repoUrl}, saw ${tips.length}`);
+	}
+	return tips[0];
+}
+
+function changesFromDiff(diff, tmp) {
+	const changes = [];
+	let i = 0;
+	while (i < diff.length) {
+		const nul = diff.indexOf(0, i);
+		if (nul < 0) throw new Error("truncated git diff");
+		const header = diff.toString("utf8", i, nul);
+		const pathStart = nul + 1;
+		const pathEnd = diff.indexOf(0, pathStart);
+		if (pathEnd < 0) throw new Error("truncated git diff");
+		const changedPath = diff.toString("utf8", pathStart, pathEnd);
+		i = pathEnd + 1;
+		const parts = header.split(" ");
+		const status = parts[4];
+		if (parts.length !== 5 || (status !== "A" && status !== "M" && status !== "D")) {
+			throw new Error(`unexpected diff status ${status ?? header}`);
+		}
+		if (status === "A") {
+			changes.push({ change: "add", path: changedPath });
+			continue;
+		}
+		const oldSha = parts[2];
+		if (!/^[0-9a-f]+$/.test(oldSha)) throw new Error(`unexpected diff sha ${oldSha}`);
+		const pinBlob = git(["--git-dir=" + tmp, "cat-file", "blob", oldSha], tmp, {
+			binary: true,
+		});
+		changes.push({
+			change: status === "M" ? "modify" : "delete",
+			path: changedPath,
+			pinBlob,
+		});
+	}
+	return changes;
+}
+
+function git(args, cwd, { binary = false } = {}) {
+	const result = spawnSync("git", args, {
+		cwd,
+		env: gitEnv(),
+		encoding: binary ? null : "utf8",
+		maxBuffer: 64 * 1024 * 1024,
+		stdio: ["ignore", "pipe", "pipe"],
+	});
+	if (result.error) throw new Error(result.error.message);
+	if (result.status !== 0) {
+		const stderr = result.stderr ? result.stderr.toString("utf8").trim() : "";
+		throw new Error(stderr || `git exited ${result.status ?? result.signal}`);
+	}
+	return result.stdout;
+}
+
+function gitEnv() {
+	const env = { ...process.env };
+	delete env.GIT_DIR;
+	delete env.GIT_WORK_TREE;
+	env.GIT_CONFIG_GLOBAL = "/dev/null";
+	env.GIT_CONFIG_NOSYSTEM = "1";
+	env.GIT_CONFIG_COUNT = "0";
+	env.GIT_TERMINAL_PROMPT = "0";
+	return env;
+}
+
+function main() {
+	if (process.argv.length > 2) {
+		fs.writeSync(2, failureText("usage: scripts/check-upstream"));
+		process.exit(2);
+	}
+	let catalogJson;
+	try {
+		catalogJson = fs.readFileSync(path.join(process.cwd(), "sources.json"), "utf8");
+	} catch (err) {
+		const message = err instanceof Error ? err.message : String(err);
+		fs.writeSync(2, failureText(message));
+		process.exit(2);
+	}
+	const result = run({
+		catalogJson,
+		root: process.cwd(),
+		loadRepo: loadRepoFromGit,
+		readWorktree: readWorktreeAt,
+	});
+	fs.writeSync(1, result.stdout);
+	fs.writeSync(2, result.stderr);
+	process.exit(result.exitCode);
+}
+
+if (
+	typeof process.argv[1] === "string" &&
+	import.meta.url === pathToFileURL(process.argv[1]).href
+) {
+	main();
+}
