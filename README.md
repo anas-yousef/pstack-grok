@@ -8,7 +8,7 @@ A Cursor project setup that teaches agents how to work. It is [pstack](https://g
 - **cursor-team-kit** from `cursor/plugins`. CI, PR, review, and control skills.
 - **superpowers** from `obra/superpowers`. `verification-before-completion`, `systematic-debugging`, `receiving-code-review`.
 - **mattpocock/skills**. `domain-modeling`, `writing-for-agents`, `wizard`.
-- **Original work.** A Grok-pinned `pstack-models.mdc`, the `principle-follow-official-docs` skill, the `committed-browser-proof` skill, the interrogate trigger list, and eight poteto-mode playbooks: greenfield, DB migration, dependency upgrade, external side effects, security and privacy, observability, deploy and rollback, and incident hotfix.
+- **Original work.** A Grok-pinned `pstack-models.mdc`, the `principle-follow-official-docs` skill, the `committed-browser-proof` skill, the `local-supabase` skill, the interrogate trigger list, and eight poteto-mode playbooks: greenfield, DB migration, dependency upgrade, external side effects, security and privacy, observability, deploy and rollback, and incident hotfix.
 
 Everything lives under `.cursor/`, where Cursor loads project skills, agents, and rules. `NOTICE` lists each source and its license. `sources.json` pins the upstream commits.
 
@@ -59,9 +59,9 @@ Upstream files are vendored byte for byte except these:
 - `arena/SKILL.md`, `swarm/SKILL.md`, `interrogate/SKILL.md`, `poteto-help/SKILL.md`. One added sentence each. They read the project `.cursor/rules/pstack-models.mdc` when that file exists.
 - `show-me-your-work/SKILL.md`, `poteto-mode/playbooks/orchestrate.md`, `poteto-mode/playbooks/eval.md`. Four places that asked for a reviewer or judge on a different model family now name a line in `pstack-models.mdc`.
 - `poteto-mode/playbooks/multi-phase-plan.md`. The `check-plan.mjs` path points at `.cursor/skills/poteto-mode/scripts/`.
-- `poteto-mode/SKILL.md`. Additions only: routes for the eight new playbooks, one line sending interrogate-trigger matches to `interrogate`, three more items on the Always-pause list (live charges, first live external sends, destructive production migrations), and one Non-negotiables bullet that requires `committed-browser-proof` before claiming a browser or UI product done. Data deletion was already on it.
+- `poteto-mode/SKILL.md`. Additions only: routes for the eight new playbooks, one line sending interrogate-trigger matches to `interrogate`, three more items on the Always-pause list (live charges, first live external sends, destructive production migrations), one Non-negotiables bullet that requires `committed-browser-proof` before claiming a browser or UI product done, and one Non-negotiables bullet that sends a product build needing a real backend database, auth, or row-level security to `local-supabase`. Data deletion was already on it.
 
-Step 3 of `poteto-mode/playbooks/greenfield.md`, an original playbook, gained one sentence. A browser or UI surface also satisfies `committed-browser-proof`.
+Step 3 of `poteto-mode/playbooks/greenfield.md`, an original playbook, gained two sentences. A browser or UI surface also satisfies `committed-browser-proof`. A product that needs a real backend database, auth, or row-level security follows `local-supabase`.
 
 ## License
 
