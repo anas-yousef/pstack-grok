@@ -15,7 +15,7 @@ licenses. Pinned commits are in sources.json.
 
 pstack
   Source:  https://github.com/cursor/plugins (pstack/)
-  Commit:  99b609a72323b70204eab407c622f436e858e112
+  Commit:  519d36aa98955bf680db01bcde5fdfba686dc901
   License: MIT, Copyright (c) 2026 Lauren Tan. See .cursor/pstack/LICENSE.
   Files:   .cursor/skills (pstack skills), .cursor/agents/comment-sicko.md,
            .cursor/agents/poteto-agent.md, .cursor/pstack/
@@ -25,7 +25,7 @@ pstack
 
 cursor-team-kit
   Source:  https://github.com/cursor/plugins (cursor-team-kit/)
-  Commit:  99b609a72323b70204eab407c622f436e858e112
+  Commit:  519d36aa98955bf680db01bcde5fdfba686dc901
   License: MIT, Copyright (c) 2026 Cursor. See .cursor/cursor-team-kit/LICENSE.
   Files:   .cursor/skills (team-kit skills), .cursor/agents/ci-watcher.md,
            .cursor/agents/thermo-nuclear-code-quality-review.md,
