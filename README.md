@@ -1,6 +1,6 @@
 # pstack-grok
 
-A Cursor project setup that teaches agents how to work. It is [pstack](https://github.com/cursor/plugins/tree/main/pstack) as upstream ships it, with every model role pinned to Grok, plus a few vendored skills and playbooks. It sets which model fills each role. It does not choose your app's vendors.
+A Cursor project setup that teaches agents how to work. It is [pstack](https://github.com/cursor/plugins/tree/main/pstack) as upstream ships it, with every model role on Grok by default, plus a few vendored skills and playbooks. It sets which model fills each role. It does not choose your app's vendors.
 
 ## What it combines
 
@@ -8,7 +8,7 @@ A Cursor project setup that teaches agents how to work. It is [pstack](https://g
 - **cursor-team-kit** from `cursor/plugins`. CI, PR, review, and control skills.
 - **superpowers** from `obra/superpowers`. `verification-before-completion`, `systematic-debugging`, `receiving-code-review`.
 - **mattpocock/skills**. `domain-modeling`, `writing-for-agents`, `wizard`.
-- **Original work.** A Grok-pinned `pstack-models.mdc`, the `principle-follow-official-docs` skill, the `committed-browser-proof` skill, the `local-supabase` skill, the interrogate trigger list, and eight poteto-mode playbooks: greenfield, DB migration, dependency upgrade, external side effects, security and privacy, observability, deploy and rollback, and incident hotfix.
+- **Original work.** A Grok `pstack-models.mdc` with per-role efforts, the `profiles/` model mixes, the `principle-follow-official-docs` skill, the `committed-browser-proof` skill, the `local-supabase` skill, the interrogate trigger list, and eight poteto-mode playbooks: greenfield, DB migration, dependency upgrade, external side effects, security and privacy, observability, deploy and rollback, and incident hotfix.
 
 Everything lives under `.cursor/`, where Cursor loads project skills, agents, and rules. `NOTICE` lists each source and its license. `sources.json` pins the upstream commits.
 
@@ -35,9 +35,20 @@ Edit one line in `.cursor/rules/pstack-models.mdc`. For example, to run feature 
 feature, refactoring: claude-opus-5-5-xhigh
 ```
 
-The change applies to new chats. Delete a line to fall back to the skill default. `/setup-pstack` also edits this project file when it exists.
+The change applies to new chats. Delete a line to fall back to the skill default. `/setup-pstack` also edits this project file when it exists. Its budget question sets one effort for every role, so it replaces the per-role efforts below.
 
-The defaults are `grok-4.7-xhigh-fast` for code, runner, and worker roles, and `grok-4.7-xhigh` for review, judgment, and prose roles.
+The slug carries the reasoning effort, as in `grok-4.7-high` or `claude-opus-5-5-xhigh`. Each line sets its own effort, so two roles on the same model can run at different levels. The default file runs every role on Grok at `high`, and at `xhigh` for the roles that hunt an unknown cause, judge, or take the hardest work: `bug-fix`, `perf-issue`, `hardest tasks`, `why synthesizer`, `arena cross-judge pool`, and the first seat of `architect runners` and `interrogate reviewers`. No role uses a `-fast` slug, because fast slugs spend more tokens.
+
+## Model profiles
+
+A profile is a complete `pstack-models.mdc` with a different mix of models and efforts. Its `# profile:` line names it.
+
+| Profile | File | Mix |
+| --- | --- | --- |
+| `grok` | `.cursor/rules/pstack-models.mdc` | Grok in every role. The default. |
+| `grok-opus` | `profiles/grok-opus.mdc` | Grok writes code and runs workers. Opus takes judgment, prose, the hardest tasks, and one seat on each panel. |
+
+To use a profile, copy its file over `.cursor/rules/pstack-models.mdc` in your project. Cursor loads only that path, so the other profiles stay inactive. To add a mix, add one file to `profiles/` with every role line and a `# profile:` line.
 
 ## Check whether upstream moved
 

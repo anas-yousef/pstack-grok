@@ -5,21 +5,22 @@ alwaysApply: true
 # pstack model configuration. One line per role. Delete a line to fall back to the skill default.
 # `inherit-parent` or `auto` as a value: the role runs on the parent chat model (omit Task `model`). Alias entries in a panel list still count toward its fan-out.
 # This project file takes precedence over `~/.cursor/rules/pstack-models.mdc`. Where a skill names that path, use the lines here.
-# budget: large (xhigh)
-feature, refactoring: grok-4.7-xhigh
+# profile: grok. The effort is set per role: high by default, xhigh where a role hunts an unknown cause, judges, or takes the hardest work.
+# budget: per role (high, xhigh)
+feature, refactoring: grok-4.7-high
 bug-fix: grok-4.7-xhigh
 perf-issue: grok-4.7-xhigh
-hillclimb: grok-4.7-xhigh
-judgment and prose: grok-4.7-xhigh
+hillclimb: grok-4.7-high
+judgment and prose: grok-4.7-high
 hardest tasks: grok-4.7-xhigh
-how explorer: grok-4.7-xhigh
-how explainer: grok-4.7-xhigh
-why investigators: grok-4.7-xhigh
+how explorer: grok-4.7-high
+how explainer: grok-4.7-high
+why investigators: grok-4.7-high
 why synthesizer: grok-4.7-xhigh
-reflect tooling: grok-4.7-xhigh
-reflect judgment, divergent, synthesizer: grok-4.7-xhigh
-arena runners: grok-4.7-xhigh, grok-4.7-xhigh
+reflect tooling: grok-4.7-high
+reflect judgment, divergent, synthesizer: grok-4.7-high
+arena runners: grok-4.7-high, grok-4.7-high
 arena cross-judge pool: grok-4.7-xhigh
-swarm workers: grok-4.7-xhigh
-architect runners: grok-4.7-xhigh, grok-4.7-xhigh
-interrogate reviewers: grok-4.7-xhigh, grok-4.7-xhigh
+swarm workers: grok-4.7-high
+architect runners: grok-4.7-xhigh, grok-4.7-high
+interrogate reviewers: grok-4.7-xhigh, grok-4.7-high
