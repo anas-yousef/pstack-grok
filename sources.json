@@ -14,7 +14,7 @@
     {
       "name": "cursor-team-kit",
       "repo": "https://github.com/cursor/plugins",
-      "commit": "519d36aa98955bf680db01bcde5fdfba686dc901",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
       "paths": {
         "cursor-team-kit/skills/": ".cursor/skills/",
         "cursor-team-kit/agents/": ".cursor/agents/",
