@@ -2,6 +2,7 @@ pstack-grok
 Copyright (c) 2026 Anas Yousef. MIT License, see LICENSE.
 
 The root LICENSE covers original work only: .cursor/rules/pstack-models.mdc,
+profiles/,
 .cursor/skills/principle-follow-official-docs/,
 .cursor/skills/committed-browser-proof/,
 .cursor/skills/local-supabase/, the playbooks greenfield,
