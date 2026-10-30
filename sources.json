@@ -41,6 +41,8 @@
         "skills/engineering/domain-modeling/": ".cursor/skills/domain-modeling/",
         "skills/productivity/writing-for-agents/": ".cursor/skills/writing-for-agents/",
         "skills/engineering/wizard/": ".cursor/skills/wizard/",
+        "skills/productivity/grill-me/": ".cursor/skills/grill-me/",
+        "skills/productivity/grilling/": ".cursor/skills/grilling/",
         "LICENSE": ".cursor/third-party/mattpocock-skills/LICENSE"
       }
     },

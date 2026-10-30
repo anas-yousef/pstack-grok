@@ -137,7 +137,7 @@ A large or cross-cutting effort (a migration across many call sites, an ambitiou
 - **Trace forensics.** Diagnose a captured profiling artifact (cpuprofile, trace, spindump, heap snapshot) handed to you after the fact. The deliverable is a diagnosis, not a fix.
 - **Build auto.** A product or a large feature. Read `../build-auto/SKILL.md`.
 - **Feature.** New or changed behavior, built from a named data shape.
-- **Greenfield.** An empty repo, built slice by slice from a named domain. Wins over Feature and figure-it-out for that work. A product or a large feature invokes build-auto.
+- **Greenfield.** An empty repo or a from-scratch rebuild of an old repo, built slice by slice from a named domain. Wins over Feature and figure-it-out for that work. A product or a large feature invokes build-auto.
 - **DB migration.** A schema change, data migration, or backfill, shipped as expand, migrate, contract.
 - **Dependency upgrade.** Bumping a library, framework, runtime, or toolchain version.
 - **External side effects.** Code that charges money, sends email or messages, calls webhooks, or writes to a third party.
