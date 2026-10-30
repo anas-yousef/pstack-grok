@@ -7,7 +7,10 @@ profiles/,
 .cursor/skills/committed-browser-proof/,
 .cursor/skills/local-supabase/,
 .cursor/skills/build-auto/,
-.cursor/skills/spec/, the playbooks greenfield,
+.cursor/skills/spec/,
+.cursor/skills/legacy-critique/,
+.cursor/skills/prd/,
+.cursor/skills/merge-reviews/, the playbooks greenfield,
 db-migration, dependency-upgrade, external-side-effects,
 security-and-privacy, observability, deploy-and-rollback and
 incident-hotfix, poteto-mode's references/interrogate-triggers.md,
@@ -54,7 +57,8 @@ mattpocock/skills
   Commit:  5beb35b040e3de97e54fa9e386d7e42d15c295c2
   License: MIT, Copyright (c) 2026 Matt Pocock. See .cursor/third-party/mattpocock-skills/LICENSE.
   Files:   .cursor/skills/domain-modeling, .cursor/skills/writing-for-agents,
-           .cursor/skills/wizard
+           .cursor/skills/wizard, .cursor/skills/grill-me,
+           .cursor/skills/grilling
   Changes: none.
 
 addyosmani/agent-skills

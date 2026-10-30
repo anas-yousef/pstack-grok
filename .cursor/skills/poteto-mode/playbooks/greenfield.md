@@ -2,6 +2,15 @@
 
 **You own the product. Plan, review, verify.** The repo is empty or the product is new. Delegate implementation. Stay in the lead.
 
+A from-scratch rebuild names an old repo by path or URL. That rebuild uses only these four steps.
+
+1. Run **legacy-critique**.
+2. Run **merge-reviews**. Repeat until `docs/decisions/open/` is empty, or the human has written `## Decision` in every file that remains. A repeat reads new rounds.
+3. Run **prd** once for each feature.
+4. Run **build-auto**.
+
+When the user did not name an old repo, use the numbered steps below.
+
 1. Name the domain before any code, per **principle-model-the-domain**. When the nouns are still fuzzy, run the **domain-modeling** skill and write the glossary and decision records it asks for.
 2. Run `interrogate` before implementing any slice that matches `../references/interrogate-triggers.md`.
 3. Boot the smallest scaffold that runs end to end. When that scaffold uses a third-party library, platform, or service, follow **principle-follow-official-docs**. When the product needs a real backend database, auth, or row-level security, follow **local-supabase**. Then run **create-verification-skill** once, so every later check drives the real app. For a browser or UI surface, also satisfy **committed-browser-proof**.
