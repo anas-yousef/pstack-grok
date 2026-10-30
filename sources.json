@@ -43,6 +43,20 @@
         "skills/engineering/wizard/": ".cursor/skills/wizard/",
         "LICENSE": ".cursor/third-party/mattpocock-skills/LICENSE"
       }
+    },
+    {
+      "name": "addy-agent-skills",
+      "repo": "https://github.com/addyosmani/agent-skills",
+      "commit": "eb07f19f52c2669f2364897aaa293e2aaddd7b1c",
+      "paths": {
+        "skills/spec-driven-development/": ".cursor/skills/spec-driven-development/",
+        "skills/planning-and-task-breakdown/": ".cursor/skills/planning-and-task-breakdown/",
+        "skills/incremental-implementation/": ".cursor/skills/incremental-implementation/",
+        "skills/documentation-and-adrs/": ".cursor/skills/documentation-and-adrs/",
+        "skills/shipping-and-launch/": ".cursor/skills/shipping-and-launch/",
+        "skills/doubt-driven-development/": ".cursor/skills/doubt-driven-development/",
+        "LICENSE": ".cursor/third-party/addy-agent-skills/LICENSE"
+      }
     }
   ]
 }

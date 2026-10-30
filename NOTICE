@@ -5,7 +5,9 @@ The root LICENSE covers original work only: .cursor/rules/pstack-models.mdc,
 profiles/,
 .cursor/skills/principle-follow-official-docs/,
 .cursor/skills/committed-browser-proof/,
-.cursor/skills/local-supabase/, the playbooks greenfield,
+.cursor/skills/local-supabase/,
+.cursor/skills/build-auto/,
+.cursor/skills/spec/, the playbooks greenfield,
 db-migration, dependency-upgrade, external-side-effects,
 security-and-privacy, observability, deploy-and-rollback and
 incident-hotfix, poteto-mode's references/interrogate-triggers.md,
@@ -22,6 +24,8 @@ pstack
            .cursor/agents/poteto-agent.md, .cursor/pstack/
   Changes: setup-pstack/SKILL.md, show-me-your-work/SKILL.md,
            poteto-mode/SKILL.md and poteto-mode/playbooks/orchestrate.md.
+           ketchup/SKILL.md uses a plain-words voice sentence.
+           ketchup-video, make-bot-ui, bro, and setup-benny are omitted.
            See README.md.
 
 cursor-team-kit
@@ -33,7 +37,8 @@ cursor-team-kit
            .cursor/rules/no-inline-imports.mdc,
            .cursor/rules/typescript-exhaustive-switch.mdc,
            .cursor/cursor-team-kit/
-  Changes: none.
+  Changes: what-did-i-get-done, weekly-review, workflow-from-chats,
+           and pr-review-canvas are omitted. See README.md.
 
 superpowers
   Source:  https://github.com/obra/superpowers (skills/)
@@ -51,3 +56,18 @@ mattpocock/skills
   Files:   .cursor/skills/domain-modeling, .cursor/skills/writing-for-agents,
            .cursor/skills/wizard
   Changes: none.
+
+addyosmani/agent-skills
+  Source:  https://github.com/addyosmani/agent-skills (skills/)
+  Commit:  eb07f19f52c2669f2364897aaa293e2aaddd7b1c
+  License: MIT, Copyright (c) 2025 Addy Osmani. See .cursor/third-party/addy-agent-skills/LICENSE.
+  Files:   .cursor/skills/spec-driven-development,
+           .cursor/skills/planning-and-task-breakdown,
+           .cursor/skills/incremental-implementation,
+           .cursor/skills/documentation-and-adrs,
+           .cursor/skills/shipping-and-launch,
+           .cursor/skills/doubt-driven-development
+  Changes: spec-driven-development, incremental-implementation, and
+           doubt-driven-development point at pstack tdd and superpowers
+           systematic-debugging. spec-driven-development also drops the
+           context-engineering path. See README.md.

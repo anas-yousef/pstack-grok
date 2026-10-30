@@ -32,6 +32,7 @@ Remaining triggers:
 - Shipping UI / IDE / CLI → the matching control skill. `cursor-team-kit` publishes `control-cli` (CLIs and TUIs) and `control-ui` (browser / Electron / web UIs). For bug fixes, reproduce first on the same surface yourself. Hand to the user only under the narrow Bug fix step 1 exception.
 - A browser or UI product → **committed-browser-proof** before claiming done.
 - A greenfield or product build that needs a real backend database, auth, or row-level security → **local-supabase**.
+- A product or a large feature invokes **build-auto**. Small fixes go direct to their playbooks. build-auto never runs standalone in autonomous flows.
 - Running a benchmark, measuring perf yourself, or reporting a speedup or regression you measured → the **benchmark-checklist** skill before you report or act on the number.
 - Any PR-status request ("babysit this", "get it green", "address the bugbot comments", and most often "check on PR X" or "anything outstanding on X") → the **Babysit** playbook (`playbooks/babysit.md`), not Cursor's built-in babysit skill, whose description matches the same words. Never triggered by merely opening a PR. Declare its mode before polling. The playbook's step 1 owns the request-to-mode mapping. Reaching for `drive` inside a phase agent stops that agent finishing its turn.
 - Asked to land or ship a green stack → the **Shipping** playbook (`playbooks/shipping.md`). Green is not safe. Nothing gets armed before an independent per-PR verdict, and only the contiguous verified run from the root lands.
@@ -134,8 +135,9 @@ A large or cross-cutting effort (a migration across many call sites, an ambitiou
 - **Hillclimb.** Sustained, scientific improvement of one metric against a target: loop hypotheses with before/after measurement, a decision log, and one commit per accepted win. Distinct from Perf issue, which is a one-off fix.
 - **Runtime forensics.** Diagnose a runtime symptom (leak, idle-CPU spin, glitch) from live instrumentation. The deliverable is a diagnosis, not a fix.
 - **Trace forensics.** Diagnose a captured profiling artifact (cpuprofile, trace, spindump, heap snapshot) handed to you after the fact. The deliverable is a diagnosis, not a fix.
+- **Build auto.** A product or a large feature. Read `../build-auto/SKILL.md`.
 - **Feature.** New or changed behavior, built from a named data shape.
-- **Greenfield.** An empty repo or a new product, built slice by slice from a named domain. Wins over Feature and figure-it-out for that work.
+- **Greenfield.** An empty repo, built slice by slice from a named domain. Wins over Feature and figure-it-out for that work. A product or a large feature invokes build-auto.
 - **DB migration.** A schema change, data migration, or backfill, shipped as expand, migrate, contract.
 - **Dependency upgrade.** Bumping a library, framework, runtime, or toolchain version.
 - **External side effects.** Code that charges money, sends email or messages, calls webhooks, or writes to a third party.
