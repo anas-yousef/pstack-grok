@@ -57,7 +57,30 @@
         "skills/documentation-and-adrs/": ".cursor/skills/documentation-and-adrs/",
         "skills/shipping-and-launch/": ".cursor/skills/shipping-and-launch/",
         "skills/doubt-driven-development/": ".cursor/skills/doubt-driven-development/",
+        "skills/performance-optimization/": ".cursor/skills/performance-optimization/",
+        "skills/frontend-ui-engineering/": ".cursor/skills/frontend-ui-engineering/",
+        "skills/browser-testing-with-devtools/": ".cursor/skills/browser-testing-with-devtools/",
+        "references/performance-checklist.md": ".cursor/references/performance-checklist.md",
+        "references/accessibility-checklist.md": ".cursor/references/accessibility-checklist.md",
         "LICENSE": ".cursor/third-party/addy-agent-skills/LICENSE"
+      }
+    },
+    {
+      "name": "vercel-agent-skills",
+      "repo": "https://github.com/vercel-labs/agent-skills",
+      "commit": "1a2c79d4e6c4a2283dc2c614b6538cbe1ed5ca62",
+      "paths": {
+        "skills/react-best-practices/": ".cursor/skills/vercel-react-best-practices/"
+      }
+    },
+    {
+      "name": "supabase-agent-skills",
+      "repo": "https://github.com/supabase/agent-skills",
+      "commit": "c9be0e931b7930f7d02126d04774d904c381e7d7",
+      "paths": {
+        "skills/supabase/": ".cursor/skills/supabase/",
+        "skills/supabase-postgres-best-practices/": ".cursor/skills/supabase-postgres-best-practices/",
+        "LICENSE": ".cursor/third-party/supabase-agent-skills/LICENSE"
       }
     }
   ]

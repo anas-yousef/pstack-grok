@@ -62,7 +62,7 @@ mattpocock/skills
   Changes: none.
 
 addyosmani/agent-skills
-  Source:  https://github.com/addyosmani/agent-skills (skills/)
+  Source:  https://github.com/addyosmani/agent-skills (skills/ and two checklist files)
   Commit:  8bfcc1f9916f2eea55494d8c1fa7f4bde867dd9e
   License: MIT, Copyright (c) 2025 Addy Osmani. See .cursor/third-party/addy-agent-skills/LICENSE.
   Files:   .cursor/skills/spec-driven-development,
@@ -70,8 +70,35 @@ addyosmani/agent-skills
            .cursor/skills/incremental-implementation,
            .cursor/skills/documentation-and-adrs,
            .cursor/skills/shipping-and-launch,
-           .cursor/skills/doubt-driven-development
+           .cursor/skills/doubt-driven-development,
+           .cursor/skills/performance-optimization,
+           .cursor/skills/frontend-ui-engineering,
+           .cursor/skills/browser-testing-with-devtools,
+           .cursor/references/performance-checklist.md,
+           .cursor/references/accessibility-checklist.md
   Changes: spec-driven-development, incremental-implementation, and
            doubt-driven-development point at pstack tdd and superpowers
            systematic-debugging. spec-driven-development also drops the
            context-engineering path. See README.md.
+           performance-optimization, frontend-ui-engineering,
+           browser-testing-with-devtools, and the two checklists are
+           copied unchanged. The checklists are at .cursor/references/
+           so the upstream relative links resolve. No link text was edited.
+
+vercel-labs/agent-skills
+  Source:  https://github.com/vercel-labs/agent-skills (skills/react-best-practices/)
+  Commit:  1a2c79d4e6c4a2283dc2c614b6538cbe1ed5ca62
+  License: MIT, declared in the repository README and in SKILL.md.
+           The repository ships no LICENSE file.
+  Files:   .cursor/skills/vercel-react-best-practices
+  Changes: none. sources.json maps skills/react-best-practices/ to
+           .cursor/skills/vercel-react-best-practices/. File bytes are
+           unchanged.
+
+supabase/agent-skills
+  Source:  https://github.com/supabase/agent-skills (skills/)
+  Commit:  c9be0e931b7930f7d02126d04774d904c381e7d7
+  License: MIT, Copyright (c) 2026 Supabase. See .cursor/third-party/supabase-agent-skills/LICENSE.
+  Files:   .cursor/skills/supabase,
+           .cursor/skills/supabase-postgres-best-practices
+  Changes: none.

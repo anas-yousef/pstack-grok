@@ -8,7 +8,9 @@ A Cursor project setup that teaches agents how to work. It is [pstack](https://g
 - **cursor-team-kit** from `cursor/plugins`. CI, PR, review, and control skills.
 - **superpowers** from `obra/superpowers`. `verification-before-completion`, `systematic-debugging`, `receiving-code-review`.
 - **mattpocock/skills**. `domain-modeling`, `writing-for-agents`, `wizard`, `grill-me`, `grilling`.
-- **addyosmani/agent-skills**. `spec-driven-development`, `planning-and-task-breakdown`, `incremental-implementation`, `documentation-and-adrs`, `shipping-and-launch`, `doubt-driven-development`.
+- **addyosmani/agent-skills**. `spec-driven-development`, `planning-and-task-breakdown`, `incremental-implementation`, `documentation-and-adrs`, `shipping-and-launch`, `doubt-driven-development`, `performance-optimization`, `frontend-ui-engineering`, `browser-testing-with-devtools`.
+- **vercel-labs/agent-skills**. `vercel-react-best-practices`.
+- **supabase/agent-skills**. `supabase`, `supabase-postgres-best-practices`.
 - **Original work.** A Grok `pstack-models.mdc` with per-role efforts, the `profiles/` model mixes, the `principle-follow-official-docs` skill, the `committed-browser-proof` skill, the `local-supabase` skill, the `build-auto` skill, the `spec` skill, the `legacy-critique` skill, the `prd` skill, the `merge-reviews` skill, the interrogate trigger list, and eight poteto-mode playbooks: greenfield, DB migration, dependency upgrade, external side effects, security and privacy, observability, deploy and rollback, and incident hotfix.
 
 Everything lives under `.cursor/`, where Cursor loads project skills, agents, and rules. `NOTICE` lists each source and its license. `sources.json` pins the upstream commits.
@@ -76,7 +78,7 @@ Upstream files are vendored byte for byte except these:
 - Eight trees are omitted. They are `ketchup-video`, `make-bot-ui`, `bro`, `what-did-i-get-done`, `weekly-review`, `workflow-from-chats`, `pr-review-canvas`, and `setup-benny`. A later directory copy must delete them again.
 - `ketchup/SKILL.md` and `poteto-help/SKILL.md`. The ketchup voice sentence uses plain words, short sentences, and no jargon. The poteto-help table drops the ketchup-video, bro, and make-bot-ui rows. `poteto-help/references/recipes.md` drops the `/bro` line. The planning sentence says a product or a large feature runs build-auto, which plans with planning-and-task-breakdown.
 
-Step 3 of `poteto-mode/playbooks/greenfield.md`, an original playbook, gained two sentences. A browser or UI surface also satisfies `committed-browser-proof`. A product that needs a real backend database, auth, or row-level security follows `local-supabase`. A from-scratch rebuild runs legacy-critique, then merge-reviews until `docs/decisions/open/` is empty or the human decides, then prd once per feature, then build-auto.
+Step 3 of `poteto-mode/playbooks/greenfield.md`, an original playbook, gained two sentences. A browser or UI surface also satisfies `committed-browser-proof`. A product that needs a real backend database, auth, or row-level security follows `local-supabase`. On frontend or UI work the playbook loads `frontend-ui-engineering` and `vercel-react-best-practices`. On performance work it loads `performance-optimization`. For browser checks it loads `browser-testing-with-devtools`. On Supabase or Postgres work it loads `supabase` and `supabase-postgres-best-practices`. A from-scratch rebuild runs legacy-critique, then merge-reviews until `docs/decisions/open/` is empty or the human decides, then prd once per feature, then build-auto.
 
 ## License
 
