@@ -54,7 +54,7 @@ superpowers
 
 mattpocock/skills
   Source:  https://github.com/mattpocock/skills (skills/)
-  Commit:  5beb35b040e3de97e54fa9e386d7e42d15c295c2
+  Commit:  a496f5513d4a4cf889bc48e189e579f4b0bdf6aa
   License: MIT, Copyright (c) 2026 Matt Pocock. See .cursor/third-party/mattpocock-skills/LICENSE.
   Files:   .cursor/skills/domain-modeling, .cursor/skills/writing-for-agents,
            .cursor/skills/wizard, .cursor/skills/grill-me,
