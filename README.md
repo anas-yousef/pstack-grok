@@ -15,16 +15,36 @@ Everything lives under `.cursor/`, where Cursor loads project skills, agents, an
 
 ## Adopt it in a project
 
-**Copy.** Copy this repo's `.cursor/` directory into your project root. If the project already has a `.cursor/`, merge the `skills/`, `agents/`, and `rules/` directories into it.
-
-**Git submodule.** Add the repo as a submodule, then link its `.cursor/` into place:
+A project keeps a committed copy of the catalog and pins the catalog commit it came from. `scripts/sync-pstack` writes that copy. Run it from a checkout of the commit you want to pin:
 
 ```sh
-git submodule add <repo-url> vendor/pstack-grok
-ln -s vendor/pstack-grok/.cursor .cursor
+git clone https://github.com/anas-yousef/pstack-grok.git /tmp/pstack-grok
+git -C /tmp/pstack-grok checkout <sha>
+node /tmp/pstack-grok/scripts/sync-pstack --dest <project>
 ```
 
-Update later with `git submodule update --remote vendor/pstack-grok`. Check that your Cursor version follows the symlink. If it does not, use the copy method.
+The command mirrors `.cursor/skills/`, `.cursor/agents/`, and `.cursor/rules/` into the project. It also copies the license files as `.cursor/pstack-LICENSE`, `.cursor/pstack-NOTICE`, and each vendored source's `LICENSE`. It deletes a mirrored file that the catalog no longer ships. It then writes `.cursor/pstack-source.json` with the commit and the sha256 of every file it wrote. A second run from the same commit writes the same bytes.
+
+The commit is the checkout's `HEAD`. Pass `--commit <sha>` when the checkout has no git history.
+
+The project's `.cursor/pstack-source.json` can set two keys that the command keeps on each run:
+
+```json
+{
+  "repo": "anas-yousef/pstack-grok",
+  "commit": "<sha>",
+  "profile": "grok-opus",
+  "protect": [
+    { "kind": "skill", "root": ".cursor/skills", "prefix": "verify-", "except": "verify-this" },
+    { "kind": "prefix", "path": ".cursor/skills/app-skill/" },
+    { "kind": "exact", "path": ".cursor/rules/app.mdc" }
+  ],
+  "files": []
+}
+```
+
+- `profile` names a model profile. See [Model profiles](#model-profiles). With no `profile`, the project gets the default `grok` file.
+- `protect` lists project paths that the command never writes or deletes. `exact` matches one path. `prefix` matches a directory and must end in `/`. `skill` matches each skill directory under `root` whose name starts with `prefix`, except the one named `except`. The rule above keeps a product skill such as `verify-myapp` and still updates the catalog's `verify-this`. A rule may not cover `.cursor/rules/pstack-models.mdc` or the pin file.
 
 Then run `/poteto-mode` in a Cursor chat.
 
@@ -36,7 +56,7 @@ Edit one line in `.cursor/rules/pstack-models.mdc`. For example, to run feature 
 feature, refactoring: claude-opus-5-5-xhigh
 ```
 
-The change applies to new chats. Delete a line to fall back to the skill default. `/setup-pstack` also edits this project file when it exists. Its budget question sets one effort for every role, so it replaces the per-role efforts below.
+The change applies to new chats. Delete a line to fall back to the skill default. `/setup-pstack` also edits this project file when it exists. Its budget question sets one effort for every role, so it replaces the per-role efforts below. In a project that `scripts/sync-pstack` writes, the next sync replaces a hand edit. Pick or add a profile instead.
 
 The slug carries the reasoning effort, as in `grok-4.7-high` or `claude-opus-5-5-xhigh`. Each line sets its own effort, so two roles on the same model can run at different levels. The default file runs every role on Grok at `high`, and at `xhigh` for the roles that hunt an unknown cause, judge, or take the hardest work: `bug-fix`, `perf-issue`, `hardest tasks`, `why synthesizer`, `arena cross-judge pool`, and the first seat of `architect runners` and `interrogate reviewers`. No role uses a `-fast` slug, because fast slugs spend more tokens.
 
@@ -49,7 +69,9 @@ A profile is a complete `pstack-models.mdc` with a different mix of models and e
 | `grok` | `.cursor/rules/pstack-models.mdc` | Grok in every role. The default. |
 | `grok-opus` | `profiles/grok-opus.mdc` | Grok writes code and runs workers. Opus takes judgment, prose, the hardest tasks, and one seat on each panel. |
 
-To use a profile, copy its file over `.cursor/rules/pstack-models.mdc` in your project. Cursor loads only that path, so the other profiles stay inactive. To add a mix, add one file to `profiles/` with every role line and a `# profile:` line.
+To use a profile, set `profile` in the project's `.cursor/pstack-source.json` and run `scripts/sync-pstack`. The command writes the profile's file as `.cursor/rules/pstack-models.mdc`. Cursor loads only that path, so the other profiles stay inactive. An unknown name fails and lists the profiles in `profiles/`.
+
+To try a profile without changing the pin, pass `--profile <name>`. The command writes that profile and leaves the pin's `profile` key as it was. The manifest hashes the file it wrote, so `git diff` shows the switch. Run the command again without the flag to go back. To add a mix, add one file to `profiles/` with every role line and a `# profile:` line.
 
 ## Check whether upstream moved
 

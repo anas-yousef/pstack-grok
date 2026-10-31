@@ -1,0 +1,287 @@
+#!/usr/bin/env node
+
+import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
+
+const REPO = "anas-yousef/pstack-grok";
+const CATALOG = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const MIRRORED = [".cursor/skills", ".cursor/agents", ".cursor/rules"];
+const EXTRA = [
+	["LICENSE", ".cursor/pstack-LICENSE"],
+	["NOTICE", ".cursor/pstack-NOTICE"],
+	[".cursor/pstack/LICENSE", ".cursor/pstack/LICENSE"],
+	[".cursor/cursor-team-kit/LICENSE", ".cursor/cursor-team-kit/LICENSE"],
+	[".cursor/third-party/superpowers/LICENSE", ".cursor/third-party/superpowers/LICENSE"],
+	[".cursor/third-party/mattpocock-skills/LICENSE", ".cursor/third-party/mattpocock-skills/LICENSE"],
+];
+const PIN = ".cursor/pstack-source.json";
+const MODELS = ".cursor/rules/pstack-models.mdc";
+const PROFILES = "profiles";
+const DEFAULT_PROFILE = "grok";
+const PIN_KEYS = new Set(["repo", "commit", "profile", "protect", "files"]);
+const SHA = /^[0-9a-f]{40}$/;
+const PROFILE_NAME = /^[a-z0-9][a-z0-9-]*$/;
+const USAGE =
+	"usage: node <pstack-grok checkout>/scripts/sync-pstack --dest <repo> [--commit <sha>] [--profile <name>]";
+
+class SyncError extends Error {}
+
+function fail(message) {
+	throw new SyncError(message);
+}
+
+function parseRule(rule) {
+	const text = (value) => typeof value === "string" && value !== "";
+	switch (rule?.kind) {
+		case "exact":
+			if (text(rule.path)) return rule;
+			break;
+		case "prefix":
+			if (text(rule.path) && rule.path.endsWith("/")) return rule;
+			break;
+		case "skill":
+			if (text(rule.root) && text(rule.prefix) && (rule.except === undefined || text(rule.except))) {
+				return rule;
+			}
+			break;
+	}
+	fail(`bad protect rule ${JSON.stringify(rule)}`);
+}
+
+function matchesRule(rule, rel) {
+	switch (rule.kind) {
+		case "exact":
+			return rel === rule.path;
+		case "prefix":
+			return rel === rule.path.slice(0, -1) || rel.startsWith(rule.path);
+		case "skill": {
+			const root = `${rule.root}/`;
+			if (!rel.startsWith(root)) return false;
+			const segment = rel.slice(root.length).split("/")[0];
+			return (
+				segment.startsWith(rule.prefix) &&
+				segment.length > rule.prefix.length &&
+				segment !== rule.except
+			);
+		}
+		default:
+			throw new Error(`unknown protect kind ${rule.kind}`);
+	}
+}
+
+export function readPin(text) {
+	let pin;
+	try {
+		pin = JSON.parse(text);
+	} catch {
+		fail(`${PIN} is not JSON`);
+	}
+	if (!pin || typeof pin !== "object" || Array.isArray(pin)) fail(`${PIN} is not a JSON object`);
+	for (const key of Object.keys(pin)) {
+		if (!PIN_KEYS.has(key)) fail(`${PIN} has an unknown key ${key}`);
+	}
+	if (pin.profile !== undefined && typeof pin.profile !== "string") {
+		fail(`${PIN} profile must be a string`);
+	}
+	if (pin.protect !== undefined && !Array.isArray(pin.protect)) {
+		fail(`${PIN} protect must be an array`);
+	}
+	const rules = (pin.protect ?? []).map(parseRule);
+	for (const rel of [MODELS, PIN]) {
+		if (rules.some((rule) => matchesRule(rule, rel))) fail(`protect must not cover ${rel}`);
+	}
+	return { profile: pin.profile, protect: pin.protect, rules };
+}
+
+function profileNames(source) {
+	const dir = path.join(source, PROFILES);
+	const names = fs.existsSync(dir)
+		? fs
+				.readdirSync(dir)
+				.filter((name) => name.endsWith(".mdc"))
+				.map((name) => name.slice(0, -".mdc".length))
+		: [];
+	return [DEFAULT_PROFILE, ...names.sort()];
+}
+
+function profileBytes(source, name) {
+	if (name === undefined || name === DEFAULT_PROFILE) return null;
+	const file = path.join(source, PROFILES, `${name}.mdc`);
+	if (!PROFILE_NAME.test(name) || !fs.existsSync(file)) {
+		fail(`unknown profile ${name}; ${PROFILES}/ offers: ${profileNames(source).join(", ")}`);
+	}
+	return fs.readFileSync(file);
+}
+
+function assertInside(root, target) {
+	const realRoot = fs.realpathSync(root);
+	const realTarget = fs.realpathSync(target);
+	if (realTarget !== realRoot && !realTarget.startsWith(realRoot + path.sep)) {
+		fail(`path escapes ${root}: ${target}`);
+	}
+	return realTarget;
+}
+
+function listFiles(root) {
+	const out = [];
+	const walk = (dir) => {
+		const realDir = assertInside(root, dir);
+		for (const name of fs.readdirSync(realDir).sort()) {
+			if (name === ".git") continue;
+			const full = path.join(realDir, name);
+			const stat = fs.lstatSync(full);
+			if (stat.isSymbolicLink()) {
+				if (fs.statSync(full).isDirectory()) fail(`refusing a directory symlink: ${full}`);
+				assertInside(root, full);
+				out.push(full);
+			} else if (stat.isDirectory()) {
+				walk(full);
+			} else if (stat.isFile()) {
+				out.push(full);
+			} else {
+				fail(`refusing a special file: ${full}`);
+			}
+		}
+	};
+	walk(root);
+	return out;
+}
+
+function relPosix(root, file) {
+	return path.relative(fs.realpathSync(root), fs.realpathSync(file)).split(path.sep).join("/");
+}
+
+export function syncCatalog({ source = CATALOG, dest, commit, profile }) {
+	if (!dest) fail("--dest is missing");
+	fs.mkdirSync(dest, { recursive: true });
+	if (fs.realpathSync(dest) === fs.realpathSync(source)) fail("--dest is the catalog checkout");
+	const resolved = commit ?? headCommit(source);
+	if (!SHA.test(resolved ?? "")) fail("pass --commit <sha> when the checkout has no git HEAD");
+	for (const tree of MIRRORED) {
+		if (!fs.existsSync(path.join(source, tree))) fail(`missing ${tree} in the catalog checkout`);
+	}
+
+	const pinFile = path.join(dest, PIN);
+	const pin = fs.existsSync(pinFile) ? readPin(fs.readFileSync(pinFile, "utf8")) : { rules: [] };
+	const chosen = profile ?? pin.profile;
+	const models = profileBytes(source, chosen);
+	const isProtected = (rel) => pin.rules.some((rule) => matchesRule(rule, rel));
+
+	const writeFile = (rel, bytes, mode = 0o644) => {
+		const full = path.join(dest, rel);
+		fs.mkdirSync(path.dirname(full), { recursive: true });
+		fs.writeFileSync(full, bytes);
+		fs.chmodSync(full, (mode & 0o111) !== 0 ? 0o755 : 0o644);
+	};
+
+	const pruneEmpty = (dir) => {
+		if (!fs.existsSync(dir)) return;
+		for (const name of fs.readdirSync(dir)) {
+			const full = path.join(dir, name);
+			if (fs.lstatSync(full).isDirectory()) pruneEmpty(full);
+		}
+		if (fs.readdirSync(dir).length !== 0 || isProtected(relPosix(dest, dir))) return;
+		fs.rmSync(dir, { recursive: true });
+	};
+
+	const files = new Map();
+	for (const tree of MIRRORED) {
+		const src = path.join(source, tree);
+		for (const file of listFiles(src)) {
+			const rel = `${tree}/${relPosix(src, file)}`;
+			if (isProtected(rel)) continue;
+			const bytes = rel === MODELS && models ? models : fs.readFileSync(file);
+			writeFile(rel, bytes, fs.statSync(file).mode);
+			files.set(rel, bytes);
+		}
+		const target = path.join(dest, tree);
+		if (!fs.existsSync(target)) continue;
+		for (const file of listFiles(target)) {
+			const rel = `${tree}/${relPosix(target, file)}`;
+			if (!isProtected(rel) && !files.has(rel)) fs.rmSync(file);
+		}
+		pruneEmpty(target);
+	}
+	for (const [from, rel] of EXTRA) {
+		const src = path.join(source, from);
+		if (!fs.existsSync(src)) fail(`missing ${from} in the catalog checkout`);
+		if (isProtected(rel)) fail(`protect must not cover ${rel}`);
+		const bytes = fs.readFileSync(src);
+		writeFile(rel, bytes);
+		files.set(rel, bytes);
+	}
+
+	writeFile(PIN, pinDocument({ commit: resolved, profile: pin.profile, protect: pin.protect, files }));
+	return { commit: resolved, profile: chosen ?? DEFAULT_PROFILE, count: files.size };
+}
+
+function pinDocument({ commit, profile, protect, files }) {
+	const doc = { repo: REPO, commit };
+	if (profile !== undefined) doc.profile = profile;
+	if (protect !== undefined) doc.protect = protect;
+	doc.files = [...files.keys()]
+		.sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
+		.map((file) => ({
+			file,
+			sha256: createHash("sha256").update(files.get(file)).digest("hex"),
+		}));
+	return `${JSON.stringify(doc, null, 2)}\n`;
+}
+
+function headCommit(source) {
+	const result = spawnSync("git", ["-C", source, "rev-parse", "HEAD"], { encoding: "utf8" });
+	if (result.status !== 0) return null;
+	return result.stdout.trim();
+}
+
+export function parseArgs(argv) {
+	const args = { help: false, dest: undefined, commit: undefined, profile: undefined };
+	for (let i = 0; i < argv.length; i += 1) {
+		const token = argv[i];
+		const value = () => {
+			const next = argv[i + 1];
+			if (next === undefined || next.startsWith("--")) fail(`${token} needs a value`);
+			i += 1;
+			return next;
+		};
+		if (token === "--help") args.help = true;
+		else if (token === "--dest") args.dest = value();
+		else if (token === "--commit") args.commit = value();
+		else if (token === "--profile") args.profile = value();
+		else fail(`unknown argument ${token}`);
+	}
+	if (args.commit !== undefined && !SHA.test(args.commit)) {
+		fail("--commit must be a 40-character sha");
+	}
+	return args;
+}
+
+function main() {
+	try {
+		const args = parseArgs(process.argv.slice(2));
+		if (args.help) {
+			fs.writeSync(1, `${USAGE}\n`);
+			return;
+		}
+		const result = syncCatalog({
+			dest: args.dest,
+			commit: args.commit,
+			profile: args.profile,
+		});
+		fs.writeSync(1, `synced ${result.count} files at ${result.commit}, profile ${result.profile}\n`);
+	} catch (err) {
+		if (!(err instanceof SyncError)) throw err;
+		fs.writeSync(2, `${err.message}\n`);
+		process.exitCode = 1;
+	}
+}
+
+if (
+	typeof process.argv[1] === "string" &&
+	import.meta.url === pathToFileURL(fs.realpathSync(process.argv[1])).href
+) {
+	main();
+}
