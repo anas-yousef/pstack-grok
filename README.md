@@ -50,6 +50,7 @@ A profile is a complete `pstack-models.mdc` with a different mix of models and e
 | --- | --- | --- |
 | `grok` | `.cursor/rules/pstack-models.mdc` | Grok in every role. The default. |
 | `grok-opus` | `profiles/grok-opus.mdc` | Grok writes code and runs workers. Opus takes judgment, prose, the hardest tasks, and one seat on each panel. |
+| `design-heavy` | `profiles/design-heavy.mdc` | Grok in every role. Judgment and prose, architect runners, the arena judge, and interrogate reviewers run at xhigh. Feature work, refactoring, and swarm workers stay at high. Bug-fix and perf stay at xhigh. |
 
 To use a profile, copy its file over `.cursor/rules/pstack-models.mdc` in your project. Cursor loads only that path, so the other profiles stay inactive. To add a mix, add one file to `profiles/` with every role line and a `# profile:` line.
 
