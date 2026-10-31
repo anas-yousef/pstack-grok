@@ -1,0 +1,262 @@
+#!/usr/bin/env node
+
+import { spawnSync } from "node:child_process";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+
+const PIN_PATH = ".cursor/pstack-source.json";
+const PROFILE_RULE = ".cursor/rules/pstack-models.mdc";
+
+export function runSync(root) {
+	return runCommand("sync-pstack", root, applySync);
+}
+
+export function runCheck(root) {
+	return runCommand("check-pstack", root, applyCheck);
+}
+
+function runCommand(name, root, apply) {
+	try {
+		return apply(root);
+	} catch (err) {
+		const message = err instanceof Error ? err.message : String(err);
+		return { exitCode: 2, stdout: "", stderr: `${name}: ${message}\n` };
+	}
+}
+
+function applySync(root) {
+	const loaded = load(root);
+	try {
+		refuseCursorSymlink(root);
+		for (const rel of loaded.files) {
+			const dest = inside(root, rel);
+			fs.mkdirSync(path.dirname(dest), { recursive: true });
+			fs.copyFileSync(path.join(loaded.tree, rel), dest);
+		}
+		fs.mkdirSync(path.dirname(inside(root, PROFILE_RULE)), { recursive: true });
+		fs.writeFileSync(inside(root, PROFILE_RULE), loaded.profile);
+		return {
+			exitCode: 0,
+			stdout: `synced ${loaded.pin.commit} ${loaded.pin.profile}\n`,
+			stderr: "",
+		};
+	} finally {
+		fs.rmSync(loaded.tree, { recursive: true, force: true });
+	}
+}
+
+function applyCheck(root) {
+	const loaded = load(root);
+	try {
+		const drifted = [];
+		for (const rel of loaded.files) {
+			const expected =
+				rel === PROFILE_RULE ? loaded.profile : fs.readFileSync(path.join(loaded.tree, rel));
+			const dest = path.join(root, rel);
+			let actual;
+			try {
+				actual = fs.readFileSync(dest);
+			} catch (err) {
+				if (err && err.code === "ENOENT") {
+					drifted.push(rel);
+					continue;
+				}
+				throw err;
+			}
+			if (!actual.equals(expected)) drifted.push(rel);
+		}
+		drifted.sort();
+		if (drifted.length === 0) return { exitCode: 0, stdout: "ok\n", stderr: "" };
+		return { exitCode: 1, stdout: drifted.map((rel) => `${rel}\n`).join(""), stderr: "" };
+	} finally {
+		fs.rmSync(loaded.tree, { recursive: true, force: true });
+	}
+}
+
+function load(root) {
+	const pin = readPin(root);
+	const tree = fetchTree(pin.repo, pin.commit);
+	try {
+		const profile = readProfile(tree, pin.profile);
+		const files = cursorFiles(tree);
+		return { pin, tree, profile, files };
+	} catch (err) {
+		fs.rmSync(tree, { recursive: true, force: true });
+		throw err;
+	}
+}
+
+function readPin(root) {
+	let text;
+	try {
+		text = fs.readFileSync(path.join(root, PIN_PATH), "utf8");
+	} catch (err) {
+		if (err && err.code === "ENOENT") throw new Error(`missing ${PIN_PATH}`);
+		throw err;
+	}
+	let data;
+	try {
+		data = JSON.parse(text);
+	} catch (err) {
+		throw new Error(`${PIN_PATH}: ${err.message}`);
+	}
+	if (data === null || typeof data !== "object" || Array.isArray(data)) {
+		throw new Error(`${PIN_PATH}: expected an object`);
+	}
+	const keys = Object.keys(data).sort();
+	if (keys.length !== 3 || keys[0] !== "commit" || keys[1] !== "profile" || keys[2] !== "repo") {
+		throw new Error(`${PIN_PATH}: expected repo, commit, and profile`);
+	}
+	assertRepo(data.repo);
+	if (typeof data.commit !== "string" || !/^[0-9a-f]{40}$/.test(data.commit)) {
+		throw new Error(`${PIN_PATH}: bad commit`);
+	}
+	assertProfileName(data.profile);
+	return { repo: data.repo, commit: data.commit, profile: data.profile };
+}
+
+function assertRepo(repo) {
+	if (typeof repo !== "string" || repo.length === 0 || /[\n\r]/.test(repo)) {
+		throw new Error("repo must be an https URL or an absolute path");
+	}
+	if (path.isAbsolute(repo)) return;
+	let url;
+	try {
+		url = new URL(repo);
+	} catch {
+		throw new Error(`repo is not an https URL: ${repo}`);
+	}
+	if (
+		url.protocol !== "https:" ||
+		url.username !== "" ||
+		url.password !== "" ||
+		url.search !== "" ||
+		url.hash !== ""
+	) {
+		throw new Error(`repo must be https without userinfo, query, or hash: ${repo}`);
+	}
+}
+
+function assertProfileName(name) {
+	if (typeof name !== "string" || !/^[a-z0-9][a-z0-9-]*$/.test(name)) {
+		throw new Error(`bad profile ${JSON.stringify(name)}`);
+	}
+}
+
+function readProfile(tree, name) {
+	assertProfileName(name);
+	const rel = name === "grok" ? PROFILE_RULE : `profiles/${name}.mdc`;
+	let bytes;
+	try {
+		bytes = fs.readFileSync(path.join(tree, rel));
+	} catch (err) {
+		if (err && err.code === "ENOENT") throw new Error(`unknown profile ${name}`);
+		throw err;
+	}
+	const match = bytes.toString("utf8").match(/^# profile: ([a-z0-9][a-z0-9-]*)/m);
+	if (!match || match[1] !== name) throw new Error(`profile ${name} does not match its file`);
+	return bytes;
+}
+
+function cursorFiles(tree) {
+	const cursor = path.join(tree, ".cursor");
+	const files = [];
+	walk(cursor, ".cursor", files);
+	files.sort();
+	return files;
+}
+
+function walk(dir, prefix, files) {
+	for (const name of fs.readdirSync(dir)) {
+		const abs = path.join(dir, name);
+		const rel = `${prefix}/${name}`;
+		const stat = fs.lstatSync(abs);
+		if (stat.isSymbolicLink()) throw new Error(`refusing to copy a symlink: ${rel}`);
+		if (stat.isDirectory()) {
+			walk(abs, rel, files);
+			continue;
+		}
+		if (!stat.isFile()) throw new Error(`refusing to copy ${rel}`);
+		files.push(rel);
+	}
+}
+
+function refuseCursorSymlink(root) {
+	const cursor = path.join(root, ".cursor");
+	let stat;
+	try {
+		stat = fs.lstatSync(cursor);
+	} catch (err) {
+		if (err && err.code === "ENOENT") return;
+		throw err;
+	}
+	if (stat.isSymbolicLink()) throw new Error("refusing to write through a symlinked .cursor");
+}
+
+function inside(root, rel) {
+	const dest = path.resolve(root, rel);
+	const base = path.resolve(root);
+	if (dest !== base && !dest.startsWith(base + path.sep)) {
+		throw new Error(`path escapes the repo: ${rel}`);
+	}
+	return dest;
+}
+
+function fetchTree(repo, commit) {
+	const dest = fs.mkdtempSync(path.join(os.tmpdir(), "pstack-"));
+	try {
+		git(["init", "-q", "-b", "main", dest]);
+		git(["-C", dest, "fetch", "--depth=1", repo, commit]);
+		git(["-C", dest, "checkout", "-q", "--detach", "FETCH_HEAD"]);
+		return dest;
+	} catch (err) {
+		fs.rmSync(dest, { recursive: true, force: true });
+		throw err;
+	}
+}
+
+function git(args) {
+	const result = spawnSync("git", args, {
+		env: gitEnv(),
+		encoding: "utf8",
+		maxBuffer: 16 * 1024 * 1024,
+		stdio: ["ignore", "pipe", "pipe"],
+	});
+	if (result.error) throw new Error(result.error.message);
+	if (result.status !== 0) {
+		const stderr = result.stderr ? result.stderr.trim() : "";
+		throw new Error(stderr || `git exited ${result.status ?? result.signal}`);
+	}
+	return result.stdout;
+}
+
+function gitEnv() {
+	const env = { ...process.env };
+	delete env.GIT_DIR;
+	delete env.GIT_WORK_TREE;
+	env.GIT_CONFIG_GLOBAL = "/dev/null";
+	env.GIT_CONFIG_NOSYSTEM = "1";
+	env.GIT_CONFIG_COUNT = "0";
+	env.GIT_TERMINAL_PROMPT = "0";
+	return env;
+}
+
+function main() {
+	if (process.argv.length > 2) {
+		process.stderr.write("sync-pstack: usage: scripts/sync-pstack\n");
+		process.exit(2);
+	}
+	const result = runSync(process.cwd());
+	process.stdout.write(result.stdout);
+	process.stderr.write(result.stderr);
+	process.exit(result.exitCode);
+}
+
+if (
+	typeof process.argv[1] === "string" &&
+	import.meta.url === pathToFileURL(process.argv[1]).href
+) {
+	main();
+}
