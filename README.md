@@ -15,11 +15,29 @@ A Cursor project setup that teaches agents how to work. It is [pstack](https://g
 
 Everything lives under `.cursor/`, where Cursor loads project skills, agents, and rules. `NOTICE` lists each source and its license. `sources.json` pins the upstream commits.
 
-## Adopt it in a project
+## New repo
 
-**Copy.** Copy this repo's `.cursor/` directory into your project root. If the project already has a `.cursor/`, merge the `skills/`, `agents/`, and `rules/` directories into it.
+Create a git repo and adopt the catalog from that repo's root. The command needs no login. It does not create a commit.
 
-**Git submodule.** Add the repo as a submodule, then link its `.cursor/` into place:
+```sh
+git init my-app
+cd my-app
+curl -fsSL https://raw.githubusercontent.com/anas-yousef/pstack-grok/main/scripts/init | sh -s --
+```
+
+The command writes `.cursor/pstack-source.json`, copies `scripts/sync-pstack` and `scripts/check-pstack`, and runs `scripts/sync-pstack` once. That copies `.cursor/` from the pinned commit and installs the `grok` profile as `.cursor/rules/pstack-models.mdc`. It also writes `AGENTS.md` with a short pstack section. It does not create `CLAUDE.md`.
+
+Pass `--profile grok-opus` or `--profile design-heavy` to install another mix. Pass `--commit` and a 40-digit sha to pin a commit other than the current `main` tip. Pass `--repo` and an https URL to adopt a fork.
+
+Then run `/poteto-mode` in a Cursor chat.
+
+## Existing repo
+
+Run the same command from the root of a repo that already has files. A skill directory this catalog does not ship stays, including names that start with `verify-`. An existing `AGENTS.md` stays. The command appends the pstack section when the `## pstack` line is absent. A second run does not append it again. An existing `CLAUDE.md` stays. The command does not create one.
+
+`scripts/sync-pstack` copies `.cursor/` from the pin again. `scripts/check-pstack` prints `ok` when those copied files match the pin. It writes nothing. Run the init command again to refresh the two scripts.
+
+Copy by hand still works. Copy this repo's `.cursor/` into the project, or merge `skills/`, `agents/`, and `rules/` into an existing `.cursor/`. A submodule works too.
 
 ```sh
 git submodule add <repo-url> vendor/pstack-grok
@@ -27,8 +45,6 @@ ln -s vendor/pstack-grok/.cursor .cursor
 ```
 
 Update later with `git submodule update --remote vendor/pstack-grok`. Check that your Cursor version follows the symlink. If it does not, use the copy method.
-
-Then run `/poteto-mode` in a Cursor chat.
 
 ## Change a role's model
 

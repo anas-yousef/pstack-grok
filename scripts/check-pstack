@@ -1,0 +1,15 @@
+#!/usr/bin/env node
+
+import { pathToFileURL } from "node:url";
+import { runCheck } from "./sync-pstack";
+
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+	if (process.argv.length > 2) {
+		process.stderr.write("check-pstack: usage: scripts/check-pstack\n");
+		process.exit(2);
+	}
+	const result = runCheck(process.cwd());
+	process.stdout.write(result.stdout);
+	process.stderr.write(result.stderr);
+	process.exit(result.exitCode);
+}
