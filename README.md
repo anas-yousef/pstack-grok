@@ -8,7 +8,9 @@ A Cursor project setup that teaches agents how to work. It is [pstack](https://g
 - **cursor-team-kit** from `cursor/plugins`. CI, PR, review, and control skills.
 - **superpowers** from `obra/superpowers`. `verification-before-completion`, `systematic-debugging`, `receiving-code-review`.
 - **mattpocock/skills**. `domain-modeling`, `writing-for-agents`, `wizard`, `grill-me`, `grilling`.
-- **addyosmani/agent-skills**. `spec-driven-development`, `planning-and-task-breakdown`, `incremental-implementation`, `documentation-and-adrs`, `shipping-and-launch`, `doubt-driven-development`.
+- **addyosmani/agent-skills**. `spec-driven-development`, `planning-and-task-breakdown`, `incremental-implementation`, `documentation-and-adrs`, `shipping-and-launch`, `doubt-driven-development`, `performance-optimization`, `frontend-ui-engineering`, `browser-testing-with-devtools`.
+- **vercel-labs/agent-skills**. `vercel-react-best-practices`.
+- **supabase/agent-skills**. `supabase`, `supabase-postgres-best-practices`.
 - **Original work.** A Grok `pstack-models.mdc` with per-role efforts, the `profiles/` model mixes, the `principle-follow-official-docs` skill, the `committed-browser-proof` skill, the `local-supabase` skill, the `build-auto` skill, the `spec` skill, the `legacy-critique` skill, the `prd` skill, the `merge-reviews` skill, the interrogate trigger list, and eight poteto-mode playbooks: greenfield, DB migration, dependency upgrade, external side effects, security and privacy, observability, deploy and rollback, and incident hotfix.
 
 Everything lives under `.cursor/`, where Cursor loads project skills, agents, and rules. `NOTICE` lists each source and its license. `sources.json` pins the upstream commits.
