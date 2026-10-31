@@ -18,6 +18,10 @@ function pluginCalls(calls) {
 	return calls.filter((call) => call.repoUrl === PLUGINS);
 }
 
+function distinctRepoPins(sources) {
+	return new Set(sources.map((source) => `${source.repo} ${source.commit}`)).size;
+}
+
 function record(load) {
 	const calls = [];
 	const loadRepo = (repoUrl, pin) => {
@@ -83,13 +87,16 @@ test("a moved poteto-help file is review and plugins is loaded once", () => {
 	assert.equal(result.exitCode, 1);
 	assert.equal(result.stderr, "");
 	assert.equal(result.stdout, stdout);
-	assert.equal(result.stdout.split("\n").filter((line) => line.length > 0).length, 4);
-	assert.equal(calls.length, 3);
+	assert.equal(
+		result.stdout.split("\n").filter((line) => line.length > 0).length,
+		catalog.sources.length,
+	);
+	assert.equal(calls.length, distinctRepoPins(catalog.sources));
 	assert.equal(pluginCalls(calls).length, 1);
 	assert.equal(pluginCalls(calls)[0].pin, catalog.sources[0].commit);
 });
 
-test("tips that equal pins exit 0 with four skips", () => {
+test("tips that equal pins exit 0 and every source skips", () => {
 	const { calls, loadRepo } = record((_repoUrl, pin) => ({ tip: pin, changes: [] }));
 	const result = run({ catalogJson, root, loadRepo, readWorktree: () => ({ kind: "absent" }) });
 	const stdout = catalog.sources
@@ -98,7 +105,7 @@ test("tips that equal pins exit 0 with four skips", () => {
 	assert.equal(result.exitCode, 0);
 	assert.equal(result.stderr, "");
 	assert.equal(result.stdout, stdout);
-	assert.equal(calls.length, 3);
+	assert.equal(calls.length, distinctRepoPins(catalog.sources));
 	assert.equal(pluginCalls(calls).length, 1);
 });
 
