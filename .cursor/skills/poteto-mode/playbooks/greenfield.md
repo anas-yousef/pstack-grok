@@ -2,6 +2,8 @@
 
 **You own the product. Plan, review, verify.** The repo is empty or the product is new. Delegate implementation. Stay in the lead.
 
+On frontend or UI work, load `frontend-ui-engineering` and `vercel-react-best-practices`. On performance work, load `performance-optimization`. For browser checks, load `browser-testing-with-devtools`. On Supabase or Postgres work, load `supabase` and `supabase-postgres-best-practices`.
+
 A from-scratch rebuild names an old repo by path or URL. That rebuild uses only these four steps.
 
 1. Run **legacy-critique**.
