@@ -97,6 +97,18 @@ Upstream files are vendored byte for byte except these:
 
 Step 3 of `poteto-mode/playbooks/greenfield.md`, an original playbook, gained two sentences. A browser or UI surface also satisfies `committed-browser-proof`. A product that needs a real backend database, auth, or row-level security follows `local-supabase`. On frontend or UI work the playbook loads `frontend-ui-engineering` and `vercel-react-best-practices`. On performance work it loads `performance-optimization`. For browser checks it loads `browser-testing-with-devtools`. On Supabase or Postgres work it loads `supabase` and `supabase-postgres-best-practices`. A from-scratch rebuild runs legacy-critique, then merge-reviews until `docs/decisions/open/` is empty or the human decides, then prd once per feature, then build-auto.
 
+## Thanks
+
+- [Lauren Tan](https://github.com/cursor/plugins/tree/main/pstack) wrote pstack in cursor/plugins.
+- [Cursor](https://github.com/cursor/plugins/tree/main/cursor-team-kit) wrote cursor-team-kit in cursor/plugins.
+- [Jesse Vincent](https://github.com/obra/superpowers) wrote superpowers.
+- [Matt Pocock](https://github.com/mattpocock/skills) wrote mattpocock/skills.
+- [Addy Osmani](https://github.com/addyosmani/agent-skills) wrote addyosmani/agent-skills.
+- [Vercel Labs](https://github.com/vercel-labs/agent-skills) wrote vercel-labs/agent-skills.
+- [Supabase](https://github.com/supabase/agent-skills) wrote supabase/agent-skills.
+
+The license for each project above is in `NOTICE`.
+
 ## License
 
 Original work is MIT, see `LICENSE`. Vendored work keeps its own MIT license, see `NOTICE`.

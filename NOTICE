@@ -14,7 +14,10 @@ profiles/,
 db-migration, dependency-upgrade, external-side-effects,
 security-and-privacy, observability, deploy-and-rollback and
 incident-hotfix, poteto-mode's references/interrogate-triggers.md,
-README.md, NOTICE and sources.json.
+scripts/init, scripts/init.test.mjs, scripts/sync-pstack,
+scripts/check-pstack, scripts/check-upstream,
+scripts/check-upstream.test.mjs, LICENSE, README.md, NOTICE and
+sources.json.
 
 Everything else is vendored from the projects below under their own MIT
 licenses. Pinned commits are in sources.json.
