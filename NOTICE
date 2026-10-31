@@ -63,7 +63,7 @@ mattpocock/skills
 
 addyosmani/agent-skills
   Source:  https://github.com/addyosmani/agent-skills (skills/)
-  Commit:  eb07f19f52c2669f2364897aaa293e2aaddd7b1c
+  Commit:  8bfcc1f9916f2eea55494d8c1fa7f4bde867dd9e
   License: MIT, Copyright (c) 2025 Addy Osmani. See .cursor/third-party/addy-agent-skills/LICENSE.
   Files:   .cursor/skills/spec-driven-development,
            .cursor/skills/planning-and-task-breakdown,

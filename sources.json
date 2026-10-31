@@ -49,7 +49,7 @@
     {
       "name": "addy-agent-skills",
       "repo": "https://github.com/addyosmani/agent-skills",
-      "commit": "eb07f19f52c2669f2364897aaa293e2aaddd7b1c",
+      "commit": "8bfcc1f9916f2eea55494d8c1fa7f4bde867dd9e",
       "paths": {
         "skills/spec-driven-development/": ".cursor/skills/spec-driven-development/",
         "skills/planning-and-task-breakdown/": ".cursor/skills/planning-and-task-breakdown/",
