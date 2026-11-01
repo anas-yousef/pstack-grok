@@ -1,7 +1,6 @@
 ---
 name: prd
 description: "Interview with grill-me, write docs/prd/<feature>.md, then hand off to spec-driven-development."
-disable-model-invocation: true
 ---
 
 # PRD

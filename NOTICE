@@ -20,7 +20,9 @@ scripts/check-upstream.test.mjs, LICENSE, README.md, NOTICE and
 sources.json.
 
 Everything else is vendored from the projects below under their own MIT
-licenses. Pinned commits are in sources.json.
+licenses. Pinned commits are in sources.json. Across vendored skills,
+disable-model-invocation: true is omitted so Cursor can discover and load
+them automatically; manual invocation remains available.
 
 pstack
   Source:  https://github.com/cursor/plugins (pstack/)
@@ -94,9 +96,9 @@ vercel-labs/agent-skills
   License: MIT, declared in the repository README and in SKILL.md.
            The repository ships no LICENSE file.
   Files:   .cursor/skills/vercel-react-best-practices
-  Changes: none. sources.json maps skills/react-best-practices/ to
-           .cursor/skills/vercel-react-best-practices/. File bytes are
-           unchanged.
+  Changes: AGENTS.md is renamed REFERENCE.md, byte for byte, to keep the
+           compiled guide out of nested instruction discovery. SKILL.md and
+           README.md point at the new name.
 
 supabase/agent-skills
   Source:  https://github.com/supabase/agent-skills (skills/)

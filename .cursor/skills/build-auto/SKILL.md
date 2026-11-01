@@ -1,7 +1,6 @@
 ---
 name: build-auto
 description: "Poteto-mode runs a product or large feature from spec through one commit per task, then hands back for review and ship."
-disable-model-invocation: true
 ---
 
 # Build auto

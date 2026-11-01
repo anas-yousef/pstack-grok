@@ -15,36 +15,21 @@ A Cursor project setup that teaches agents how to work. It is [pstack](https://g
 
 Everything lives under `.cursor/`, where Cursor loads project skills, agents, and rules. `NOTICE` lists each source and its license. `sources.json` pins the upstream commits.
 
-## New repo
+## Setup
 
-Create a git repo and adopt the catalog from that repo's root. The command needs no login. It does not create a commit.
+Run from the root of a new or existing git repo. No login is needed, and init creates no commit.
 
 ```sh
-git init my-app
-cd my-app
 curl -fsSL https://raw.githubusercontent.com/anas-yousef/pstack-grok/main/scripts/init | sh -s --
 ```
 
-The command writes `.cursor/pstack-source.json`, copies `scripts/sync-pstack` and `scripts/check-pstack`, and runs `scripts/sync-pstack` once. That copies `.cursor/` from the pinned commit and installs the `grok` profile as `.cursor/rules/pstack-models.mdc`. It also writes `AGENTS.md` with a short pstack section. It does not create `CLAUDE.md`.
+Init copies `.cursor/` from the selected catalog commit, installs the `grok` model profile, records the source in `.cursor/pstack-source.json`, and adds a short pstack section to `AGENTS.md`. It installs `scripts/sync-pstack` and `scripts/check-pstack`. Consumer `scripts/check-pstack.mjs` and the Claude catalog’s `scripts/pstack-claude-check.mjs` stay untouched. Existing project prose, unrelated skills, product `verify-*` skills, and `CLAUDE.md` stay. Run `/poteto-mode` in Cursor after setup. All 97 catalog skills support automatic discovery, including poteto-mode, principle-*, prd, tdd, build-auto, and swarm. The skill bodies keep their existing routing and approval requirements.
 
-Pass `--profile grok-opus` or `--profile design-heavy` to install another mix. Pass `--commit` and a 40-digit sha to pin a commit other than the current `main` tip. Pass `--repo` and an https URL to adopt a fork.
+Pass `--profile grok-opus` or `--profile design-heavy` to select another mix, `--commit <40-digit-sha>` to select a commit, or `--repo <https-url-or-absolute-path>` to use a fork or local checkout. Without `--commit`, init uses the catalog's current default-branch tip.
 
-Then run `/poteto-mode` in a Cursor chat.
+Run init again to refresh, passing the same profile flags to keep your chosen mix. It replaces catalog files while preserving files the catalog does not ship and existing `copy`/`protect` pin fields. `scripts/sync-pstack` restores the installed pin; `scripts/check-pstack` prints `ok` when managed files match it and writes nothing. For a local refresh, run `scripts/sync-pstack --from <checkout> --commit <40-digit-sha>`. It requires a clean checkout at that commit, including no staged or untracked changes, then copies the files and updates the pin.
 
-## Existing repo
-
-Run the same command from the root of a repo that already has files. A skill directory this catalog does not ship stays, including names that start with `verify-`. An existing `AGENTS.md` stays. The command appends the pstack section when the `## pstack` line is absent. A second run does not append it again. An existing `CLAUDE.md` stays. The command does not create one.
-
-`scripts/sync-pstack` copies `.cursor/` from the pin again. `scripts/check-pstack` prints `ok` when those copied files match the pin. It writes nothing. Run the init command again to refresh the two scripts.
-
-Copy by hand still works. Copy this repo's `.cursor/` into the project, or merge `skills/`, `agents/`, and `rules/` into an existing `.cursor/`. A submodule works too.
-
-```sh
-git submodule add <repo-url> vendor/pstack-grok
-ln -s vendor/pstack-grok/.cursor .cursor
-```
-
-Update later with `git submodule update --remote vendor/pstack-grok`. Check that your Cursor version follows the symlink. If it does not, use the copy method.
+Auto-run is a per-user Cursor setting or CLI `--yolo`; project `.cursor/cli.json` supports only allow/deny rules, and cloud agents already auto-run.
 
 ## Change a role's model
 
@@ -56,7 +41,7 @@ feature, refactoring: claude-opus-5-5-xhigh
 
 The change applies to new chats. Delete a line to fall back to the skill default. `/setup-pstack` also edits this project file when it exists. Its budget question sets one effort for every role, so it replaces the per-role efforts below.
 
-The slug carries the reasoning effort, as in `grok-4.7-high` or `claude-opus-5-5-xhigh`. Each line sets its own effort, so two roles on the same model can run at different levels. The default file runs every role on Grok at `high`, and at `xhigh` for the roles that hunt an unknown cause, judge, or take the hardest work: `bug-fix`, `perf-issue`, `hardest tasks`, `why synthesizer`, `arena cross-judge pool`, and the first seat of `architect runners` and `interrogate reviewers`. No role uses a `-fast` slug, because fast slugs spend more tokens.
+The slug carries the reasoning effort, as in `grok-4.7-high` or `claude-opus-5-5-xhigh`. Each role has its own effort. The default profile uses Grok at `high`, with `xhigh` for bugs, performance investigations, the hardest tasks, and judgment. The profile file records the exact assignments.
 
 ## Model profiles
 
@@ -68,11 +53,11 @@ A profile is a complete `pstack-models.mdc` with a different mix of models and e
 | `grok-opus` | `profiles/grok-opus.mdc` | Grok writes code and runs workers. Opus takes judgment, prose, the hardest tasks, and one seat on each panel. |
 | `design-heavy` | `profiles/design-heavy.mdc` | Grok in every role. Judgment and prose, architect runners, the arena judge, and interrogate reviewers run at xhigh. Feature work, refactoring, and swarm workers stay at high. Bug-fix and perf stay at xhigh. |
 
-To use a profile, copy its file over `.cursor/rules/pstack-models.mdc` in your project. Cursor loads only that path, so the other profiles stay inactive. To add a mix, add one file to `profiles/` with every role line and a `# profile:` line.
+Use `--profile <name>` during init. Cursor loads only `.cursor/rules/pstack-models.mdc`, so the other profiles stay inactive. To add a mix, add one file to `profiles/` with every role line and a `# profile:` line.
 
 ## Check whether upstream moved
 
-From the repo root, run `scripts/check-upstream`.
+From the catalog root, run `node --test scripts/*.test.mjs` for tests and `scripts/check-upstream` to inspect upstream changes.
 
 The command reads `sources.json`. It prints one line per source. The line is the source name, the pinned commit, the default-branch tip, and a status word. The status word is last.
 
@@ -82,9 +67,20 @@ The command exits 0 when every line says `skip`. It exits 1 when any line says `
 
 To refresh a source, edit its commit in `sources.json`. Copy the mapped paths from that commit into the tree. Reapply the edits listed under Changes to upstream text. Update `NOTICE`. This command does not write the tree.
 
+## Skill discovery
+
+[Cursor's skills documentation](https://cursor.com/docs/skills#frontmatter-fields) requires a matching folder/name and a description. `disable-model-invocation: true` hides a skill from automatic selection, including selection by another skill. The catalog omits that flag; manual `/skill-name` invocation still works. No skill-count cap is documented there. Leave `paths` unset for these repo-wide skills.
+
+Cursor treats nested [`AGENTS.md` files as rules](https://cursor.com/docs/rules#nested-agentsmd-support). The complete Vercel React guide is preserved byte for byte as `vercel-react-best-practices/REFERENCE.md`, linked from its `SKILL.md`, so it is read when needed instead of injected as directory instructions.
+
+Check the installed metadata with `node --test scripts/init.test.mjs`. For a real first-session check, authenticate with [`cursor-agent login`](https://cursor.com/docs/cli/reference/authentication) or supply `CURSOR_API_KEY`, then run `cursor-agent -p --trust --force --output-format stream-json` in a newly initialized consumer and ask it to report its initial skill catalog before reading files. File checks establish the shipped metadata; only a logged-in CLI or Cloud Agent run establishes runtime discovery.
+
 ## Changes to upstream text
 
 Upstream files are vendored byte for byte except these:
+
+- Skill frontmatter omits `disable-model-invocation: true` across the catalog so all skills can be discovered automatically.
+- `vercel-react-best-practices/AGENTS.md` is renamed `REFERENCE.md` without content changes; its skill and contributor README link to the new name. The longer file mapping in `sources.json` preserves the rename; reapply the SKILL/README link edits after upstream copies.
 
 - `setup-pstack/SKILL.md`. One added sentence. It reads and writes the project `.cursor/rules/pstack-models.mdc` when that file exists.
 - `arena/SKILL.md`, `swarm/SKILL.md`, `interrogate/SKILL.md`, `poteto-help/SKILL.md`. One added sentence each. They read the project `.cursor/rules/pstack-models.mdc` when that file exists.

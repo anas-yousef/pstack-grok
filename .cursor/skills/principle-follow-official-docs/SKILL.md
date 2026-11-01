@@ -1,7 +1,6 @@
 ---
 name: principle-follow-official-docs
 description: "Apply when the project uses a third-party library, platform, or service. Follow one option its current official docs prescribe, and cite that page in the PR."
-disable-model-invocation: true
 ---
 
 # Follow Official Docs
