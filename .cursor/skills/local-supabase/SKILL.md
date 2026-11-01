@@ -1,7 +1,6 @@
 ---
 name: local-supabase
 description: "Apply when a product needs a real backend database, auth, or row-level security. Run official local Supabase in Docker on this machine, and create a hosted project only when the product ships."
-disable-model-invocation: true
 ---
 
 # Local Supabase

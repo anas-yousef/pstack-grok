@@ -1,7 +1,6 @@
 ---
 name: spec
 description: "Write SPEC.md with spec-driven-development and return. Use for /spec."
-disable-model-invocation: true
 ---
 
 # Spec

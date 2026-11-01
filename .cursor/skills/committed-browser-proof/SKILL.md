@@ -1,7 +1,6 @@
 ---
 name: committed-browser-proof
 description: "Apply before claiming that a browser or UI product is done, and when writing or reviewing create-verification-skill output. Done needs a committed package script that a fresh agent can re-run."
-disable-model-invocation: true
 ---
 
 # Committed browser proof

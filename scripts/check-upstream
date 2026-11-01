@@ -12,29 +12,17 @@ const COPY_SAFETY = {
 	delete: { "matches-pin": "safe", differs: "unsafe", absent: "unsafe" },
 };
 
-const FOLD = {
-	empty: { safe: "safe", unsafe: "unsafe" },
-	safe: { safe: "safe", unsafe: "unsafe" },
-	unsafe: { safe: "unsafe", unsafe: "unsafe" },
-};
-
-const STATUS = { empty: "skip", safe: "take", unsafe: "review" };
-
 export function classifyClaims(claims) {
-	let fold = "empty";
+	let status = "skip";
 	for (const claim of claims) {
-		const safety = lookup(COPY_SAFETY, claim.change, claim.local);
-		fold = lookup(FOLD, fold, safety);
+		const row = COPY_SAFETY[claim.change];
+		if (!Object.hasOwn(COPY_SAFETY, claim.change) || !Object.hasOwn(row, claim.local)) {
+			throw new Error(`invalid claim ${claim.change} ${claim.local}`);
+		}
+		if (row[claim.local] === "unsafe") status = "review";
+		else if (status === "skip") status = "take";
 	}
-	if (!Object.hasOwn(STATUS, fold)) throw new Error(`missing cell ${fold}`);
-	return STATUS[fold];
-}
-
-function lookup(table, row, col) {
-	if (!Object.hasOwn(table, row) || !Object.hasOwn(table[row], col)) {
-		throw new Error(`missing cell ${row} ${col}`);
-	}
-	return table[row][col];
+	return status;
 }
 
 export function run({

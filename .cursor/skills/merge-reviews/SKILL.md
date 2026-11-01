@@ -1,7 +1,6 @@
 ---
 name: merge-reviews
 description: "Compare claude, codex, and grok reviews. Write an ADR for each agreement and an open file for each conflict."
-disable-model-invocation: true
 ---
 
 # Merge reviews

@@ -1,7 +1,6 @@
 ---
 name: legacy-critique
 description: "Read-only critique of an old repo. Writes one file under docs/reviews for grok, claude, or codex."
-disable-model-invocation: true
 ---
 
 # Legacy critique
