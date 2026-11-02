@@ -1,0 +1,7 @@
+---
+description: Poteto-mode routes new products and features through prd, spec, then build-auto
+alwaysApply: true
+---
+Poteto-mode is the only entry point and selects this route: every new product or new feature goes through the catalog `prd` skill `.cursor/skills/prd/SKILL.md` (not any other PRD skill) (honor its stop-after-each-feature rule), then the `spec` skill (`.cursor/skills/spec/SKILL.md`, writes SPEC.md and returns), then poteto-mode's Build auto entry (`.cursor/skills/build-auto/SKILL.md`), not the Feature playbook.
+An empty repo or a from-scratch rebuild of an existing repo follows poteto-mode's Greenfield playbook instead; both of its branches run prd before build-auto.
+Changes to existing behavior, refactors, and bug fixes follow poteto-mode's own playbooks.
