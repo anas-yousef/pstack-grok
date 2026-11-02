@@ -13,13 +13,14 @@ A from-scratch rebuild names an old repo by path or URL. That rebuild uses only 
 
 When the user did not name an old repo, use the numbered steps below.
 
-1. Name the domain before any code, per **principle-model-the-domain**. When the nouns are still fuzzy, run the **domain-modeling** skill and write the glossary and decision records it asks for.
-2. Run `interrogate` before implementing any slice that matches `../references/interrogate-triggers.md`.
-3. Boot the smallest scaffold that runs end to end. When that scaffold uses a third-party library, platform, or service, follow **principle-follow-official-docs**. When the product needs a real backend database, auth, or row-level security, follow **local-supabase**. Then run **create-verification-skill** once, so every later check drives the real app. For a browser or UI surface, also satisfy **committed-browser-proof**.
-4. Build each slice with the **Feature** playbook from step 2 on. Skip its `how` step while there is no subsystem to read, with `skip: <reason>`.
-5. When a step needs an action only a human can take in a third-party dashboard, run the **wizard** skill for that step alone. Keep building everything else.
-6. Before claiming any slice done, run **verification-before-completion**. A claim without fresh command output is not done.
-7. Commit in small ordered units, per the **sequence-verifiable-units** principle skill.
-8. Run **Opening a PR**.
+1. Run **prd** once for each feature and honor its stop-after-each-feature rule, then run **spec**. Do this before any scaffold or stack choice.
+2. Name the domain before any code, per **principle-model-the-domain**. When the nouns are still fuzzy, run the **domain-modeling** skill and write the glossary and decision records it asks for.
+3. Run `interrogate` before implementing any slice that matches `../references/interrogate-triggers.md`.
+4. Boot the smallest scaffold that runs end to end. When that scaffold uses a third-party library, platform, or service, follow **principle-follow-official-docs**. When the product needs a real backend database, auth, or row-level security, follow **local-supabase**. Then run **create-verification-skill** once, so every later check drives the real app. For a browser or UI surface, also satisfy **committed-browser-proof**.
+5. Run **build-auto** to build the features.
+6. When a step needs an action only a human can take in a third-party dashboard, run the **wizard** skill for that step alone. Keep building everything else.
+7. Before claiming any slice done, run **verification-before-completion**. A claim without fresh command output is not done.
+8. Commit in small ordered units, per the **sequence-verifiable-units** principle skill.
+9. Run **Opening a PR**.
 
 **Reply:** what shipped, the domain model you chose, which interrogate triggers fired, the verification command and its output, open decisions.
