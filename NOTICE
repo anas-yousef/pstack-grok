@@ -3,6 +3,7 @@ Copyright (c) 2026 Anas Yousef. MIT License, see LICENSE.
 
 The root LICENSE covers original work only: .cursor/rules/pstack-models.mdc,
 .cursor/rules/pstack-prd-first.mdc,
+.cursor/rules/pstack-ux-critique.mdc,
 profiles/,
 .cursor/skills/principle-follow-official-docs/,
 .cursor/skills/committed-browser-proof/,
@@ -11,7 +12,8 @@ profiles/,
 .cursor/skills/spec/,
 .cursor/skills/legacy-critique/,
 .cursor/skills/prd/,
-.cursor/skills/merge-reviews/, the playbooks greenfield,
+.cursor/skills/merge-reviews/,
+.cursor/skills/ux-critique/, the playbooks greenfield,
 db-migration, dependency-upgrade, external-side-effects,
 security-and-privacy, observability, deploy-and-rollback and
 incident-hotfix, poteto-mode's references/interrogate-triggers.md,
