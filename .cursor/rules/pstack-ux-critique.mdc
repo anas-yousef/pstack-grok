@@ -1,0 +1,5 @@
+---
+description: Poteto-mode routes a finished UI build or ship to ux-critique
+alwaysApply: true
+---
+After poteto-mode builds or ships a browser UI change, it runs the catalog `ux-critique` skill (`.cursor/skills/ux-critique/SKILL.md`). The critique adds to the e2e and integration tests and does not replace them. It writes a report and fixes nothing.
