@@ -110,3 +110,10 @@ supabase/agent-skills
   Files:   .cursor/skills/supabase,
            .cursor/skills/supabase-postgres-best-practices
   Changes: none.
+
+meta/astryx
+  Source:  https://github.com/meta/astryx (plugins/astryx/skills/astryx/)
+  Commit:  65ed0c0171c93e13eb3028743a4e04138d3c8146
+  License: MIT, Copyright (c) 2026 Meta Platforms, Inc. See .cursor/third-party/astryx/LICENSE.
+  Files:   .cursor/skills/astryx
+  Changes: none.
