@@ -1,0 +1,7 @@
+---
+description: Tests use a simulated clock and a hard timeout
+alwaysApply: true
+---
+Tests that involve time (timeouts, pauses, retries, backoff, circuit breakers, schedulers, debounce, TTLs) use a simulated clock, such as fake timers or an injected clock, never real wall-clock waits or sleeps. Real clocks flake on loaded machines.
+Every test run has a hard timeout, per test and for the whole run, and its processes die when the parent exits, so no run outlives its runner.
+Reviewers flag real-clock waits or sleeps in tests as findings.
