@@ -71,7 +71,17 @@
       "commit": "1a2c79d4e6c4a2283dc2c614b6538cbe1ed5ca62",
       "paths": {
         "skills/react-best-practices/AGENTS.md": ".cursor/skills/vercel-react-best-practices/REFERENCE.md",
-        "skills/react-best-practices/": ".cursor/skills/vercel-react-best-practices/"
+        "skills/react-best-practices/": ".cursor/skills/vercel-react-best-practices/",
+        "skills/web-design-guidelines/SKILL.md": ".cursor/skills/web-design-guidelines/SKILL.md"
+      }
+    },
+    {
+      "name": "vercel-web-interface-guidelines",
+      "repo": "https://github.com/vercel-labs/web-interface-guidelines",
+      "commit": "434b7f91364665f2f733b310ec54809bf8f37937",
+      "paths": {
+        "command.md": ".cursor/skills/web-design-guidelines/REFERENCE.md",
+        "LICENSE": ".cursor/third-party/web-interface-guidelines/LICENSE"
       }
     },
     {

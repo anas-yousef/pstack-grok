@@ -9,7 +9,7 @@ A Cursor project setup that teaches agents how to work. It is [pstack](https://g
 - **superpowers** from `obra/superpowers`. `verification-before-completion`, `systematic-debugging`, `receiving-code-review`.
 - **mattpocock/skills**. `domain-modeling`, `writing-for-agents`, `wizard`, `grill-me`, `grilling`.
 - **addyosmani/agent-skills**. `spec-driven-development`, `planning-and-task-breakdown`, `incremental-implementation`, `documentation-and-adrs`, `shipping-and-launch`, `doubt-driven-development`, `performance-optimization`, `frontend-ui-engineering`, `browser-testing-with-devtools`.
-- **vercel-labs/agent-skills**. `vercel-react-best-practices`.
+- **vercel-labs/agent-skills**. `vercel-react-best-practices`, `web-design-guidelines`.
 - **supabase/agent-skills**. `supabase`, `supabase-postgres-best-practices`.
 - **meta/astryx**. `astryx`.
 - **Original work.** A Grok `pstack-models.mdc` with per-role efforts, the `pstack-prd-first.mdc` and `pstack-ux-critique.mdc` routing rules, the `pstack-test-clock.mdc` testing rule, the `profiles/` model mixes, the `principle-follow-official-docs` skill, the `committed-browser-proof` skill, the `local-supabase` skill, the `build-auto` skill, the `spec` skill, the `legacy-critique` skill, the `prd` skill, the `merge-reviews` skill, the `ux-critique` skill, the interrogate trigger list, and eight poteto-mode playbooks: greenfield, DB migration, dependency upgrade, external side effects, security and privacy, observability, deploy and rollback, and incident hotfix.
@@ -82,6 +82,7 @@ Upstream files are vendored byte for byte except these:
 
 - Skill frontmatter omits `disable-model-invocation: true` across the catalog so all skills can be discovered automatically.
 - `vercel-react-best-practices/AGENTS.md` is renamed `REFERENCE.md` without content changes; its skill and contributor README link to the new name. The longer file mapping in `sources.json` preserves the rename; reapply the SKILL/README link edits after upstream copies.
+- `web-design-guidelines/SKILL.md` upstream fetches `command.md` from the vercel-labs/web-interface-guidelines main branch at run time. The catalog pins that file at `434b7f9` as `web-design-guidelines/REFERENCE.md` (see `sources.json`) and the skill reads it. After copying upstream, point the skill at `REFERENCE.md` again.
 
 - `setup-pstack/SKILL.md`. One added sentence. It reads and writes the project `.cursor/rules/pstack-models.mdc` when that file exists.
 - `arena/SKILL.md`, `swarm/SKILL.md`, `interrogate/SKILL.md`, `poteto-help/SKILL.md`. One added sentence each. They read the project `.cursor/rules/pstack-models.mdc` when that file exists.

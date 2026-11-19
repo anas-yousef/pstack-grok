@@ -44,6 +44,14 @@ Tag each finding with its checklist item, for example `[N9]`, `[WCAG 1.4.3]`, or
 
 When either reviewer cannot run, the review stays open. That covers no valid Claude or GPT slug in the Task tool's list, Task dispatch turned off, an agent limit reached, or a reviewer that fails to run. Record `BLOCKED: independent review` in the todolist, keep every completed report, name each missing reviewer, and keep shipping closed. Your own review does not count.
 
+## Behaviour checks
+
+Screenshots do not show how a screen behaves. Exercise these in the running app: a persistent shared layout, loading scoped to the part that is loading, pending or click feedback, and focus and keyboard. Cite the source for each finding and tell the reviewers where these live:
+
+- `../web-design-guidelines/REFERENCE.md`, the pinned rules. Tag `[WDG]`.
+- `../vercel-react-best-practices/SKILL.md`, for React and Next.js code. Tag `[VRBP]`.
+- When the project uses Next.js, the docs in `node_modules/next/dist/docs/`. Read the installed version. Tag `[Next docs]`.
+
 ## Prototype fidelity
 
 When the project keeps a prototype of its screens, this pass is required. The project says which prototype capture shows which screen and state, for example in `docs/ux-critique/README.md`.
