@@ -83,6 +83,7 @@ Upstream files are vendored byte for byte except these:
 - Skill frontmatter omits `disable-model-invocation: true` across the catalog so all skills can be discovered automatically.
 - `vercel-react-best-practices/AGENTS.md` is renamed `REFERENCE.md` without content changes; its skill and contributor README link to the new name. The longer file mapping in `sources.json` preserves the rename; reapply the SKILL/README link edits after upstream copies.
 - `web-design-guidelines/SKILL.md` upstream fetches `command.md` from the vercel-labs/web-interface-guidelines main branch at run time. The catalog pins that file at `434b7f9` as `web-design-guidelines/REFERENCE.md` (see `sources.json`) and the skill reads it. After copying upstream, point the skill at `REFERENCE.md` again.
+- `astryx/SKILL.md` carries one added scope sentence above its managed block (Astryx for visuals only; behaviour follows the Next.js docs, vercel-react-best-practices and web-design-guidelines). Astryx hashes the whole file, so it now counts as edited and `astryx init --user` leaves it alone. Reapply the sentence after copying upstream.
 
 - `setup-pstack/SKILL.md`. One added sentence. It reads and writes the project `.cursor/rules/pstack-models.mdc` when that file exists.
 - `arena/SKILL.md`, `swarm/SKILL.md`, `interrogate/SKILL.md`, `poteto-help/SKILL.md`. One added sentence each. They read the project `.cursor/rules/pstack-models.mdc` when that file exists.
