@@ -23,6 +23,18 @@
       }
     },
     {
+      "name": "thermos",
+      "repo": "https://github.com/cursor/plugins",
+      "commit": "c742dd61706fbacc1b95f1a20b7b988cf096ce6c",
+      "paths": {
+        "thermos/skills/thermos/": ".cursor/skills/thermos/",
+        "thermos/skills/thermo-nuclear-review/": ".cursor/skills/thermo-nuclear-review/",
+        "thermos/agents/thermo-nuclear-review-subagent.md": ".cursor/agents/thermo-nuclear-review-subagent.md",
+        "thermos/agents/thermo-nuclear-code-quality-review-subagent.md": ".cursor/agents/thermo-nuclear-code-quality-review-subagent.md",
+        "thermos/LICENSE": ".cursor/third-party/thermos/LICENSE"
+      }
+    },
+    {
       "name": "superpowers",
       "repo": "https://github.com/obra/superpowers",
       "commit": "22f0b463e7a5e579904dd6211a520321035526f7",
