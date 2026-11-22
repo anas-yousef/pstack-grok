@@ -139,3 +139,11 @@ meta/astryx
            unchanged. Astryx hashes the whole file, so the file now counts as
            edited and `astryx init --user` leaves it alone. Reapply the
            sentence after a sync.
+
+shadcn-ui/ui
+  Source:  https://github.com/shadcn-ui/ui (skills/shadcn/, LICENSE.md)
+  Commit:  bfa64ff4d1cb7317d2403ecb176df6826d4caffc
+  License: MIT, Copyright (c) 2023 shadcn. See .cursor/third-party/shadcn-ui/LICENSE.md.
+  Files:   .cursor/skills/shadcn
+  Changes: none. The official shadcn/ui skill (ui.shadcn.com/docs/skills),
+           byte for byte.

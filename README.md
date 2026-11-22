@@ -12,6 +12,7 @@ A Cursor project setup that teaches agents how to work. It is [pstack](https://g
 - **vercel-labs/agent-skills**. `vercel-react-best-practices`, `web-design-guidelines`.
 - **supabase/agent-skills**. `supabase`, `supabase-postgres-best-practices`.
 - **meta/astryx**. `astryx`.
+- **shadcn-ui/ui**. `shadcn`.
 - **Original work.** A Grok `pstack-models.mdc` with per-role efforts, the `pstack-prd-first.mdc` and `pstack-ux-critique.mdc` routing rules, the `pstack-test-clock.mdc` testing rule, the `profiles/` model mixes, the `principle-follow-official-docs` skill, the `committed-browser-proof` skill, the `local-supabase` skill, the `build-auto` skill, the `spec` skill, the `legacy-critique` skill, the `prd` skill, the `merge-reviews` skill, the `ux-critique` skill, the interrogate trigger list, and eight poteto-mode playbooks: greenfield, DB migration, dependency upgrade, external side effects, security and privacy, observability, deploy and rollback, and incident hotfix.
 
 Everything lives under `.cursor/`, where Cursor loads project skills, agents, and rules. `NOTICE` lists each source and its license. `sources.json` pins the upstream commits.
