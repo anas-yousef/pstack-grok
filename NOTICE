@@ -37,7 +37,7 @@ pstack
   Changes: setup-pstack/SKILL.md, show-me-your-work/SKILL.md,
            poteto-mode/SKILL.md and poteto-mode/playbooks/orchestrate.md.
            ketchup/SKILL.md uses a plain-words voice sentence.
-           ketchup-video, make-bot-ui, bro, and setup-benny are omitted.
+           make-bot-ui and setup-benny are omitted.
            See README.md.
 
 cursor-team-kit
@@ -49,7 +49,7 @@ cursor-team-kit
            .cursor/rules/no-inline-imports.mdc,
            .cursor/rules/typescript-exhaustive-switch.mdc,
            .cursor/cursor-team-kit/
-  Changes: what-did-i-get-done, weekly-review, workflow-from-chats,
+  Changes: weekly-review, workflow-from-chats,
            and pr-review-canvas are omitted. See README.md.
 
 superpowers
@@ -147,3 +147,15 @@ shadcn-ui/ui
   Files:   .cursor/skills/shadcn
   Changes: none. The official shadcn/ui skill (ui.shadcn.com/docs/skills),
            byte for byte.
+
+thermos
+  Source:  https://github.com/cursor/plugins (thermos/skills/thermos/,
+           thermos/skills/thermo-nuclear-review/, thermos/agents/, thermos/LICENSE)
+  Commit:  c742dd61706fbacc1b95f1a20b7b988cf096ce6c
+  License: MIT, Copyright (c) 2026 Cursor. See .cursor/third-party/thermos/LICENSE.
+  Files:   .cursor/skills/thermos, .cursor/skills/thermo-nuclear-review,
+           .cursor/agents/thermo-nuclear-review-subagent.md,
+           .cursor/agents/thermo-nuclear-code-quality-review-subagent.md
+  Changes: none beyond the catalog-wide omission of
+           disable-model-invocation: true. thermo-nuclear-code-quality-review
+           stays the cursor-team-kit copy.
