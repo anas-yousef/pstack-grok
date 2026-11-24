@@ -1,5 +1,5 @@
 ---
-description: Poteto-mode routes a finished UI build or ship to ux-critique
+description: Any browser UI change gets ux-critique, which renders the touched screens and judges the screenshots
 alwaysApply: true
 ---
-After poteto-mode builds or ships a browser UI change, it runs the catalog `ux-critique` skill (`.cursor/skills/ux-critique/SKILL.md`). The critique adds to the e2e and integration tests and does not replace them. It writes a report and fixes nothing.
+Whenever a change touches a browser UI, poteto-mode runs the catalog `ux-critique` skill (`.cursor/skills/ux-critique/SKILL.md`): after it builds or ships the change, and when it reviews a UI pull request. The critique renders every touched screen at desktop and phone widths, in light and dark, in every project locale including RTL, saves the screenshots, and judges them. Each finding cites a screenshot. A review that reads only the diff does not count as the UI review. The critique adds to the e2e and integration tests and does not replace them. It writes a report and fixes nothing.
