@@ -1,0 +1,5 @@
+---
+description: Bug fixes carry regression tests; reviewers flag a missing one as P1
+alwaysApply: true
+---
+Every bug fix includes regression tests that fail before the fix and pass after it, at the right levels: unit, integration against a real database or edge functions, and/or end-to-end in the browser. Reviewers flag a bug fix without such a test as a P1 finding.
